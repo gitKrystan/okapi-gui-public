@@ -4,11 +4,17 @@ import {
   setupTest as upstreamSetupTest,
 } from 'ember-qunit';
 
+import 'ember-qunit';
+
 // This file exists to provide wrappers around ember-qunit's / ember-mocha's
 // test setup functions. This way, you can easily extend the setup that is
 // needed per test type.
 
-function setupApplicationTest(hooks, options) {
+/** Sets up an application test */
+function setupApplicationTest(
+  hooks: NestedHooks,
+  options?: Record<string, unknown>
+): void {
   upstreamSetupApplicationTest(hooks, options);
 
   // Additional setup for application tests can be done here.
@@ -27,13 +33,21 @@ function setupApplicationTest(hooks, options) {
   // setupMirage(hooks); // ember-cli-mirage
 }
 
-function setupRenderingTest(hooks, options) {
+/** Sets up a rendering test */
+function setupRenderingTest(
+  hooks: NestedHooks,
+  options?: Record<string, unknown>
+): void {
   upstreamSetupRenderingTest(hooks, options);
 
   // Additional setup for rendering tests can be done here.
 }
 
-function setupTest(hooks, options) {
+/** Sets up a standard test */
+function setupTest(
+  hooks: NestedHooks,
+  options?: Record<string, unknown>
+): void {
   upstreamSetupTest(hooks, options);
 
   // Additional setup for unit tests can be done here.
