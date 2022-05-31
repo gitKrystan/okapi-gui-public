@@ -32,7 +32,7 @@
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "@glint/core": "^0.8.0",
-    "@glint/environment-ember-loose": "^0.8.0",
+    "@glint/environment-ember-loose": "^0.8.2",
     "@types/ember-qunit": "^5.0.0",
     "@types/ember-resolver": "^5.0.11",
     "@types/ember__application": "^4.0.0",
