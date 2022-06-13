@@ -1,0 +1,18 @@
+{
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "[handlebars]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Turn off this formatter so Prettier will be the only formatter and the user won't have to pick.
+  "javascript.format.enable": false,
+
+  "npm.packageManager": "yarn",
+  "eslint.packageManager": "yarn",
+  "stylelint.packageManager": "yarn"
+}
