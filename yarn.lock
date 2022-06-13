@@ -1476,6 +1476,11 @@
     "@glint/config" "^0.8.2"
     "@glint/template" "^0.8.2"
 
+"@glint/environment-ember-template-imports@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-0.8.2.tgz#14bf4b788422a23999461a0ff04e8533e668d820"
+  integrity sha512-SFyy/St7X9Lz9pDzObAsaSNs+NGvwoM4lmFx352L73gamb7nnDVE22PeOQiQA8AjCYtnvxKO6H0EhGI+HqQ/Ew==
+
 "@glint/template@^0.8.2":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@glint/template/-/template-0.8.2.tgz#b984dccbc2dcf6fbb8699439010529d48fea46e7"
@@ -2932,6 +2937,11 @@ babel-helpers@^6.24.1:
   dependencies:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
+
+babel-import-util@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/babel-import-util/-/babel-import-util-0.2.0.tgz#b468bb679919601a3570f9e317536c54f2862e23"
+  integrity sha512-CtWYYHU/MgK88rxMrLfkD356dApswtR/kWZ/c6JifG1m10e7tBBrs/366dFzWMAoqYmG5/JSh+94tUSpIwh+ag==
 
 babel-import-util@^1.1.0, babel-import-util@^1.2.0:
   version "1.2.2"
@@ -5830,6 +5840,21 @@ ember-source@~4.4.1:
     resolve "^1.22.0"
     semver "^7.3.4"
     silent-error "^1.1.1"
+
+ember-template-imports@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.0.1.tgz#2f5c75bdc2c90e737861468a4cbd360a1f6c0d56"
+  integrity sha512-gkoa7t24YZtCx5KkjDMLMe3trIdvoRwW4z08PFCwsaKdq7YTAk3ggzEzif4prNI1gojVHKw3qTEQF08iv7VsNA==
+  dependencies:
+    babel-import-util "^0.2.0"
+    broccoli-stew "^3.0.0"
+    ember-cli-babel-plugin-helpers "^1.1.1"
+    ember-cli-version-checker "^5.1.2"
+    line-column "^1.0.2"
+    magic-string "^0.25.7"
+    parse-static-imports "^1.1.0"
+    string.prototype.matchall "^4.0.6"
+    validate-peer-dependencies "^1.1.0"
 
 ember-template-lint@^4.10.0:
   version "4.10.0"
@@ -11074,7 +11099,7 @@ string-width@^2.1.0:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string.prototype.matchall@^4.0.5:
+string.prototype.matchall@^4.0.5, string.prototype.matchall@^4.0.6:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.7.tgz#8e6ecb0d8a1fb1fda470d81acecb2dba057a481d"
   integrity sha512-f48okCX7JiwVi1NXCVWcFnZgADDC/n2vePlQ/KUCNqCikLLilQvwjMO8+BHVKvgzH0JB0J9LEPgxOGT02RoETg==
@@ -11878,7 +11903,7 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-validate-peer-dependencies@^1.2.0:
+validate-peer-dependencies@^1.1.0, validate-peer-dependencies@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/validate-peer-dependencies/-/validate-peer-dependencies-1.2.0.tgz#22aab93c514f4fda457d36c80685e8b1160d2036"
   integrity sha512-nd2HUpKc6RWblPZQ2GDuI65sxJ2n/UqZwSBVtj64xlWjMx0m7ZB2m9b2JS3v1f+n9VWH/dd1CMhkHfP6pIdckA==
