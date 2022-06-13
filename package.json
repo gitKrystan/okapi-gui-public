@@ -23,7 +23,8 @@
     "lint:ts": "glint",
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
-    "test:ember": "ember test"
+    "test:ember": "ember test",
+    "g": "EMBER_TYPESCRIPT_BLUEPRINTS=true ember g"
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",
