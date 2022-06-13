@@ -66,20 +66,10 @@
     // work with TypeScript.
     "baseUrl": ".",
     "paths": {
-      "okapi/tests/*": [
-        "tests/*"
-      ],
-      "okapi/*": [
-        "app/*"
-      ],
-      "*": [
-        "types/*"
-      ]
+      "okapi/tests/*": ["tests/*"],
+      "okapi/*": ["app/*"],
+      "*": ["types/*"]
     }
   },
-  "include": [
-    "app/**/*",
-    "tests/**/*",
-    "types/**/*"
-  ]
+  "include": ["app/**/*", "tests/**/*", "types/**/*"]
 }
