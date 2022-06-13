@@ -1420,10 +1420,10 @@
   resolved "https://registry.yarnpkg.com/@glimmer/validator/-/validator-0.44.0.tgz#03d127097dc9cb23052cdb7fcae59d0a9dca53e1"
   integrity sha512-i01plR0EgFVz69GDrEuFgq1NheIjZcyTy3c7q+w7d096ddPVeVcRzU3LKaqCfovvLJ+6lJx40j45ecycASUUyw==
 
-"@glimmer/vm-babel-plugins@0.83.1":
-  version "0.83.1"
-  resolved "https://registry.yarnpkg.com/@glimmer/vm-babel-plugins/-/vm-babel-plugins-0.83.1.tgz#5da67e3d84199352bbf0c5bc3f1ce71bf2b2ddfc"
-  integrity sha512-Cz0e/SrOo1gSNA0PXZRYI1WGmlQSAQCpiERBlXjjpwoLgiqx2kvsjfFiCUC/CfpsO6WN6wuPMeTFGJuhSSeL5A==
+"@glimmer/vm-babel-plugins@0.84.2":
+  version "0.84.2"
+  resolved "https://registry.yarnpkg.com/@glimmer/vm-babel-plugins/-/vm-babel-plugins-0.84.2.tgz#653ce82a6656b4396d87a479d8699450d35a17f0"
+  integrity sha512-HS2dEbJ3CgXn56wk/5QdudM7rE3vtNMvPIoG7Rrg+GhkGMNxBCIRxOeEF2g520j9rwlA2LAZFpc7MCDMFbTjNA==
   dependencies:
     babel-plugin-debug-macros "^0.3.4"
 
@@ -1475,6 +1475,11 @@
   dependencies:
     "@glint/config" "^0.8.2"
     "@glint/template" "^0.8.2"
+
+"@glint/environment-ember-template-imports@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-0.8.2.tgz#14bf4b788422a23999461a0ff04e8533e668d820"
+  integrity sha512-SFyy/St7X9Lz9pDzObAsaSNs+NGvwoM4lmFx352L73gamb7nnDVE22PeOQiQA8AjCYtnvxKO6H0EhGI+HqQ/Ew==
 
 "@glint/template@^0.8.2":
   version "0.8.2"
@@ -2932,6 +2937,11 @@ babel-helpers@^6.24.1:
   dependencies:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
+
+babel-import-util@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/babel-import-util/-/babel-import-util-0.2.0.tgz#b468bb679919601a3570f9e317536c54f2862e23"
+  integrity sha512-CtWYYHU/MgK88rxMrLfkD356dApswtR/kWZ/c6JifG1m10e7tBBrs/366dFzWMAoqYmG5/JSh+94tUSpIwh+ag==
 
 babel-import-util@^1.1.0, babel-import-util@^1.2.0:
   version "1.2.2"
@@ -5799,15 +5809,15 @@ ember-source-channel-url@^3.0.0:
   dependencies:
     node-fetch "^2.6.0"
 
-ember-source@~4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.4.1.tgz#c98b5af3b6b4ed9f6d12736494d364cb6ce46a50"
-  integrity sha512-Ps0ff1RTJdKCBSLWqcFMUbYZ4CNr7eeYWZvR1pWFALTJbNRVCNXIiZCvS4hl+acQ4TyKszkFV+uLaVqJImakFg==
+ember-source@~4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-4.5.0.tgz#2e5ed8bb7e967876338ecb29f4de3a13255ee7f5"
+  integrity sha512-zGNnFCD8a4UNTrp5gORdlItJUalga8t6FX6EvFWTsyywB9ST8cov/c71CBDBo8bp1/V4W4z0dG6DhL8C1onxPw==
   dependencies:
     "@babel/helper-module-imports" "^7.16.7"
     "@babel/plugin-transform-block-scoping" "^7.16.0"
     "@ember/edition-utils" "^1.2.0"
-    "@glimmer/vm-babel-plugins" "0.83.1"
+    "@glimmer/vm-babel-plugins" "0.84.2"
     babel-plugin-debug-macros "^0.3.4"
     babel-plugin-filter-imports "^4.0.0"
     broccoli-concat "^4.2.5"
@@ -5830,6 +5840,21 @@ ember-source@~4.4.1:
     resolve "^1.22.0"
     semver "^7.3.4"
     silent-error "^1.1.1"
+
+ember-template-imports@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.0.1.tgz#2f5c75bdc2c90e737861468a4cbd360a1f6c0d56"
+  integrity sha512-gkoa7t24YZtCx5KkjDMLMe3trIdvoRwW4z08PFCwsaKdq7YTAk3ggzEzif4prNI1gojVHKw3qTEQF08iv7VsNA==
+  dependencies:
+    babel-import-util "^0.2.0"
+    broccoli-stew "^3.0.0"
+    ember-cli-babel-plugin-helpers "^1.1.1"
+    ember-cli-version-checker "^5.1.2"
+    line-column "^1.0.2"
+    magic-string "^0.25.7"
+    parse-static-imports "^1.1.0"
+    string.prototype.matchall "^4.0.6"
+    validate-peer-dependencies "^1.1.0"
 
 ember-template-lint@^4.10.0:
   version "4.10.0"
@@ -11074,7 +11099,7 @@ string-width@^2.1.0:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string.prototype.matchall@^4.0.5:
+string.prototype.matchall@^4.0.5, string.prototype.matchall@^4.0.6:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.7.tgz#8e6ecb0d8a1fb1fda470d81acecb2dba057a481d"
   integrity sha512-f48okCX7JiwVi1NXCVWcFnZgADDC/n2vePlQ/KUCNqCikLLilQvwjMO8+BHVKvgzH0JB0J9LEPgxOGT02RoETg==
@@ -11878,7 +11903,7 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-validate-peer-dependencies@^1.2.0:
+validate-peer-dependencies@^1.1.0, validate-peer-dependencies@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/validate-peer-dependencies/-/validate-peer-dependencies-1.2.0.tgz#22aab93c514f4fda457d36c80685e8b1160d2036"
   integrity sha512-nd2HUpKc6RWblPZQ2GDuI65sxJ2n/UqZwSBVtj64xlWjMx0m7ZB2m9b2JS3v1f+n9VWH/dd1CMhkHfP6pIdckA==

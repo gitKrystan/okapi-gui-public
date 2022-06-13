@@ -4,13 +4,15 @@
 
   // List of extensions which should be recommended for users of this workspace.
   "recommendations": [
-    "dbaeumer.vscode-eslint", // ESLint
-    "esbenp.prettier-vscode", // Prettier
-    "typed-ember.glint-vscode", // Glint
-    "visualstudioexptteam.vscodeintellicode" // Code completion
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "typed-ember.glint-vscode",
+    "visualstudioexptteam.vscodeintellicode",
+    "chiragpat.vscode-glimmer" // GTS
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": [
-    "embertooling.prettier-for-handlebars-vscode" // This extension conflicts with the default Prettier hbs formatting
+    "embertooling.prettier-for-handlebars-vscode", // Conflicts with the default Prettier hbs formatting
+    "lifeart.vscode-ember-unstable" // Does not work with GTS
   ]
 }
