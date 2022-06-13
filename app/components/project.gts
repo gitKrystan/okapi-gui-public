@@ -1,5 +1,4 @@
 import Component from '@glimmer/component';
-import { helper } from '@ember/component/helper';
 import Project from 'okapi/models/project';
 
 export interface ProjectComponentSig {
@@ -10,7 +9,7 @@ export interface ProjectComponentSig {
 
 const Yay = <template>Yay</template>
 
-const addExplanationPoint = helper(([str]: [string]) => `${str}!`);
+const addExplanationPoint = (str: string) => `${str}!`;
 
 export default class ProjectComponent extends Component<ProjectComponentSig> {
   <template>
