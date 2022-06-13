@@ -9,10 +9,10 @@ export interface ProjectComponentSig {
 
 const Yay = <template>Yay</template>
 
-const addExplanationPoint = (str: string) => `${str}!`;
+const withExcitement = (str: string) => `${str}!`;
 
 export default class ProjectComponent extends Component<ProjectComponentSig> {
   <template>
-    <li><Yay /> {{addExplanationPoint @project.name}}</li>
+    <li><Yay /> {{withExcitement @project.name}}</li>
   </template>
 }
