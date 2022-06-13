@@ -43,7 +43,7 @@
     json5 "^2.2.1"
     semver "^6.3.0"
 
-"@babel/core@^7.17.9":
+"@babel/core@^7.17.9", "@babel/core@^7.18.5":
   version "7.18.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.18.5.tgz#c597fa680e58d571c28dda9827669c78cdd7f000"
   integrity sha512-MGY8vg3DxMnctw0LdvSEojOsumc70g0t18gNyUdAZqB1Rpd1Bqo/svHGvt+UJ6JcGX+DIekGFDxxIWofBxLCnQ==
@@ -5653,7 +5653,7 @@ ember-cli-typescript@^4.1.0:
     stagehand "^1.0.0"
     walk-sync "^2.2.0"
 
-ember-cli-typescript@^5.1.0:
+ember-cli-typescript@^5.0.0, ember-cli-typescript@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-5.1.0.tgz#460eb848564e29d64f2b36b2a75bbe98172b72a4"
   integrity sha512-wEZfJPkjqFEZAxOYkiXsDrJ1HY75e/6FoGhQFg8oNFJeGYpIS/3W0tgyl1aRkSEEN1NRlWocDubJ4aZikT+RTA==
@@ -5793,7 +5793,7 @@ ember-cli@~4.4.0:
     workerpool "^6.2.0"
     yam "^1.0.0"
 
-ember-compatibility-helpers@^1.1.2, ember-compatibility-helpers@^1.2.1:
+ember-compatibility-helpers@^1.1.2, ember-compatibility-helpers@^1.2.1, ember-compatibility-helpers@^1.2.5:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/ember-compatibility-helpers/-/ember-compatibility-helpers-1.2.6.tgz#603579ab2fb14be567ef944da3fc2d355f779cd8"
   integrity sha512-2UBUa5SAuPg8/kRVaiOfTwlXdeVweal1zdNPibwItrhR0IvPrXpaqwJDlEZnWKEoB+h33V0JIfiWleSG6hGkkA==
@@ -5845,6 +5845,17 @@ ember-load-initializers@^2.1.2:
   dependencies:
     ember-cli-babel "^7.13.0"
     ember-cli-typescript "^2.0.2"
+
+ember-modifier@^3.2.7:
+  version "3.2.7"
+  resolved "https://registry.yarnpkg.com/ember-modifier/-/ember-modifier-3.2.7.tgz#f2d35b7c867cbfc549e1acd8d8903c5ecd02ea4b"
+  integrity sha512-ezcPQhH8jUfcJQbbHji4/ZG/h0yyj1jRDknfYue/ypQS8fM8LrGcCMo0rjDZLzL1Vd11InjNs3BD7BdxFlzGoA==
+  dependencies:
+    ember-cli-babel "^7.26.6"
+    ember-cli-normalize-entity-name "^1.0.0"
+    ember-cli-string-utils "^1.1.0"
+    ember-cli-typescript "^5.0.0"
+    ember-compatibility-helpers "^1.2.5"
 
 ember-page-title@^7.0.0:
   version "7.0.0"
