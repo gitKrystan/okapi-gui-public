@@ -1,12 +1,12 @@
 import Route from '@ember/routing/route';
+import { service } from '@ember/service';
 import Project from 'okapi/models/project';
+import ServerService from 'okapi/services/server';
 
 export default class IndexRoute extends Route {
-  model(): Project[] {
-    return [
-      new Project('Direwolf'),
-      new Project('Wiredolf'),
-      new Project('Firewold'),
-    ];
+  @service declare server: ServerService;
+
+  model(): Promise<Project[]> {
+    return this.server.getProjectList();
   }
 }
