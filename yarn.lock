@@ -1147,7 +1147,7 @@
     resolve "^1.20.0"
     semver "^7.3.2"
 
-"@embroider/macros@1.8.0", "@embroider/macros@^1.0.0", "@embroider/macros@^1.6.0":
+"@embroider/macros@1.8.0", "@embroider/macros@^1.0.0", "@embroider/macros@^1.5.0", "@embroider/macros@^1.6.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@embroider/macros/-/macros-1.8.0.tgz#9e947e6292f0d7768a0f743d883c3e794457eaec"
   integrity sha512-jeRoUMPbZ/ADBU0FsyBGS1UgV5vQmwIPnpbVUsJ0XcZFZq/8ZHV6Ts4yeubvH/lePnUpHaKogs4dDvGk5tpQKw==
@@ -6002,6 +6002,17 @@ ember-source@~4.5.0:
     inflection "^1.13.2"
     resolve "^1.22.0"
     semver "^7.3.4"
+    silent-error "^1.1.1"
+
+ember-swappable-service@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ember-swappable-service/-/ember-swappable-service-0.6.1.tgz#6d6c418db90049be9e6b802f840b4306e11ee931"
+  integrity sha512-jgE9/QPX6cr3Nno07idl5JHI1uGxCwcX3fSVEPBckj5ajNl2ZcIbCuqN8j+Unk9rihqAiMZwszjUzdVcsNh5jg==
+  dependencies:
+    "@embroider/macros" "^1.5.0"
+    broccoli-funnel "^3.0.8"
+    ember-cli-babel "^7.26.11"
+    ember-cli-htmlbars "^6.0.1"
     silent-error "^1.1.1"
 
 ember-template-imports@^3.0.1:
