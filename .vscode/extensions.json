@@ -8,7 +8,8 @@
     "esbenp.prettier-vscode",
     "typed-ember.glint-vscode",
     "visualstudioexptteam.vscodeintellicode",
-    "chiragpat.vscode-glimmer" // GTS
+    "chiragpat.vscode-glimmer",
+    "stylelint.vscode-stylelint"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": [
