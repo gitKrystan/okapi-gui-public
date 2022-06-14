@@ -8,22 +8,25 @@ export default class DevelopmentServerService extends ServerService {
   /** Adjustable delay to mimic loading states. */
   delay = 50;
 
-  readonly mocks = [
-    new Project('Direwolf'),
-    new Project('Wiredolf'),
-    new Project('Firewold'),
-    new Project("Krystan's App"),
+  private projectList = [
+    Project.from({ name: 'Direwolf', providers: [] }),
+    Project.from({ name: 'Wiredolf', providers: [] }),
+    Project.from({ name: 'Firewold', providers: [] }),
+    Project.from({
+      name: "Krystan's App",
+      providers: [{ name: 'What goes here?', apiMethods: [] }],
+    }),
   ];
 
   async getProjectList(): Promise<Project[]> {
     await wait(this.delay);
-    return this.mocks;
+    return this.projectList;
   }
 
   async getProject(id: string): Promise<Project> {
     await wait(this.delay);
 
-    let project = this.mocks.find((m) => m.id === id);
+    let project = this.projectList.find((m) => m.id === id);
     if (project) {
       return project;
     } else {

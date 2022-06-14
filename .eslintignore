@@ -5,6 +5,7 @@
 # compiled output
 /dist/
 /tmp/
+/app/types/fixme-proto-types.ts
 
 # dependencies
 /bower_components/
