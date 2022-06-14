@@ -11,7 +11,7 @@ export interface ProjectsComponentSig {
 export default class ProjectsComponent extends Component<ProjectsComponentSig> {
   <template>
     <h1>My Projects</h1>
-    <ul>
+    <ul data-test-projects-list>
       {{#each @projects as |project|}}
         <Project @project={{project}} />
       {{/each}}
