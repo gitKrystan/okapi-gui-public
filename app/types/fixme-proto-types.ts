@@ -32,28 +32,6 @@ export interface ConfigItem {
 }
 
 /**
- * @generated from protobuf message okapi.v1.provider.PluginConfig
- */
-export interface PluginConfig {
-  /**
-   * @generated from protobuf field: string access_key = 1;
-   */
-  accessKey: string;
-  /**
-   * @generated from protobuf field: string self_cluster_name = 2;
-   */
-  selfClusterName: string;
-  /**
-   * @generated from protobuf field: repeated okapi.v1.provider.ConfigItem items = 3;
-   */
-  items: ConfigItem[];
-  /**
-   * @generated from protobuf field: string log_token = 4;
-   */
-  logToken: string;
-}
-
-/**
  * @generated from protobuf message okapi.v1.ApiMethod
  */
 export interface ApiMethod {
@@ -66,15 +44,10 @@ export interface ApiMethod {
    */
   methodName: string;
   /**
-   * @generated from protobuf field: string method_type = 3;
-   */
-  methodType: string;
-  /**
-   * @generated from protobuf field: repeated string access_keys = 4;
+   * @generated from protobuf field: repeated string access_keys = 3;
    */
   accessKeys: string[];
 }
-
 /**
  * @generated from protobuf message okapi.v1.Provider
  */
@@ -104,7 +77,6 @@ export interface Provider {
    */
   logToken: string;
 }
-
 /**
  * @generated from protobuf message okapi.v1.OutboundExternal
  */
@@ -118,12 +90,10 @@ export interface OutboundExternal {
    */
   port: number;
 }
-
 /**
  * @generated from protobuf message okapi.v1.OutboundStub
  */
 export interface OutboundStub {}
-
 /**
  * @generated from protobuf message okapi.v1.App
  */
@@ -165,4 +135,13 @@ export interface App {
    * @generated from protobuf field: string access_key = 6;
    */
   accessKey: string;
+  /**
+   * This is a FileDescriptorSet, but since that is proto2 we don't
+   * specify it as a definition here.
+   *
+   * @generated from protobuf field: map<string, bytes> api_descriptors = 7;
+   */
+  apiDescriptors: {
+    [key: string]: Uint8Array;
+  };
 }

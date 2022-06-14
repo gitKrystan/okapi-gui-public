@@ -1,5 +1,5 @@
 import Project from 'okapi/models/project';
-import ServerService, { ServerNotFoundError } from 'okapi/services/server';
+import ServerService from 'okapi/services/server';
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,7 +14,7 @@ export default class DevelopmentServerService extends ServerService {
     Project.from({ name: 'Firewold', providers: [] }),
     Project.from({
       name: "Krystan's App",
-      providers: [{ name: 'What goes here?', apiMethods: [] }],
+      providers: [{ name: 'notifier-slack', apiMethods: [] }],
     }),
   ];
 
@@ -25,12 +25,7 @@ export default class DevelopmentServerService extends ServerService {
 
   async getProject(id: string): Promise<Project> {
     await wait(this.delay);
-
     let project = this.projectList.find((m) => m.id === id);
-    if (project) {
-      return project;
-    } else {
-      throw new ServerNotFoundError();
-    }
+    return this.ensureProject(project, id);
   }
 }

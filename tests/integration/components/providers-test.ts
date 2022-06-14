@@ -15,14 +15,14 @@ module('Integration | Component | providers', function (hooks) {
     this.project = Project.from({
       name: "Krystan's App",
       providers: [
-        { name: 'What goes here?', apiMethods: [] },
-        { name: '2 What goes here?', apiMethods: [] },
+        { name: 'notifier-slack', apiMethods: [] },
+        { name: 'notifier-email', apiMethods: [] },
       ],
     });
     await render(hbs`<Providers @project={{this.project}} />`);
 
     assert.dom().containsText('Providers');
-    assert.dom().containsText('What goes here?');
-    assert.dom().containsText('2 What goes here?');
+    assert.dom().containsText('notifier-slack');
+    assert.dom().containsText('notifier-email');
   });
 });
