@@ -5,7 +5,6 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const postcssSass = require('@csstools/postcss-sass');
 const autoprefixer = require('autoprefixer');
 const postcssClean = require('postcss-clean');
-const postcssNormalize = require('postcss-normalize');
 const postcssScss = require('postcss-scss');
 
 const parseFlag = require('./config/parse-flag');
@@ -13,7 +12,7 @@ const parseFlag = require('./config/parse-flag');
 const env = EmberApp.env();
 
 module.exports = function (defaults) {
-  let postcssFilters = [{ module: autoprefixer }, { module: postcssNormalize }];
+  let postcssFilters = [{ module: autoprefixer }];
 
   if (parseFlag('MINIFY_CSS', env === 'production')) {
     // No `enabled` option available
@@ -49,6 +48,14 @@ module.exports = function (defaults) {
       },
     },
   });
+
+  app.import('node_modules/sanitize.css/sanitize.css');
+  app.import('node_modules/sanitize.css/forms.css');
+  app.import('node_modules/sanitize.css/typography.css');
+  app.import('node_modules/sanitize.css/assets.css');
+  app.import('node_modules/sanitize.css/reduce-motion.css');
+  app.import('node_modules/sanitize.css/system-ui.css');
+  app.import('node_modules/sanitize.css/ui-monospace.css');
 
   // Use `app.import` to add additional libraries to the generated
   // output files.
