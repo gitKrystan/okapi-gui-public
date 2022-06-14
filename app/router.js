@@ -10,4 +10,6 @@ export default class Router extends EmberRouter {
 // file is converted to TS
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-Router.map(function () {});
+Router.map(function () {
+  this.route('project', { path: '/:project_id' });
+});
