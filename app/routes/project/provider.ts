@@ -5,23 +5,22 @@ import Provider from 'okapi/models/provider';
 import { ProjectRouteModel } from 'okapi/routes/project';
 import { NotFound } from 'okapi/services/server';
 
-export type ProjectProviderRouteModel = Provider;
+export type ProviderRouteModel = Provider;
 
-export type ProjectProviderRouteParams = {
-  project_id: string;
+export type ProviderRouteParams = {
   provider_id: string;
 };
 
 export default class ProjectProviderRoute extends Route<
-  ProjectProviderRouteModel,
-  ProjectProviderRouteParams
+  ProviderRouteModel,
+  ProviderRouteParams
 > {
   @service declare router: RouterService;
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async model({
     provider_id,
-  }: ProjectProviderRouteParams): Promise<ProjectProviderRouteModel> {
+  }: ProviderRouteParams): Promise<ProviderRouteModel> {
     let project = this.modelFor('project') as ProjectRouteModel;
     let provider = project.providers.find((p) => p.id === provider_id);
     if (provider) {

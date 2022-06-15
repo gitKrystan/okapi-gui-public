@@ -16,7 +16,9 @@ module('Acceptance | index', function (hooks) {
     projects = [
       Project.from({
         name: 'Direwolf',
-        providers: [{ name: 'notifier-slack', apis: [] }],
+        providers: [
+          { name: 'notifier-slack', apis: [{ name: 'Notifier', methods: [] }] },
+        ],
       }),
       Project.from({ name: 'Wiredolf', providers: [] }),
       Project.from({ name: 'Firewold', providers: [] }),
@@ -46,15 +48,16 @@ module('Acceptance | index', function (hooks) {
     assert.strictEqual(currentURL(), '/Direwolf');
     assert.strictEqual(getPageTitle(), 'Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
+    projects[0]?.providers.forEach((p) => {
+      assert.dom('[data-test-providers-list]').containsText(p.name);
+    });
 
     await click('[data-test-providers-list] a');
 
     assert.strictEqual(currentURL(), '/Direwolf/provider/notifier-slack');
     assert.strictEqual(getPageTitle(), 'notifier-slack | Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
-    assert
-      .dom('[data-test-provider-name]')
-      .hasText('Provider Name: notifier-slack');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
   });
 
   test('visiting /Direwolf/provider/notifier-slack', async function (assert) {
@@ -63,9 +66,40 @@ module('Acceptance | index', function (hooks) {
     assert.strictEqual(currentURL(), '/Direwolf/provider/notifier-slack');
     assert.strictEqual(getPageTitle(), 'notifier-slack | Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
-    assert
-      .dom('[data-test-provider-name]')
-      .hasText('Provider Name: notifier-slack');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
+    projects[0]?.providers[0]?.apis.forEach((a) => {
+      assert.dom('[data-test-apis-list]').containsText(a.name);
+    });
+
+    await click('[data-test-apis-list] a');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier'
+    );
+    assert.strictEqual(
+      getPageTitle(),
+      'Notifier | notifier-slack | Direwolf | Okapi'
+    );
+    assert.dom('[data-test-project-name]').hasText('Direwolf');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
+    assert.dom('[data-test-api-name]').hasText('API: Notifier');
+  });
+
+  test('visiting /Direwolf/provider/notifier-slack/api/Notifier', async function (assert) {
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier'
+    );
+    assert.strictEqual(
+      getPageTitle(),
+      'Notifier | notifier-slack | Direwolf | Okapi'
+    );
+    assert.dom('[data-test-project-name]').hasText('Direwolf');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
+    assert.dom('[data-test-api-name]').hasText('API: Notifier');
   });
 
   test('visiting /not-found', async function (assert) {
@@ -86,5 +120,20 @@ module('Acceptance | index', function (hooks) {
     assert
       .dom('[data-test-not-found-message]')
       .hasText('Could not find provider "not-found" for project "Direwolf."');
+  });
+
+  test('visiting /Direwolf/provider/notifier-slack/api/not-found', async function (assert) {
+    await visit('/Direwolf/provider/notifier-slack/api/not-found');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/not-found'
+    );
+    assert.strictEqual(getPageTitle(), 'Oops | Okapi');
+    assert
+      .dom('[data-test-not-found-message]')
+      .hasText(
+        'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
+      );
   });
 });
