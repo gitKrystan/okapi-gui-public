@@ -16,7 +16,7 @@ module('Acceptance | index', function (hooks) {
     projects = [
       Project.from({
         name: 'Direwolf',
-        providers: [{ name: 'notifier-slack', apiMethods: [] }],
+        providers: [{ name: 'notifier-slack', apis: [] }],
       }),
       Project.from({ name: 'Wiredolf', providers: [] }),
       Project.from({ name: 'Firewold', providers: [] }),

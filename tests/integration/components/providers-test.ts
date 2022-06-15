@@ -15,8 +15,8 @@ module('Integration | Component | providers', function (hooks) {
     this.project = Project.from({
       name: "Krystan's App",
       providers: [
-        { name: 'notifier-slack', apiMethods: [] },
-        { name: 'notifier-email', apiMethods: [] },
+        { name: 'notifier-slack', apis: [] },
+        { name: 'notifier-email', apis: [] },
       ],
     });
     await render(hbs`<Providers @project={{this.project}} />`);

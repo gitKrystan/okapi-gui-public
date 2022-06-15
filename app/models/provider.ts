@@ -1,15 +1,14 @@
-import { Provider as RawProviderParams } from 'okapi/types/fixme-proto-types';
-
-export type ProviderParams = Pick<RawProviderParams, 'name'> & {
-  apiMethods: unknown[];
+export type ProviderParams = {
+  name: string;
+  apis: unknown[];
 };
 
 export default class Provider {
-  static from({ name, apiMethods }: ProviderParams): Provider {
-    return new Provider(name, apiMethods);
+  static from({ name, apis }: ProviderParams): Provider {
+    return new Provider(name, apis);
   }
 
-  private constructor(readonly name: string, readonly apiMethods: unknown[]) {}
+  private constructor(readonly name: string, readonly apis: unknown[]) {}
 
   get id(): string {
     return this.name;
