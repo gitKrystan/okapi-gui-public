@@ -23,9 +23,8 @@ export default class DevelopmentServerService extends ServerService {
     return this.projectList;
   }
 
-  async getProject(id: string): Promise<Project> {
-    await wait(this.delay);
-    let project = this.projectList.find((m) => m.id === id);
-    return this.ensureProject(project, id);
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async findProject(id: string): Promise<Project | null> {
+    return this.projectList.find((m) => m.id === id) ?? null;
   }
 }

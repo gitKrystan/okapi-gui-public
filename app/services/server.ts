@@ -1,7 +1,7 @@
 import { AbstractService } from 'ember-swappable-service';
 import Project from 'okapi/models/project';
 
-export class ServerNotFoundError extends Error {
+export class ServerError extends Error {
   /**
    * @param message This message will be displayed on the error template!
    */
@@ -10,18 +10,19 @@ export class ServerNotFoundError extends Error {
   }
 }
 
+export class NotFound extends ServerError {}
+
 export default abstract class ServerService extends AbstractService {
   abstract getProjectList(): Promise<Project[]>;
-  abstract getProject(id: string): Promise<Project>;
+  abstract findProject(id: string): Promise<Project | null>;
 
-  protected ensureProject(
-    maybeProject: Project | undefined,
-    name: string
-  ): Project {
-    if (maybeProject) {
-      return maybeProject;
+  async getProject(id: string): Promise<Project> {
+    let project = await this.findProject(id);
+
+    if (project) {
+      return project;
     } else {
-      throw new ServerNotFoundError(`Could not find project "${name}."`);
+      throw new NotFound(`Could not find project "${id}."`);
     }
   }
 }
