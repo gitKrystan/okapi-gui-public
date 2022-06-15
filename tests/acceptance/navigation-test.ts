@@ -168,4 +168,15 @@ module('Acceptance | index', function (hooks) {
         'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
       );
   });
+
+  test('visiting /not-found/not-found', async function (assert) {
+    // Note: Just /not-found will hit the "I can't find this project error."
+    await visit('/not-found/not-found');
+
+    assert.strictEqual(currentURL(), '/not-found/not-found');
+    assert.strictEqual(getPageTitle(), 'Not found | Okapi');
+    assert
+      .dom('[data-test-not-found-message]')
+      .hasText("I can't find this page: not-found/not-found");
+  });
 });

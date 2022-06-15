@@ -20,4 +20,6 @@ Router.map(function () {
       this.route('api', { path: 'api/:api_id' });
     });
   });
+
+  this.route('not-found', { path: '/*path' });
 });
