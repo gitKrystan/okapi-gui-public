@@ -9,6 +9,11 @@ export default class TestingServerService extends ServerService {
     return this.projectList;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async findProject(id: string): Promise<Project | null> {
+    return this.projectList.find((m) => m.id === id) ?? null;
+  }
+
   mockProjects(projects: Project[]): void {
     this.projectList = projects;
   }

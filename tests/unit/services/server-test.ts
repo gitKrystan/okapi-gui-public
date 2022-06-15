@@ -14,9 +14,9 @@ module('Unit | Service | server', function (hooks) {
 
   test('.getProjectList returns an array of projects', async function (assert) {
     let mocks = [
-      new Project('Direwolf'),
-      new Project('Wiredolf'),
-      new Project('Firewold'),
+      Project.from({ name: 'Direwolf', providers: [] }),
+      Project.from({ name: 'Wiredolf', providers: [] }),
+      Project.from({ name: 'Firewold', providers: [] }),
     ];
 
     service.mockProjects(mocks);

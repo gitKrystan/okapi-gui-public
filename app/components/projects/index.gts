@@ -8,7 +8,7 @@ export interface ProjectsComponentSig {
   }
 }
 
-export default class ProjectsComponent extends Component<ProjectsComponentSig> {
+export default class Projects extends Component<ProjectsComponentSig> {
   <template>
     <h1>My Projects</h1>
     <ul data-test-projects-list>
@@ -21,6 +21,6 @@ export default class ProjectsComponent extends Component<ProjectsComponentSig> {
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    Projects: typeof ProjectsComponent;
+    Projects: typeof Projects;
   }
 }
