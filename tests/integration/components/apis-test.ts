@@ -1,6 +1,5 @@
 import { render, TestContext } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import Project from 'okapi/models/project';
 import Provider from 'okapi/models/provider';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';
