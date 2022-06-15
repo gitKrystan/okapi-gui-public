@@ -12,7 +12,11 @@ export default class Router extends EmberRouter {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 Router.map(function () {
   this.route('project', { path: '/:project_id' }, function () {
+    this.route('providers');
+    this.route('providers', { path: 'provider' });
     this.route('provider', { path: 'provider/:provider_id' }, function () {
+      this.route('apis');
+      this.route('apis', { path: 'api' });
       this.route('api', { path: 'api/:api_id' });
     });
   });
