@@ -14,7 +14,9 @@ export default class DevelopmentServerService extends ServerService {
     Project.from({ name: 'Firewold', providers: [] }),
     Project.from({
       name: "Krystan's App",
-      providers: [{ name: 'notifier-slack', apis: [] }],
+      providers: [
+        { name: 'notifier-slack', apis: [{ name: 'Notifier', methods: [] }] },
+      ],
     }),
   ];
 
