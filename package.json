@@ -112,7 +112,7 @@
     "stylelint-actions-formatters": "^14.8.5",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard-scss": "^4.0.0",
-    "typescript": "^4.7.3",
+    "typescript": "^4.7.4",
     "webpack": "^5.73.0"
   },
   "engines": {
