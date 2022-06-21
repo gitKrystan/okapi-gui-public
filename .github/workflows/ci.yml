@@ -55,15 +55,11 @@ jobs:
       - name: Set up percy problem matcher
         run: echo "::add-matcher::${GITHUB_WORKSPACE}/.github/percy.json"
       - name: Run Tests
-        run: yarn percy exec --parallel -- yarn test:only
+        run: yarn percy exec -- yarn test:only
         env:
           EMBER_ENV: test
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           PERCY_ENABLE: '1'
-          # By default this is just the run_id, adding the run_attempt prevents an error when jobs are re-run.
-          PERCY_PARALLEL_NONCE: ${{github.run_id}}-${{github.run_attempt}}
-          # The number of parallel nodes being run so Percy can group the test builds
-          PERCY_PARALLEL_TOTAL: '2'
           COVERAGE: 'true'
       - uses: actions/upload-artifact@v3
         with:
