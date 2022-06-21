@@ -17,7 +17,11 @@ Router.map(function () {
     this.route('provider', { path: 'provider/:provider_id' }, function () {
       this.route('apis');
       this.route('apis', { path: 'api' });
-      this.route('api', { path: 'api/:api_id' });
+      this.route('api', { path: 'api/:api_id' }, function () {
+        this.route('methods');
+        this.route('methods', { path: 'method' });
+        this.route('method', { path: 'method/:method_id' });
+      });
     });
   });
 

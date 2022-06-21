@@ -18,7 +18,45 @@ module('Acceptance | index', function (hooks) {
       Project.from({
         name: 'Direwolf',
         providers: [
-          { name: 'notifier-slack', apis: [{ name: 'Notifier', methods: [] }] },
+          {
+            name: 'notifier-slack',
+            apis: [
+              {
+                name: 'Notifier',
+                methods: [
+                  {
+                    name: 'Notify',
+                    request: [
+                      {
+                        name: 'target',
+                        description: 'the target to notify',
+                        type: 'string',
+                      },
+                      {
+                        name: 'message',
+                        description: 'the body of the notification',
+                        type: 'string',
+                      },
+                    ],
+                    response: [
+                      {
+                        name: 'success',
+                        description:
+                          'whether the notification was successfully sent',
+                        type: 'boolean',
+                      },
+                      {
+                        name: 'details',
+                        description:
+                          'failure message or success info. may be blank',
+                        type: 'string',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         ],
       }),
       Project.from({ name: 'Wiredolf', providers: [] }),
@@ -111,7 +149,7 @@ module('Acceptance | index', function (hooks) {
     '/Direwolf/provider/notifier-slack/apis',
   ].forEach((r) => {
     test(`visiting ${r} redirects to /Direwolf/provider/notifier-slack`, async function (assert) {
-      await visit('/Direwolf/provider/notifier-slack');
+      await visit(r);
 
       assert.strictEqual(currentURL(), '/Direwolf/provider/notifier-slack');
       assert.strictEqual(getPageTitle(), 'notifier-slack | Direwolf | Okapi');
@@ -139,6 +177,69 @@ module('Acceptance | index', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
+    projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
+      assert.dom('[data-test-methods-list]').containsText(m.name);
+    });
+
+    await percySnapshot(assert);
+
+    await click('[data-test-methods-list] a');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier/method/Notify'
+    );
+    assert.strictEqual(
+      getPageTitle(),
+      'Notify | Notifier | notifier-slack | Direwolf | Okapi'
+    );
+    assert.dom('[data-test-project-name]').hasText('Direwolf');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
+    assert.dom('[data-test-api-name]').hasText('API: Notifier');
+    assert.dom('[data-test-method-name]').hasText('Method: Notify');
+  });
+
+  [
+    '/Direwolf/provider/notifier-slack/api/Notifier/method',
+    '/Direwolf/provider/notifier-slack/api/Notifier/methods',
+  ].forEach((r) => {
+    test(`visiting ${r} redirects to /Direwolf/provider/notifier-slack/api/Notifier`, async function (assert) {
+      await visit(r);
+
+      assert.strictEqual(
+        currentURL(),
+        '/Direwolf/provider/notifier-slack/api/Notifier'
+      );
+      assert.strictEqual(
+        getPageTitle(),
+        'Notifier | notifier-slack | Direwolf | Okapi'
+      );
+      assert.dom('[data-test-project-name]').hasText('Direwolf');
+      assert
+        .dom('[data-test-provider-name]')
+        .hasText('Provider: notifier-slack');
+      assert.dom('[data-test-api-name]').hasText('API: Notifier');
+      projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
+        assert.dom('[data-test-methods-list]').containsText(m.name);
+      });
+    });
+  });
+
+  test('visiting /Direwolf/provider/notifier-slack/api/Notifier/method/Notify', async function (assert) {
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier/method/Notify');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier/method/Notify'
+    );
+    assert.strictEqual(
+      getPageTitle(),
+      'Notify | Notifier | notifier-slack | Direwolf | Okapi'
+    );
+    assert.dom('[data-test-project-name]').hasText('Direwolf');
+    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
+    assert.dom('[data-test-api-name]').hasText('API: Notifier');
+    assert.dom('[data-test-method-name]').hasText('Method: Notify');
 
     await percySnapshot(assert);
   });
@@ -179,6 +280,25 @@ module('Acceptance | index', function (hooks) {
       .dom('[data-test-not-found-message]')
       .hasText(
         'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
+      );
+
+    await percySnapshot(assert);
+  });
+
+  test('visiting /Direwolf/provider/notifier-slack/api/Notifier/method/not-found', async function (assert) {
+    await visit(
+      '/Direwolf/provider/notifier-slack/api/Notifier/method/not-found'
+    );
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier/method/not-found'
+    );
+    assert.strictEqual(getPageTitle(), 'Oops | Okapi');
+    assert
+      .dom('[data-test-not-found-message]')
+      .hasText(
+        'Could not find method `Notifier#not-found` for provider "notifier-slack" and project "Direwolf."'
       );
 
     await percySnapshot(assert);
