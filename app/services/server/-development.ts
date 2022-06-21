@@ -15,7 +15,45 @@ export default class DevelopmentServerService extends ServerService {
     Project.from({
       name: "Krystan's App",
       providers: [
-        { name: 'notifier-slack', apis: [{ name: 'Notifier', methods: [] }] },
+        {
+          name: 'notifier-slack',
+          apis: [
+            {
+              name: 'Notifier',
+              methods: [
+                {
+                  name: 'Notify',
+                  request: [
+                    {
+                      name: 'target',
+                      description: 'the target to notify',
+                      type: 'string',
+                    },
+                    {
+                      name: 'message',
+                      description: 'the body of the notification',
+                      type: 'string',
+                    },
+                  ],
+                  response: [
+                    {
+                      name: 'success',
+                      description:
+                        'whether the notification was successfully sent',
+                      type: 'boolean',
+                    },
+                    {
+                      name: 'details',
+                      description:
+                        'failure message or success info. may be blank',
+                      type: 'string',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       ],
     }),
   ];
