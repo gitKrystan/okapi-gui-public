@@ -24,7 +24,10 @@
     "lint:style:fix": "stylelint '**/*.scss' --fix",
     "lint:ts": "glint",
     "start": "ember serve",
-    "test": "npm-run-all lint test:*",
+    "test:only": "ember exam --random ''",
+    "test:server": "ember exam -s --random",
+    "test:parallel": "ember exam --split=`getconf _NPROCESSORS_ONLN` --parallel=1 --random",
+    "test:parallel:dot": "ember exam --split=`getconf _NPROCESSORS_ONLN` --parallel=1 --reporter=dot --random",
     "test:ember": "ember test",
     "g": "EMBER_TYPESCRIPT_BLUEPRINTS=true ember g"
   },
@@ -41,6 +44,8 @@
     "@glint/core": "^0.8.3",
     "@glint/environment-ember-loose": "^0.8.3",
     "@glint/environment-ember-template-imports": "^0.8.2",
+    "@percy/cli": "^1.3.1",
+    "@percy/ember": "^3.0.0",
     "@types/ember-qunit": "^5.0.0",
     "@types/ember-resolver": "^5.0.11",
     "@types/ember__application": "^4.0.0",
@@ -74,6 +79,7 @@
     "ember-cli": "~4.4.0",
     "ember-cli-app-version": "^5.0.0",
     "ember-cli-babel": "^7.26.11",
+    "ember-cli-code-coverage": "^1.0.3",
     "ember-cli-dependency-checker": "^3.3.1",
     "ember-cli-htmlbars": "^6.0.1",
     "ember-cli-inject-live-reload": "^2.1.0",
@@ -81,6 +87,7 @@
     "ember-cli-sri": "^2.1.1",
     "ember-cli-terser": "^4.0.2",
     "ember-cli-typescript": "^5.1.0",
+    "ember-exam": "^8.0.0",
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^8.1.1",
     "ember-load-initializers": "^2.1.2",
@@ -122,5 +129,13 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "percy": {
+    "version": 2,
+    "snapshot": {
+      "widths": [
+        1280
+      ]
+    }
   }
 }
