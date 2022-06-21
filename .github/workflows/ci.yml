@@ -18,12 +18,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
+      - uses: volta-cli/action@v1
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v3
         with:
-          node-version: 14.x
-          cache: yarn
-      - name: Install Dependencies
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - uses: xt0rted/stylelint-problem-matcher@v1
+      - name: Yarn install
         run: yarn install --frozen-lockfile
       - name: Lint
         run: yarn lint
@@ -34,23 +39,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install Node
-        uses: actions/setup-node@v3
+      - uses: volta-cli/action@v1
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v3
         with:
-          node-version: 14.x
-          cache: yarn
-      - name: Install Dependencies
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-
+      - name: Yarn install
         run: yarn install --frozen-lockfile
+      # ::add-matcher is documented here:
+      # https://github.com/actions/toolkit/blob/master/docs/commands.md#problem-matchers
       - name: Set up percy problem matcher
         run: echo "::add-matcher::${GITHUB_WORKSPACE}/.github/percy.json"
       - name: Run Tests
-        run: yarn percy exec --parallel -- yarn test:only
+        run: yarn percy exec -- yarn test:only
         env:
           EMBER_ENV: test
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           PERCY_ENABLE: '1'
-          # By default this is just the run_id, adding the run_attempt prevents an error when jobs are re-run.
-          PERCY_PARALLEL_NONCE: ${{github.run_id}}-${{github.run_attempt}}
-          # The number of parallel nodes being run so Percy can group the test builds
-          PERCY_PARALLEL_TOTAL: '2'
           COVERAGE: 'true'
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ember-coverage
+          path: events-client/coverage/lcov.info
