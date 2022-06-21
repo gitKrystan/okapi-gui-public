@@ -1,5 +1,23 @@
 {
+  "reportDescriptionlessDisables": true,
+  "reportInvalidScopeDisables": true,
+  "reportNeedlessDisables": true,
   "customSyntax": "postcss-scss",
-  "extends": ["stylelint-config-standard-scss", "stylelint-config-prettier"],
-  "rules": {}
+  "plugins": ["stylelint-order"],
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier",
+    "stylelint-config-property-sort-order-smacss"
+  ],
+  "rules": {
+    "color-function-notation": ["modern", { "fix": true }],
+    "color-named": "always-where-possible",
+    "max-nesting-depth": [
+      2,
+      { "ignore": ["blockless-at-rules", "pseudo-classes"] }
+    ],
+    "scss/operator-no-newline-after": null,
+    "selector-class-pattern": null,
+    "value-keyword-case": ["lower", { "ignoreKeywords": ["crispEdges"] }]
+  }
 }

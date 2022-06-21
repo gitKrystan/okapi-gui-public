@@ -111,7 +111,9 @@
     "stylelint": "^14.9.1",
     "stylelint-actions-formatters": "^14.8.5",
     "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-property-sort-order-smacss": "^9.0.0",
     "stylelint-config-standard-scss": "^4.0.0",
+    "stylelint-order": "^5.0.0",
     "typescript": "^4.7.4",
     "webpack": "^5.73.0"
   },
