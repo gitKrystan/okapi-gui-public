@@ -61,7 +61,7 @@ jobs:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           PERCY_ENABLE: '1'
           COVERAGE: 'true'
-      - uses: actions/upload-artifact@v3
+      - uses: romeovs/lcov-reporter-action@v0.2.16
         with:
-          name: ember-coverage
-          path: events-client/coverage/lcov.info
+          lcov-file: coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
