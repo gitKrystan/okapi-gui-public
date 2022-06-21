@@ -1,0 +1,14 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "percy",
+      "pattern": [
+        {
+          "regexp": "^.+percy.+(Error|Warning|Info):\\s+(.*)\\s*$",
+          "severity": 1,
+          "message": 2
+        }
+      ]
+    }
+  ]
+}

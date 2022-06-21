@@ -4,6 +4,7 @@ import { setupApplicationTest } from 'okapi/tests/helpers';
 import TestingServerService from 'okapi/services/server/-testing';
 import Project from 'okapi/models/project';
 import { getPageTitle } from 'ember-page-title/test-support';
+import percySnapshot from '@percy/ember';
 
 let server: TestingServerService;
 let projects: Project[];
@@ -35,6 +36,8 @@ module('Acceptance | index', function (hooks) {
       assert.dom('[data-test-projects-list]').containsText(p.name);
     });
 
+    await percySnapshot(assert);
+
     await click('[data-test-projects-list] a');
 
     assert.strictEqual(currentURL(), '/Direwolf');
@@ -51,6 +54,8 @@ module('Acceptance | index', function (hooks) {
     projects[0]?.providers.forEach((p) => {
       assert.dom('[data-test-providers-list]').containsText(p.name);
     });
+
+    await percySnapshot(assert);
 
     await click('[data-test-providers-list] a');
 
@@ -83,6 +88,8 @@ module('Acceptance | index', function (hooks) {
     projects[0]?.providers[0]?.apis.forEach((a) => {
       assert.dom('[data-test-apis-list]').containsText(a.name);
     });
+
+    await percySnapshot(assert);
 
     await click('[data-test-apis-list] a');
 
@@ -132,6 +139,8 @@ module('Acceptance | index', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
+
+    await percySnapshot(assert);
   });
 
   test('visiting /not-found', async function (assert) {
@@ -142,6 +151,8 @@ module('Acceptance | index', function (hooks) {
     assert
       .dom('[data-test-not-found-message]')
       .hasText('Could not find project "not-found."');
+
+    await percySnapshot(assert);
   });
 
   test('visiting /Direwolf/provider/not-found', async function (assert) {
@@ -152,6 +163,8 @@ module('Acceptance | index', function (hooks) {
     assert
       .dom('[data-test-not-found-message]')
       .hasText('Could not find provider "not-found" for project "Direwolf."');
+
+    await percySnapshot(assert);
   });
 
   test('visiting /Direwolf/provider/notifier-slack/api/not-found', async function (assert) {
@@ -167,6 +180,8 @@ module('Acceptance | index', function (hooks) {
       .hasText(
         'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
       );
+
+    await percySnapshot(assert);
   });
 
   test('visiting /not-found/not-found', async function (assert) {
@@ -178,5 +193,7 @@ module('Acceptance | index', function (hooks) {
     assert
       .dom('[data-test-not-found-message]')
       .hasText("I can't find this page: not-found/not-found");
+
+    await percySnapshot(assert);
   });
 });

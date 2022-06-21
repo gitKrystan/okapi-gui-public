@@ -17,6 +17,12 @@ module.exports = {
         '--mute-audio',
         '--remote-debugging-port=0',
         '--window-size=1440,900',
+
+        // We do this to make sure there is no scrollbar in `#ember-testing-container` which
+        // could throw our Percy snapshots off. However, this has the downside of hiding
+        // unintentional scrollbars. Since many of us develop on Macs where scrollbars aren't
+        // visible, the risk is somewhat increased.
+        '--hide-scrollbars',
       ].filter(Boolean),
     },
   },
