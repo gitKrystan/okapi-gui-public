@@ -1,0 +1,8 @@
+$max-width: 1024px;
+
+%container {
+  max-width: $max-width;
+  margin: auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}

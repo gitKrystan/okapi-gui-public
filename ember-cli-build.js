@@ -51,7 +51,6 @@ module.exports = function (defaults) {
 
   app.import('node_modules/sanitize.css/sanitize.css');
   app.import('node_modules/sanitize.css/forms.css');
-  app.import('node_modules/sanitize.css/typography.css');
   app.import('node_modules/sanitize.css/assets.css');
   app.import('node_modules/sanitize.css/reduce-motion.css');
   app.import('node_modules/sanitize.css/system-ui.css');

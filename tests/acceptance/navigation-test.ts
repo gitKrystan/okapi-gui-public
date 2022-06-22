@@ -1,15 +1,15 @@
-import { module, test } from 'qunit';
-import { visit, currentURL, click } from '@ember/test-helpers';
-import { setupApplicationTest } from 'okapi/tests/helpers';
-import TestingServerService from 'okapi/services/server/-testing';
-import Project from 'okapi/models/project';
+import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
-import percySnapshot from '@percy/ember';
+import Project from 'okapi/models/project';
+import TestingServerService from 'okapi/services/server/-testing';
+import { setupApplicationTest } from 'okapi/tests/helpers';
+import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
+import { module, test } from 'qunit';
 
 let server: TestingServerService;
 let projects: Project[];
 
-module('Acceptance | index', function (hooks) {
+module('Acceptance | navigation', function (hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function () {
@@ -74,7 +74,7 @@ module('Acceptance | index', function (hooks) {
       assert.dom('[data-test-projects-list]').containsText(p.name);
     });
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
 
     await click('[data-test-projects-list] a');
 
@@ -93,7 +93,7 @@ module('Acceptance | index', function (hooks) {
       assert.dom('[data-test-providers-list]').containsText(p.name);
     });
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
 
     await click('[data-test-providers-list] a');
 
@@ -127,7 +127,7 @@ module('Acceptance | index', function (hooks) {
       assert.dom('[data-test-apis-list]').containsText(a.name);
     });
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
 
     await click('[data-test-apis-list] a');
 
@@ -181,7 +181,7 @@ module('Acceptance | index', function (hooks) {
       assert.dom('[data-test-methods-list]').containsText(m.name);
     });
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
 
     await click('[data-test-methods-list] a');
 
@@ -241,7 +241,7 @@ module('Acceptance | index', function (hooks) {
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
     assert.dom('[data-test-method-name]').hasText('Method: Notify');
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 
   test('visiting /not-found', async function (assert) {
@@ -253,7 +253,7 @@ module('Acceptance | index', function (hooks) {
       .dom('[data-test-not-found-message]')
       .hasText('Could not find project "not-found."');
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 
   test('visiting /Direwolf/provider/not-found', async function (assert) {
@@ -265,7 +265,7 @@ module('Acceptance | index', function (hooks) {
       .dom('[data-test-not-found-message]')
       .hasText('Could not find provider "not-found" for project "Direwolf."');
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 
   test('visiting /Direwolf/provider/notifier-slack/api/not-found', async function (assert) {
@@ -282,7 +282,7 @@ module('Acceptance | index', function (hooks) {
         'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
       );
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 
   test('visiting /Direwolf/provider/notifier-slack/api/Notifier/method/not-found', async function (assert) {
@@ -301,7 +301,7 @@ module('Acceptance | index', function (hooks) {
         'Could not find method `Notifier#not-found` for provider "notifier-slack" and project "Direwolf."'
       );
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 
   test('visiting /not-found/not-found', async function (assert) {
@@ -314,6 +314,6 @@ module('Acceptance | index', function (hooks) {
       .dom('[data-test-not-found-message]')
       .hasText("I can't find this page: not-found/not-found");
 
-    await percySnapshot(assert);
+    await snapshotDarkMode(assert);
   });
 });

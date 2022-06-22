@@ -1,1 +1,27 @@
-@import 'base/reset';
+// NOTE: vendor.css is included in the html before app.scss, so those styles
+// will be applied first, including sanitize.css.
+
+// abstracts/
+// These do not generate any CSS and thus should not need to be `@use`d here.
+// e.g. variables, mixins, functions, and placeholders.
+
+// base/
+// Styles that are applied across the app.
+// e.g. resets and other global element styles, utility classes
+@use 'base/reset';
+@use 'base/base';
+@use 'base/layout';
+
+// modules/
+// Styles specific to reusable parts of the design.
+// IMPORTANT: list in alphabetical order
+
+// components/
+// Styles specific to components
+// IMPORTANT: list in alphabetical order
+@use 'components/nav-bar';
+@use 'components/switch';
+
+// routes/
+// Styles specific to a route (not to be reused elsewhere)
+// IMPORTANT: list in alphabetical order

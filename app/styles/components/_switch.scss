@@ -1,0 +1,54 @@
+@use 'sass:math';
+
+$-icon-width: 2.5rem;
+$-icon-height: 1.25rem;
+$-icon-toggle-offset: 0.125rem;
+
+.Switch {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.25rem;
+  align-items: center;
+  border: none;
+  user-select: none;
+}
+
+.Switch__icon {
+  position: relative;
+  width: $-icon-width;
+  height: $-icon-height;
+  border: 1px solid var(--contrast5);
+  border-radius: math.div($-icon-height, 2);
+
+  .Switch:hover & {
+    border-color: var(--contrast6);
+  }
+}
+
+.Switch__icon__toggle {
+  display: inline-block;
+  position: absolute;
+  top: $-icon-toggle-offset;
+  right: $-icon-width - $-icon-height + $-icon-toggle-offset;
+  bottom: $-icon-toggle-offset;
+  left: $-icon-toggle-offset;
+  transition: all 50ms ease-out;
+  border-radius: math.div($-icon-height - 2 * $-icon-toggle-offset, 2);
+  background: var(--contrast5);
+
+  .Switch:hover & {
+    background: var(--contrast4);
+  }
+}
+
+.Switch__icon__toggle--checked {
+  right: $-icon-toggle-offset;
+  left: $-icon-width - $-icon-height + $-icon-toggle-offset;
+  background: var(--green);
+}
+
+.Switch__option {
+  // NOTE: This fits "off". If you override the on/off text you will need to
+  // customize this.
+  min-width: 1.5rem;
+}

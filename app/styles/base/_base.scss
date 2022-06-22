@@ -1,0 +1,79 @@
+@use '../abstracts/brand';
+@use '../abstracts/type';
+
+.ember-application {
+  @extend %brand;
+  @extend %light-mode;
+
+  background-color: var(--background-color);
+  color: var(--contrast4);
+  font-family: type.$font-fam-body;
+
+  &.Application--theme-dark {
+    @extend %dark-mode;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  :where(&) {
+    color: var(--contrast5);
+  }
+}
+
+a {
+  :where(&) {
+    border-color: var(--contrast5);
+    color: var(--contrast5);
+  }
+
+  &:active,
+  &:visited {
+    :where(&) {
+      border-color: var(--contrast5);
+      color: var(--contrast5);
+    }
+  }
+
+  &:focus,
+  &:hover {
+    :where(&) {
+      border-color: var(--contrast6);
+      color: var(--contrast6);
+    }
+  }
+}
+
+button,
+input,
+select,
+textarea {
+  :where(&) {
+    border-color: var(--contrast5);
+    color: var(--contrast5);
+  }
+
+  &:focus,
+  &:hover {
+    :where(&) {
+      border-color: var(--contrast6);
+      color: var(--contrast6);
+    }
+  }
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: type.$font-fam-mono;
+}
+
+::selection {
+  background-color: var(--cyan);
+  color: var(--background-color);
+}
