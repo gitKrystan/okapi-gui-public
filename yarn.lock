@@ -1500,10 +1500,12 @@
     "@glint/config" "^0.8.3"
     "@glint/template" "^0.8.3"
 
-"@glint/environment-ember-template-imports@^0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-0.8.2.tgz#14bf4b788422a23999461a0ff04e8533e668d820"
-  integrity sha512-SFyy/St7X9Lz9pDzObAsaSNs+NGvwoM4lmFx352L73gamb7nnDVE22PeOQiQA8AjCYtnvxKO6H0EhGI+HqQ/Ew==
+"@glint/environment-ember-template-imports@^0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-0.8.3.tgz#a1da65f000974a3dab75ea4364200954022e01ec"
+  integrity sha512-GZdFJXegV1y4gq0myG0MpKma6x5P0xyQnjKPpkkV8Bib9UsS7/vuALKmqLScxO6+fw9HMWaFn4pqY9aSeCtpNA==
+  dependencies:
+    "@glint/template" "^0.8.3"
 
 "@glint/template@^0.8.3":
   version "0.8.3"
