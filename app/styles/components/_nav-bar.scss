@@ -1,0 +1,17 @@
+.NavBar__content {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--contrast2);
+}
+
+.NavBar__logo {
+  color: var(--magenta);
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+}

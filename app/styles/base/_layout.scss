@@ -1,0 +1,15 @@
+@use '../abstracts/layout';
+
+main {
+  @extend %container;
+
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+
+.NavBar__content {
+  @extend %container;
+
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}

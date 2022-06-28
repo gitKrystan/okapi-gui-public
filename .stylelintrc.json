@@ -12,6 +12,7 @@
   "rules": {
     "color-function-notation": ["modern", { "fix": true }],
     "color-named": "always-where-possible",
+    "custom-property-empty-line-before": null,
     "max-nesting-depth": [
       2,
       { "ignore": ["blockless-at-rules", "pseudo-classes"] }

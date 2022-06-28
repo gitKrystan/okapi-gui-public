@@ -79,7 +79,7 @@ time,
 mark,
 audio,
 video {
-  :where(&[class]) {
+  :where(&) {
     margin: 0;
     padding: 0;
     border: 0;
@@ -89,12 +89,20 @@ video {
 
 ol,
 ul {
-  :where(&[class]) {
+  :where(&) {
     list-style: none;
   }
 }
 
-:where(table[class]) {
+:where(table) {
   border-spacing: 0;
   border-collapse: collapse;
+}
+
+:focus-visible {
+  outline-color: var(--cyan);
+}
+
+button:not(:disabled) {
+  cursor: pointer;
 }
