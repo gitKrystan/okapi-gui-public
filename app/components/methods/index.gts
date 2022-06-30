@@ -10,7 +10,7 @@ export interface MethodsSig {
 
 export default class Methods extends Component<MethodsSig> {
   <template>
-    <h4>Methods</h4>
+    <h1>Methods</h1>
     <ul data-test-methods-list>
       {{#each @api.methods as |method|}}
         <Method @method={{method}} />

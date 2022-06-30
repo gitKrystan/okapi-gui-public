@@ -34,7 +34,7 @@ export default class Method extends Component<MethodSig> {
           />
         </Button>
         <a {{ScrollAnchor @method.id}}>
-          <h4 class="Method__heading__name">Method: {{@method.name}}</h4>
+          <h2 class="Method__heading__name">Method: {{@method.name}}</h2>
         </a>
       </heading>
       <p data-test-method-info={{@method.id}} hidden={{this.isCollapsed}}>

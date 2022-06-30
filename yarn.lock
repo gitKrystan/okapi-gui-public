@@ -965,6 +965,17 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
+"@bagaar/ember-breadcrumbs@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bagaar/ember-breadcrumbs/-/ember-breadcrumbs-3.0.0.tgz#21942db709cf77e0abc1504617be9cc5f05f3671"
+  integrity sha512-pTVMdochkmTEQzMpOFaYnIhoGhuEVX7M4zJ3xw/Km8llU3itwXWmxSQUPokGZInmurY/bk/MWBXSIPH5fhtSUg==
+  dependencies:
+    "@glimmer/component" "^1.1.2"
+    "@glimmer/tracking" "^1.1.2"
+    ember-cli-babel "^7.26.11"
+    ember-cli-htmlbars "^6.0.1"
+    ember-modifier "^3.2.7"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"

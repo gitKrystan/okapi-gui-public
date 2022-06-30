@@ -11,7 +11,7 @@ export interface ProjectComponentSig {
 export default class Project extends Component<ProjectComponentSig> {
   <template>
     <li>
-      <LinkTo @route="project" @model={{@project.name}}>
+      <LinkTo @route="project" @model={{@project.id}}>
         {{@project.name}}
       </LinkTo>
     </li>

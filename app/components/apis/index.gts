@@ -10,7 +10,7 @@ export interface ApisSig {
 
 export default class Apis extends Component<ApisSig> {
   <template>
-    <h3>APIs</h3>
+    <h1>APIs</h1>
     <ul data-test-apis-list>
       {{#each @provider.apis as |api|}}
         <Api @api={{api}} />

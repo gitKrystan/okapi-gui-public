@@ -1,0 +1,30 @@
+@use './layout';
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'sass:string';
+
+$media-queries: (
+  'mobile': string.unquote('only screen and (max-width: 667px)'),
+  'tablet': string.unquote('only screen and (min-width: 668px)'),
+  'desktop':
+    string.unquote('only screen and (min-width: #{layout.$max-width + 1px})'),
+);
+
+@mixin for-breakpoint($breakpoints) {
+  $conditions: ();
+  @each $breakpoint in $breakpoints {
+    // If the key exists in the map
+    $conditions: list.append(
+      $conditions,
+      #{meta.inspect(map.get($media-queries, $breakpoint))},
+      comma
+    );
+  }
+
+  @media #{$conditions} {
+    @content;
+  }
+}
