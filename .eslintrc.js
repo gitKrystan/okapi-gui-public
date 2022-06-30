@@ -19,7 +19,17 @@ module.exports = {
   env: {
     browser: true,
   },
-  rules: {},
+  rules: {
+    // Restrict global properties that have been wrapped by services
+    'no-restricted-properties': [
+      2,
+      {
+        object: 'window',
+        property: 'location',
+        message: 'Please use the Location service',
+      },
+    ],
+  },
   overrides: [
     // node files
     {
