@@ -6,12 +6,12 @@
 }
 
 .NavBar__logo {
+  border-bottom-color: transparent;
   color: var(--magenta);
   font-weight: bold;
-  text-decoration: none;
 
   &:hover,
   &:focus {
-    text-decoration: underline;
+    border-bottom-color: var(--magenta);
   }
 }

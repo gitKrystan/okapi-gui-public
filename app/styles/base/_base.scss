@@ -27,14 +27,17 @@ h6 {
 
 a {
   :where(&) {
-    border-color: var(--contrast5);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: var(--contrast3);
     color: var(--contrast5);
+    text-decoration: none;
   }
 
   &:active,
   &:visited {
     :where(&) {
-      border-color: var(--contrast5);
+      border-color: var(--contrast3);
       color: var(--contrast5);
     }
   }
