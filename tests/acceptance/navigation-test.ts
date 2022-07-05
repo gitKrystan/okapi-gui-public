@@ -275,7 +275,7 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(currentURL(), '/not-found');
     assert.strictEqual(getPageTitle(), 'Oops | Okapi');
     assert
-      .dom('[data-test-not-found-message]')
+      .dom('[data-test-route-error-message]')
       .hasText('Could not find project "not-found."');
 
     await snapshotDarkMode(assert);
@@ -285,10 +285,10 @@ module('Acceptance | navigation', function (hooks) {
     await visit('/Direwolf/provider/not-found');
 
     assert.strictEqual(currentURL(), '/Direwolf/provider/not-found');
-    assert.strictEqual(getPageTitle(), 'Oops | Okapi');
+    assert.strictEqual(getPageTitle(), 'Oops | Direwolf | Okapi');
     assert
-      .dom('[data-test-not-found-message]')
-      .hasText('Could not find provider "not-found" for project "Direwolf."');
+      .dom('[data-test-route-error-message]')
+      .hasText('Could not find provider "not-found."');
 
     await snapshotDarkMode(assert);
   });
@@ -300,12 +300,13 @@ module('Acceptance | navigation', function (hooks) {
       currentURL(),
       '/Direwolf/provider/notifier-slack/api/not-found'
     );
-    assert.strictEqual(getPageTitle(), 'Oops | Okapi');
+    assert.strictEqual(
+      getPageTitle(),
+      'Oops | notifier-slack | Direwolf | Okapi'
+    );
     assert
-      .dom('[data-test-not-found-message]')
-      .hasText(
-        'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
-      );
+      .dom('[data-test-route-error-message]')
+      .hasText('Could not find api "not-found."');
 
     await snapshotDarkMode(assert);
   });
@@ -317,7 +318,7 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(currentURL(), '/not-found/not-found');
     assert.strictEqual(getPageTitle(), 'Not found | Okapi');
     assert
-      .dom('[data-test-not-found-message]')
+      .dom('[data-test-route-error-message]')
       .hasText("I can't find this page: not-found/not-found");
 
     await snapshotDarkMode(assert);

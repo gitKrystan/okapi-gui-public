@@ -2,7 +2,6 @@ import Route from '@ember/routing/route';
 import RouterService from '@ember/routing/router-service';
 import { service } from '@ember/service';
 import Api from 'okapi/models/api';
-import { ProjectRouteModel } from 'okapi/routes/project';
 import { ProviderRouteModel } from 'okapi/routes/project/provider';
 import { NotFound } from 'okapi/services/server';
 
@@ -25,10 +24,7 @@ export default class ProjectProviderApiRoute extends Route<
     if (api) {
       return api;
     } else {
-      let project = this.modelFor('project') as ProjectRouteModel;
-      throw new NotFound(
-        `Could not find provider "${provider.name}" api "${api_id}" for project "${project.name}."`
-      );
+      throw new NotFound(`Could not find api "${api_id}."`);
     }
   }
 }

@@ -1,3 +1,12 @@
 {{page-title @model.name}}
-<h1 data-test-project-name>{{@model.name}}</h1>
+<BreadcrumbsItem as |linkClass|>
+  <LinkTo
+    data-test-project-name
+    class={{linkClass}}
+    @route="project"
+    @model={{@model.id}}
+  >
+    {{@model.name}}
+  </LinkTo>
+</BreadcrumbsItem>
 {{outlet}}

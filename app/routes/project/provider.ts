@@ -26,9 +26,7 @@ export default class ProjectProviderRoute extends Route<
     if (provider) {
       return provider;
     } else {
-      throw new NotFound(
-        `Could not find provider "${provider_id}" for project "${project.name}."`
-      );
+      throw new NotFound(`Could not find provider "${provider_id}."`);
     }
   }
 }

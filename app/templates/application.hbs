@@ -5,5 +5,10 @@
 <NavBar />
 
 <main>
+  <BreadcrumbsContainer
+    @itemClass="Breadcrumbs__item"
+    @linkClass="Breadcrumbs__link"
+    class="Breadcrumbs"
+  />
   {{outlet}}
 </main>

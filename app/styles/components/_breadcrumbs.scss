@@ -1,0 +1,19 @@
+@use '../abstracts/media';
+@use '../abstracts/type';
+
+.Breadcrumbs {
+  margin: 1rem 0;
+  font-family: type.$font-fam-mono;
+}
+
+.Breadcrumbs__item {
+  @include media.for-breakpoint(tablet) {
+    display: inline-block;
+  }
+
+  + .Breadcrumbs__item {
+    &::before {
+      content: ' > ';
+    }
+  }
+}

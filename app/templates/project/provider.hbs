@@ -1,3 +1,13 @@
 {{page-title @model.name}}
-<h2 data-test-provider-name>Provider: {{@model.name}}</h2>
+<BreadcrumbsItem as |linkClass|>
+  <LinkTo
+    data-test-provider-name
+    class={{linkClass}}
+    @route="project.provider"
+    @model={{@model.name}}
+  >
+    Provider:
+    {{@model.name}}
+  </LinkTo>
+</BreadcrumbsItem>
 {{outlet}}

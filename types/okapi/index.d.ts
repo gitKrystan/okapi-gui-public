@@ -1,4 +1,4 @@
-import { HelperLike } from '@glint/template';
+import { ComponentLike, HelperLike } from '@glint/template';
 
 import Ember from 'ember';
 
@@ -15,9 +15,26 @@ interface PageTitleHelperSignature {
   Return: '';
 }
 
+interface BreadcrumbsContainerSignature {
+  Element: HTMLUListElement;
+  Args: {
+    itemClass: string;
+    linkClass: string;
+  };
+}
+interface BreadcrumbsItemSignature {
+  Element: HTMLLIElement;
+  Blocks: {
+    default: [linkClass: string];
+  };
+}
+
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
     'page-title': HelperLike<PageTitleHelperSignature>;
+
+    BreadcrumbsContainer: ComponentLike<BreadcrumbsContainerSignature>;
+    BreadcrumbsItem: ComponentLike<BreadcrumbsItemSignature>;
   }
 }
 
