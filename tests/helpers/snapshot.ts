@@ -51,25 +51,22 @@ export async function snapshotDarkMode(
   assert: Assert,
   options?: SnapshotOptions
 ): Promise<void> {
+  // Ensure we start in light mode for consistency
+  // Also, we can't use `find` here bc it looks inside the application container
+  if (document.querySelector('.Application--theme-dark')) {
+    await toggleDarkMode(false, assert, options);
+  }
+
+  assert
+    .dom()
+    .doesNotHaveClass(
+      'Application--theme-dark',
+      'snapshot setup: dark mode not enabled'
+    );
+
   await snapshot(assert, options);
 
-  let toggle = find('[data-test-theme-toggle-button]');
-
-  if (toggle) {
-    await click(toggle);
-    assert
-      .dom(toggle)
-      .hasAria('checked', 'true', 'snapshot setup: toggle checked');
-  } else {
-    emberAssert(
-      'snapshot setup failure: no data-test-theme-toggle-button element \
-      detected. For non-acceptance tests, you must pass in options.owner',
-      options?.owner
-    );
-    let theme = options.owner.lookup('service:theme') as ThemeService;
-    theme.toggle();
-    await settled();
-  }
+  await toggleDarkMode(true, assert, options);
 
   assert
     .dom()
@@ -85,6 +82,34 @@ export async function snapshotDarkMode(
   }
 
   await snapshot(assert, darkModeOptions);
+}
+
+async function toggleDarkMode(
+  toDark: boolean,
+  assert: Assert,
+  options: SnapshotOptions | undefined
+): Promise<void> {
+  let toggle = find('[data-test-theme-toggle-button]');
+
+  if (toggle) {
+    await click(toggle);
+    assert
+      .dom(toggle)
+      .hasAria(
+        'checked',
+        toDark ? 'true' : 'false',
+        'snapshot setup: toggle checked'
+      );
+  } else {
+    emberAssert(
+      'snapshot setup failure: no data-test-theme-toggle-button element \
+      detected. For non-acceptance tests, you must pass in options.owner',
+      options?.owner
+    );
+    let theme = options.owner.lookup('service:theme') as ThemeService;
+    theme.toggle();
+    await settled();
+  }
 }
 
 function testDescription(

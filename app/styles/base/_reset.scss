@@ -1,3 +1,13 @@
+html {
+  scroll-behavior: smooth;
+
+  @media (prefers-reduced-motion) {
+    & {
+      scroll-behavior: auto;
+    }
+  }
+}
+
 html,
 body,
 div,

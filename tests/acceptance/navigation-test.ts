@@ -1,6 +1,7 @@
 import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
 import Project from 'okapi/models/project';
+import TestingLocationService from 'okapi/services/location/-testing';
 import TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
@@ -43,6 +44,35 @@ module('Acceptance | navigation', function (hooks) {
                         name: 'success',
                         description:
                           'whether the notification was successfully sent',
+                        type: 'boolean',
+                      },
+                      {
+                        name: 'details',
+                        description:
+                          'failure message or success info. may be blank',
+                        type: 'string',
+                      },
+                    ],
+                  },
+                  {
+                    name: 'Mortify',
+                    request: [
+                      {
+                        name: 'target',
+                        description: 'the target to mortify',
+                        type: 'string',
+                      },
+                      {
+                        name: 'message',
+                        description: 'the body of the mortification',
+                        type: 'string',
+                      },
+                    ],
+                    response: [
+                      {
+                        name: 'success',
+                        description:
+                          'whether the mortification was successfully mortifying',
                         type: 'boolean',
                       },
                       {
@@ -180,68 +210,63 @@ module('Acceptance | navigation', function (hooks) {
     projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
       assert.dom('[data-test-methods-list]').containsText(m.name);
     });
+    assert.dom('[data-test-method-info]').exists({ count: 2 });
+    assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
+    assert
+      .dom('[data-test-method-info=Mortify]')
+      .doesNotHaveAttribute('hidden');
 
     await snapshotDarkMode(assert);
 
-    await click('[data-test-methods-list] a');
+    await click('[data-test-methods-list] a#Mortify');
 
     assert.strictEqual(
       currentURL(),
-      '/Direwolf/provider/notifier-slack/api/Notifier/method/Notify'
+      '/Direwolf/provider/notifier-slack/api/Notifier',
+      'the URL did not change'
+    );
+    let location = this.owner.lookup(
+      'service:location'
+    ) as TestingLocationService;
+    assert.strictEqual(location.id, 'Mortify');
+    assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
+    assert
+      .dom('[data-test-method-info=Mortify]')
+      .doesNotHaveAttribute('hidden');
+
+    await click('[data-test-method-toggle-collapse=Mortify]');
+
+    assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
+    assert.dom('[data-test-method-info=Mortify]').hasAttribute('hidden');
+
+    await snapshotDarkMode(assert, { suffix: '(with collapsed method)' });
+  });
+
+  test('visiting /Direwolf/provider/notifier-slack/api/Notifier#Mortify', async function (assert) {
+    let location = this.owner.lookup(
+      'service:location'
+    ) as TestingLocationService;
+    location.id = 'Mortify';
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier');
+
+    assert.strictEqual(
+      currentURL(),
+      '/Direwolf/provider/notifier-slack/api/Notifier'
     );
     assert.strictEqual(
       getPageTitle(),
-      'Notify | Notifier | notifier-slack | Direwolf | Okapi'
+      'Notifier | notifier-slack | Direwolf | Okapi'
     );
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    assert.dom('[data-test-method-name]').hasText('Method: Notify');
-  });
-
-  [
-    '/Direwolf/provider/notifier-slack/api/Notifier/method',
-    '/Direwolf/provider/notifier-slack/api/Notifier/methods',
-  ].forEach((r) => {
-    test(`visiting ${r} redirects to /Direwolf/provider/notifier-slack/api/Notifier`, async function (assert) {
-      await visit(r);
-
-      assert.strictEqual(
-        currentURL(),
-        '/Direwolf/provider/notifier-slack/api/Notifier'
-      );
-      assert.strictEqual(
-        getPageTitle(),
-        'Notifier | notifier-slack | Direwolf | Okapi'
-      );
-      assert.dom('[data-test-project-name]').hasText('Direwolf');
-      assert
-        .dom('[data-test-provider-name]')
-        .hasText('Provider: notifier-slack');
-      assert.dom('[data-test-api-name]').hasText('API: Notifier');
-      projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
-        assert.dom('[data-test-methods-list]').containsText(m.name);
-      });
+    projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
+      assert.dom('[data-test-methods-list]').containsText(m.name);
     });
-  });
-
-  test('visiting /Direwolf/provider/notifier-slack/api/Notifier/method/Notify', async function (assert) {
-    await visit('/Direwolf/provider/notifier-slack/api/Notifier/method/Notify');
-
-    assert.strictEqual(
-      currentURL(),
-      '/Direwolf/provider/notifier-slack/api/Notifier/method/Notify'
-    );
-    assert.strictEqual(
-      getPageTitle(),
-      'Notify | Notifier | notifier-slack | Direwolf | Okapi'
-    );
-    assert.dom('[data-test-project-name]').hasText('Direwolf');
-    assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
-    assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    assert.dom('[data-test-method-name]').hasText('Method: Notify');
-
-    await snapshotDarkMode(assert);
+    assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
+    assert
+      .dom('[data-test-method-info=Mortify]')
+      .doesNotHaveAttribute('hidden');
   });
 
   test('visiting /not-found', async function (assert) {
@@ -280,25 +305,6 @@ module('Acceptance | navigation', function (hooks) {
       .dom('[data-test-not-found-message]')
       .hasText(
         'Could not find provider "notifier-slack" api "not-found" for project "Direwolf."'
-      );
-
-    await snapshotDarkMode(assert);
-  });
-
-  test('visiting /Direwolf/provider/notifier-slack/api/Notifier/method/not-found', async function (assert) {
-    await visit(
-      '/Direwolf/provider/notifier-slack/api/Notifier/method/not-found'
-    );
-
-    assert.strictEqual(
-      currentURL(),
-      '/Direwolf/provider/notifier-slack/api/Notifier/method/not-found'
-    );
-    assert.strictEqual(getPageTitle(), 'Oops | Okapi');
-    assert
-      .dom('[data-test-not-found-message]')
-      .hasText(
-        'Could not find method `Notifier#not-found` for provider "notifier-slack" and project "Direwolf."'
       );
 
     await snapshotDarkMode(assert);

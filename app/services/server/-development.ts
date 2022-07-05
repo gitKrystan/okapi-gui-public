@@ -50,6 +50,35 @@ export default class DevelopmentServerService extends ServerService {
                     },
                   ],
                 },
+                {
+                  name: 'Mortify',
+                  request: [
+                    {
+                      name: 'target',
+                      description: 'the target to mortify',
+                      type: 'string',
+                    },
+                    {
+                      name: 'message',
+                      description: 'the body of the mortification',
+                      type: 'string',
+                    },
+                  ],
+                  response: [
+                    {
+                      name: 'success',
+                      description:
+                        'whether the mortification was successfully mortifying',
+                      type: 'boolean',
+                    },
+                    {
+                      name: 'details',
+                      description:
+                        'failure message or success info. may be blank',
+                      type: 'string',
+                    },
+                  ],
+                },
               ],
             },
           ],
