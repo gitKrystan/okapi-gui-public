@@ -23,6 +23,7 @@ export default class DevelopmentServerService extends ServerService {
               methods: [
                 {
                   name: 'Notify',
+                  description: 'Notifies a target with a message.',
                   request: [
                     {
                       name: 'target',
@@ -52,6 +53,7 @@ export default class DevelopmentServerService extends ServerService {
                 },
                 {
                   name: 'Mortify',
+                  description: 'Mortifies a target with a message.',
                   request: [
                     {
                       name: 'target',

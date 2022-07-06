@@ -11,7 +11,7 @@ export interface MethodsSig {
 export default class Methods extends Component<MethodsSig> {
   <template>
     <h1>Methods</h1>
-    <ul data-test-methods-list>
+    <ul data-test-methods-list class="Methods">
       {{#each @api.methods as |method|}}
         <Method @method={{method}} />
       {{/each}}

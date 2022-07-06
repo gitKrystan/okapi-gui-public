@@ -6,6 +6,7 @@ import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
 import { default as MethodModel } from 'okapi/models/method';
 import ScrollAnchor from 'okapi/modifiers/scroll-anchor';
+import MethodInfo from './method-info';
 
 export interface MethodSig {
   Args: {
@@ -21,25 +22,29 @@ export default class Method extends Component<MethodSig> {
   }
 
   <template>
-    <li>
-      <heading >
+    <li class="Method">
+      <header class="Method__header">
         <Button
           data-test-method-toggle-collapse={{@method.id}}
-          class="Button--theme-action" {{on "click" this.toggleCollapse}}
+          class="Button--theme-action Method__header__toggle-button"
+          {{on "click" this.toggleCollapse}}
         >
           <Icon
-            class="Method__heading__Icon"
             @type="outline"
             @id={{if this.isCollapsed "plus-circle" "minus-circle"}}
           />
         </Button>
-        <a {{ScrollAnchor @method.id}}>
-          <h2 class="Method__heading__name">Method: {{@method.name}}</h2>
-        </a>
-      </heading>
-      <p data-test-method-info={{@method.id}} hidden={{this.isCollapsed}}>
-        TODO: More info about #{{@method.name}}
-      </p>
+        <h2>
+          <a {{ScrollAnchor @method.id}} class="Method__header__anchor">
+            {{@method.name}}
+          </a>
+        </h2>
+      </header>
+      <MethodInfo
+        data-test-method-info={{@method.id}}
+        hidden={{this.isCollapsed}}
+        @method={{@method}}
+      />
     </li>
   </template>
 }

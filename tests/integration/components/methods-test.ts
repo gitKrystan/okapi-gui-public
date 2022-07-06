@@ -17,6 +17,7 @@ module('Integration | Component | methods', function (hooks) {
       methods: [
         {
           name: 'Notify',
+          description: 'Notifies a target with a message.',
           request: [
             {
               name: 'target',

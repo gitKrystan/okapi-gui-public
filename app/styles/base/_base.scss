@@ -73,7 +73,9 @@ code,
 kbd,
 samp,
 pre {
-  font-family: type.$font-fam-mono;
+  :where(&) {
+    font-family: type.$font-fam-mono;
+  }
 }
 
 ::selection {
