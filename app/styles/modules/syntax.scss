@@ -1,0 +1,25 @@
+// 1: Collapse whitespace from html unless encapsulated in a Token
+.Syntax {
+  display: inline-flex; // 1
+  color: var(--contrast7);
+  font-weight: normal;
+}
+
+// 1: Keep whitespace encapsulated by a Token
+.Syntax__Token {
+  white-space: pre; // 1
+}
+
+$-types: (
+  'function': var(--violet),
+  'keyword': var(--cyan),
+  'param': var(--violet),
+  'punctuation': var(--contrast3),
+  'type': var(--magenta),
+);
+
+@each $type, $color in $-types {
+  .Syntax__Token--#{$type} {
+    color: $color;
+  }
+}
