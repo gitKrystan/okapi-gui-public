@@ -1,0 +1,24 @@
+@use '../../abstracts/type';
+
+.MethodInfo__description {
+  margin-top: 1rem;
+}
+
+.MethodInfo__ParamsList__heading {
+  margin-top: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--contrast2);
+}
+
+.MethodInfo__ParamsList__item-heading {
+  margin-top: 1rem;
+}
+
+.MethodInfo__ParamsList__param-name {
+  font-family: type.$font-fam-mono;
+}
+
+.MethodInfo__ParamsList__param-type {
+  font-size: 0.825rem;
+  font-weight: normal;
+}

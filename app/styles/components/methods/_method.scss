@@ -1,7 +1,26 @@
-.Method__heading__Icon {
-  transform: translateY(-3px);
+.Method {
+  padding: 5vw 0;
+  border-bottom: 1px solid var(--contrast2);
 }
 
-.Method__heading__name {
+.Method__header {
+  display: flex;
+  align-items: center;
+}
+
+.Method__header__toggle-button {
   display: inline;
+  margin-left: -0.25rem;
+  padding: 2vw 0.25rem;
+  color: var(--contrast2);
+
+  &:hover,
+  &:focus {
+    color: var(--contrast6);
+  }
+}
+
+.Method__header__anchor {
+  padding: 2vw 0.25rem;
+  border-bottom: none;
 }

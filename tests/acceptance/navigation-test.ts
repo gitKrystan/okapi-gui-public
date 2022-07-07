@@ -27,6 +27,7 @@ module('Acceptance | navigation', function (hooks) {
                 methods: [
                   {
                     name: 'Notify',
+                    description: 'Notifies a target with a message.',
                     request: [
                       {
                         name: 'target',
@@ -56,6 +57,7 @@ module('Acceptance | navigation', function (hooks) {
                   },
                   {
                     name: 'Mortify',
+                    description: 'Mortifies a target with a message.',
                     request: [
                       {
                         name: 'target',
