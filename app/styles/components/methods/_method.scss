@@ -1,6 +1,11 @@
 .Method {
   padding: 5vw 0;
   border-bottom: 1px solid var(--contrast2);
+
+  .ScrollAnchor {
+    padding: 1rem 0;
+    border-bottom: none;
+  }
 }
 
 .Method__header {
@@ -20,7 +25,8 @@
   }
 }
 
-.Method__header__anchor {
-  padding: 2vw 0.25rem;
-  border-bottom: none;
+.Method__header__content {
+  display: flex;
+  align-items: center;
+  padding: 0 0.25rem;
 }

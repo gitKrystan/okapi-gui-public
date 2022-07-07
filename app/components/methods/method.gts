@@ -5,8 +5,8 @@ import { tracked } from '@glimmer/tracking';
 import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
 import { default as MethodModel } from 'okapi/models/method';
-import ScrollAnchor from 'okapi/modifiers/scroll-anchor';
 import MethodInfo from './method-info';
+import MethodSignature from './method-signature';
 
 export interface MethodSig {
   Args: {
@@ -35,9 +35,7 @@ export default class Method extends Component<MethodSig> {
           />
         </Button>
         <h2>
-          <a {{ScrollAnchor @method.id}} class="Method__header__anchor">
-            {{@method.name}}
-          </a>
+          <MethodSignature class="Method__header__content" @method={{@method}} />
         </h2>
       </header>
       <MethodInfo
