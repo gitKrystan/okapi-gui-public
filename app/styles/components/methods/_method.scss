@@ -13,15 +13,24 @@
   align-items: center;
 }
 
-.Method__header__toggle-button {
+.Method__header__code-link {
+  margin-left: auto;
+  border-bottom: 0;
+}
+
+.Method__header__toggle-button,
+.Method__header__code-link {
   display: inline;
-  margin-left: -0.25rem;
   padding: 2vw 0.25rem;
   color: var(--contrast2);
 
   &:hover,
   &:focus {
     color: var(--contrast6);
+  }
+
+  &:first-child {
+    margin-left: -0.25rem;
   }
 }
 

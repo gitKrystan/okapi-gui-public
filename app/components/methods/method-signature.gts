@@ -2,7 +2,7 @@ import { concat } from '@ember/helper';
 import { TemplateOnlyComponent } from '@ember/component/template-only';
 import Component from '@glimmer/component';
 import Token from 'okapi/components/syntax/token';
-import Method, { ApiMethodArg } from 'okapi/models/method';
+import Method, { ApiMethodParam } from 'okapi/models/method';
 import ScrollAnchor from 'okapi/modifiers/scroll-anchor';
 
 export interface MethodSignatureSig {

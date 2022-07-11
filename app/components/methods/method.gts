@@ -21,6 +21,15 @@ export default class Method extends Component<MethodSig> {
     this.isCollapsed = !this.isCollapsed;
   }
 
+  @tracked private requestFormIsEnabled = false;
+
+  @action private toggleRequestForm(): void {
+    this.requestFormIsEnabled = !this.requestFormIsEnabled;
+    if (this.requestFormIsEnabled) {
+      this.isCollapsed = false;
+    }
+  }
+
   <template>
     <li class="Method">
       <header class="Method__header">
@@ -37,11 +46,26 @@ export default class Method extends Component<MethodSig> {
         <h2>
           <MethodSignature class="Method__header__content" @method={{@method}} />
         </h2>
+        <a class="Method__header__code-link" href="#">
+          <Icon @type="outline" @id="code" />
+        </a>
+        <Button
+          class="Button--theme-action Method__header__toggle-button"
+          data-test-method-info-toggle-form-button
+          {{on "click" this.toggleRequestForm}}
+        >
+          <Icon
+            @type={{if this.requestFormIsEnabled "solid" "outline"}}
+            @class="outline"
+            @id="play"
+          />
+        </Button>
       </header>
       <MethodInfo
         data-test-method-info={{@method.id}}
         hidden={{this.isCollapsed}}
         @method={{@method}}
+        @isActive={{this.requestFormIsEnabled}}
       />
     </li>
   </template>
