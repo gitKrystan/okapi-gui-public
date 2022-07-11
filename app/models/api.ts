@@ -1,18 +1,20 @@
 import Method, { MethodParams } from 'okapi/models/method';
 
 export type ApiParams = {
+  id: string;
   name: string;
+  providerIds: string[];
   methods: MethodParams[];
 };
 
 export default class Api {
-  static from({ name, methods }: ApiParams): Api {
-    return new Api(name, methods.map(Method.from));
+  static from({ id, name, methods }: ApiParams): Api {
+    return new Api(id, name, methods.map(Method.from));
   }
 
-  private constructor(readonly name: string, readonly methods: Method[]) {}
-
-  get id(): string {
-    return this.name;
-  }
+  private constructor(
+    readonly id: string,
+    readonly name: string,
+    readonly methods: Method[]
+  ) {}
 }

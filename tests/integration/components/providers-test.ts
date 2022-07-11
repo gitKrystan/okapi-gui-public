@@ -14,9 +14,10 @@ module('Integration | Component | providers', function (hooks) {
   test('it renders a list of providers', async function (this: Context, assert) {
     this.project = Project.from({
       name: "Krystan's App",
+      apis: [],
       providers: [
-        { name: 'notifier-slack', apis: [] },
-        { name: 'notifier-email', apis: [] },
+        { id: 'notifier-slack', name: 'notifier-slack', apiIds: [] },
+        { id: 'notifier-email', name: 'notifier-email', apiIds: [] },
       ],
     });
     await render(hbs`<Providers @project={{this.project}} />`);

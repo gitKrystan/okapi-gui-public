@@ -13,7 +13,9 @@ module('Integration | Component | methods', function (hooks) {
 
   test('it renders a list of methods', async function (this: Context, assert) {
     this.api = Api.from({
+      id: 'Notifier',
       name: 'Notifier',
+      providerIds: ['notifier-slack'],
       methods: [
         {
           name: 'Notify',

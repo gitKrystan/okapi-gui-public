@@ -11,7 +11,7 @@ export interface ApiSig {
 export default class Api extends Component<ApiSig> {
   <template>
     <li>
-      <LinkTo @route="project.provider.api" @model={{@api.name}}>
+      <LinkTo @route="project.provider.api" @model={{@api.id}}>
         {{@api.name}}
       </LinkTo>
     </li>
