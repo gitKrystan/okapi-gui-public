@@ -9,90 +9,93 @@ import { module, test } from 'qunit';
 
 let server: TestingServerService;
 let projects: Project[];
+let project: Project;
 
 module('Acceptance | navigation', function (hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function () {
     server = this.owner.lookup('service:server') as TestingServerService;
+    project = Project.from({
+      name: 'Direwolf',
+      providers: [
+        {
+          id: 'notifier-slack',
+          name: 'notifier-slack',
+          apiIds: ['Notifier'],
+        },
+      ],
+      apis: [
+        {
+          id: 'Notifier',
+          name: 'Notifier',
+          providerIds: ['notifier-slack'],
+          methods: [
+            {
+              name: 'Notify',
+              description: 'Notifies a target with a message.',
+              request: [
+                {
+                  name: 'target',
+                  description: 'the target to notify',
+                  type: 'string',
+                },
+                {
+                  name: 'message',
+                  description: 'the body of the notification',
+                  type: 'string',
+                },
+              ],
+              response: [
+                {
+                  name: 'success',
+                  description: 'whether the notification was successfully sent',
+                  type: 'boolean',
+                },
+                {
+                  name: 'details',
+                  description: 'failure message or success info. may be blank',
+                  type: 'string',
+                },
+              ],
+            },
+            {
+              name: 'Mortify',
+              description: 'Mortifies a target with a message.',
+              request: [
+                {
+                  name: 'target',
+                  description: 'the target to mortify',
+                  type: 'string',
+                },
+                {
+                  name: 'message',
+                  description: 'the body of the mortification',
+                  type: 'string',
+                },
+              ],
+              response: [
+                {
+                  name: 'success',
+                  description:
+                    'whether the mortification was successfully mortifying',
+                  type: 'boolean',
+                },
+                {
+                  name: 'details',
+                  description: 'failure message or success info. may be blank',
+                  type: 'string',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     projects = [
-      Project.from({
-        name: 'Direwolf',
-        providers: [
-          {
-            name: 'notifier-slack',
-            apis: [
-              {
-                name: 'Notifier',
-                methods: [
-                  {
-                    name: 'Notify',
-                    description: 'Notifies a target with a message.',
-                    request: [
-                      {
-                        name: 'target',
-                        description: 'the target to notify',
-                        type: 'string',
-                      },
-                      {
-                        name: 'message',
-                        description: 'the body of the notification',
-                        type: 'string',
-                      },
-                    ],
-                    response: [
-                      {
-                        name: 'success',
-                        description:
-                          'whether the notification was successfully sent',
-                        type: 'boolean',
-                      },
-                      {
-                        name: 'details',
-                        description:
-                          'failure message or success info. may be blank',
-                        type: 'string',
-                      },
-                    ],
-                  },
-                  {
-                    name: 'Mortify',
-                    description: 'Mortifies a target with a message.',
-                    request: [
-                      {
-                        name: 'target',
-                        description: 'the target to mortify',
-                        type: 'string',
-                      },
-                      {
-                        name: 'message',
-                        description: 'the body of the mortification',
-                        type: 'string',
-                      },
-                    ],
-                    response: [
-                      {
-                        name: 'success',
-                        description:
-                          'whether the mortification was successfully mortifying',
-                        type: 'boolean',
-                      },
-                      {
-                        name: 'details',
-                        description:
-                          'failure message or success info. may be blank',
-                        type: 'string',
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      }),
-      Project.from({ name: 'Wiredolf', providers: [] }),
-      Project.from({ name: 'Firewold', providers: [] }),
+      project,
+      Project.from({ name: 'Wiredolf', providers: [], apis: [] }),
+      Project.from({ name: 'Firewold', providers: [], apis: [] }),
     ];
     server.mockProjects(projects);
   });
@@ -121,7 +124,7 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(currentURL(), '/Direwolf');
     assert.strictEqual(getPageTitle(), 'Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
-    projects[0]?.providers.forEach((p) => {
+    project.providers.forEach((p) => {
       assert.dom('[data-test-providers-list]').containsText(p.name);
     });
 
@@ -142,7 +145,7 @@ module('Acceptance | navigation', function (hooks) {
       assert.strictEqual(currentURL(), '/Direwolf');
       assert.strictEqual(getPageTitle(), 'Direwolf | Okapi');
       assert.dom('[data-test-project-name]').hasText('Direwolf');
-      projects[0]?.providers.forEach((p) => {
+      project.providers.forEach((p) => {
         assert.dom('[data-test-providers-list]').containsText(p.name);
       });
     });
@@ -155,8 +158,9 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(getPageTitle(), 'notifier-slack | Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
-    projects[0]?.providers[0]?.apis.forEach((a) => {
-      assert.dom('[data-test-apis-list]').containsText(a.name);
+    project.providers[0]?.apiIds.forEach((a) => {
+      let api = project.findApiOrError(a);
+      assert.dom('[data-test-apis-list]').containsText(api.name);
     });
 
     await snapshotDarkMode(assert);
@@ -189,8 +193,9 @@ module('Acceptance | navigation', function (hooks) {
       assert
         .dom('[data-test-provider-name]')
         .hasText('Provider: notifier-slack');
-      projects[0]?.providers[0]?.apis.forEach((a) => {
-        assert.dom('[data-test-apis-list]').containsText(a.name);
+      project.providers[0]?.apiIds.forEach((a) => {
+        let api = project.findApiOrError(a);
+        assert.dom('[data-test-apis-list]').containsText(api.name);
       });
     });
   });
@@ -209,7 +214,7 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
+    project.apis[0]?.methods.forEach((m) => {
       assert.dom('[data-test-methods-list]').containsText(m.name);
     });
     assert.dom('[data-test-method-info]').exists({ count: 2 });
@@ -262,7 +267,7 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    projects[0]?.providers[0]?.apis[0]?.methods.forEach((m) => {
+    project.apis[0]?.methods.forEach((m) => {
       assert.dom('[data-test-methods-list]').containsText(m.name);
     });
     assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');

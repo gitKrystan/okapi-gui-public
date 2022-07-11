@@ -1,13 +1,13 @@
-{{page-title @model.name}}
+{{page-title @model.provider.name}}
 <BreadcrumbsItem as |linkClass|>
   <LinkTo
     data-test-provider-name
     class={{linkClass}}
     @route="project.provider"
-    @model={{@model.name}}
+    @model={{@model.provider.id}}
   >
     Provider:
-    {{@model.name}}
+    {{@model.provider.name}}
   </LinkTo>
 </BreadcrumbsItem>
 {{outlet}}

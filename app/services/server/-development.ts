@@ -8,78 +8,89 @@ export default class DevelopmentServerService extends ServerService {
   /** Adjustable delay to mimic loading states. */
   delay = 50;
 
+  // localhost   has many  `Project`
+  // `Project`   has many  `API`       (installed)
+  // `Project`   has many  `Provider`  (installed)
+  // `Provider`  has many  `API`       (implemented)
+  // `API`       has many  `Method`
+
+  // TODO:
+  // `Registry`  has many  `API`       (installable)
+  // `Registry`  has many  `Provider`  (installable)
+  // `API`       has many  `Service`   (possibly?)
+  // `Provider`  has many  `Service`   (implemented) (possibly?)
+  // `Service`   has many  `Method`
+
   private projectList = [
-    Project.from({ name: 'Direwolf', providers: [] }),
-    Project.from({ name: 'Wiredolf', providers: [] }),
-    Project.from({ name: 'Firewold', providers: [] }),
     Project.from({
-      name: "Krystan's App",
+      name: 'Direwolf',
       providers: [
         {
+          id: 'notifier-slack',
           name: 'notifier-slack',
-          apis: [
+          apiIds: ['Notifier'],
+        },
+      ],
+      apis: [
+        {
+          id: 'Notifier',
+          name: 'Notifier',
+          providerIds: ['notifier-slack'],
+          methods: [
             {
-              name: 'Notifier',
-              methods: [
+              name: 'Notify',
+              description: 'Notifies a target with a message.',
+              request: [
                 {
-                  name: 'Notify',
-                  description: 'Notifies a target with a message.',
-                  request: [
-                    {
-                      name: 'target',
-                      description: 'the target to notify',
-                      type: 'string',
-                    },
-                    {
-                      name: 'message',
-                      description: 'the body of the notification',
-                      type: 'string',
-                    },
-                  ],
-                  response: [
-                    {
-                      name: 'success',
-                      description:
-                        'whether the notification was successfully sent',
-                      type: 'boolean',
-                    },
-                    {
-                      name: 'details',
-                      description:
-                        'failure message or success info. may be blank',
-                      type: 'string',
-                    },
-                  ],
+                  name: 'target',
+                  description: 'the target to notify',
+                  type: 'string',
                 },
                 {
-                  name: 'Mortify',
-                  description: 'Mortifies a target with a message.',
-                  request: [
-                    {
-                      name: 'target',
-                      description: 'the target to mortify',
-                      type: 'string',
-                    },
-                    {
-                      name: 'message',
-                      description: 'the body of the mortification',
-                      type: 'string',
-                    },
-                  ],
-                  response: [
-                    {
-                      name: 'success',
-                      description:
-                        'whether the mortification was successfully mortifying',
-                      type: 'boolean',
-                    },
-                    {
-                      name: 'details',
-                      description:
-                        'failure message or success info. may be blank',
-                      type: 'string',
-                    },
-                  ],
+                  name: 'message',
+                  description: 'the body of the notification',
+                  type: 'string',
+                },
+              ],
+              response: [
+                {
+                  name: 'success',
+                  description: 'whether the notification was successfully sent',
+                  type: 'boolean',
+                },
+                {
+                  name: 'details',
+                  description: 'failure message or success info. may be blank',
+                  type: 'string',
+                },
+              ],
+            },
+            {
+              name: 'Mortify',
+              description: 'Mortifies a target with a message.',
+              request: [
+                {
+                  name: 'target',
+                  description: 'the target to mortify',
+                  type: 'string',
+                },
+                {
+                  name: 'message',
+                  description: 'the body of the mortification',
+                  type: 'string',
+                },
+              ],
+              response: [
+                {
+                  name: 'success',
+                  description:
+                    'whether the mortification was successfully mortifying',
+                  type: 'boolean',
+                },
+                {
+                  name: 'details',
+                  description: 'failure message or success info. may be blank',
+                  type: 'string',
                 },
               ],
             },
@@ -87,6 +98,8 @@ export default class DevelopmentServerService extends ServerService {
         },
       ],
     }),
+    Project.from({ name: 'Wiredolf', providers: [], apis: [] }),
+    Project.from({ name: 'Firewold', providers: [], apis: [] }),
   ];
 
   async getProjectList(): Promise<Project[]> {

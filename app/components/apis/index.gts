@@ -1,10 +1,11 @@
 import Component from '@glimmer/component';
+import ApiModel from 'okapi/models/api';
 import Provider from 'okapi/models/provider';
 import Api from './api';
 
 export interface ApisSig {
   Args: {
-    provider: Provider;
+    apis: ApiModel[];
   }
 }
 
@@ -12,7 +13,7 @@ export default class Apis extends Component<ApisSig> {
   <template>
     <h1>APIs</h1>
     <ul data-test-apis-list>
-      {{#each @provider.apis as |api|}}
+      {{#each @apis as |api|}}
         <Api @api={{api}} />
       {{/each}}
     </ul>

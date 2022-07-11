@@ -11,7 +11,7 @@ export interface ProviderSig {
 export default class Provider extends Component<ProviderSig> {
   <template>
     <li>
-      <LinkTo @route="project.provider" @model={{@provider.name}}>
+      <LinkTo @route="project.provider" @model={{@provider.id}}>
         {{@provider.name}}
       </LinkTo>
     </li>
