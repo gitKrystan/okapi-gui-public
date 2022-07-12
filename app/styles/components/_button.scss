@@ -2,3 +2,21 @@
   padding: 0;
   border: none;
 }
+
+.Button--theme-primary {
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: bold;
+
+  &:focus,
+  &:hover {
+    background-color: var(--green);
+    color: var(--background-color);
+  }
+
+  &:disabled {
+    border-color: var(--contrast4);
+    background-color: var(--contrast4);
+    color: var(--background-color);
+  }
+}

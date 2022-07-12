@@ -1,4 +1,4 @@
-export type ApiMethodArg = {
+export type ApiMethodParam = {
   name: string; // e.g. 'target'
   description: string; // e.g. 'the body of the notification'
   type: 'string' | 'boolean';
@@ -7,8 +7,8 @@ export type ApiMethodArg = {
 export type MethodParams = {
   name: string; // e.g. 'Notify'
   description: string; // e.g. 'Notifies a target with a message.
-  request: ApiMethodArg[];
-  response: ApiMethodArg[];
+  request: ApiMethodParam[];
+  response: ApiMethodParam[];
 };
 
 export default class Method {
@@ -19,8 +19,8 @@ export default class Method {
   private constructor(
     readonly name: string,
     readonly description: string,
-    readonly request: ApiMethodArg[],
-    readonly response: ApiMethodArg[]
+    readonly request: ApiMethodParam[],
+    readonly response: ApiMethodParam[]
   ) {}
 
   get id(): string {

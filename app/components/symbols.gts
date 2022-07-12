@@ -7,19 +7,28 @@ export default <template>
 
     {{!-- SOLID: For buttons, form elements, and to support text, designed to be rendered at 20x20. --}}
 
-    {{!-- n/a --}}
+    <symbol id="solid__play"  viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+    </symbol>
 
     {{!-- OUTLINE: For primary navigation and marketing sections, designed to be rendered at 24x24. --}}
 
-    <!-- source: https://heroicons.com/ -->
+    <symbol id="outline__code" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </symbol>
+
     <symbol id="outline__minus-circle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
     </symbol>
 
-    <!-- source: https://heroicons.com/ -->
-    <svg id="outline__plus-circle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <symbol id="outline__play" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </symbol>
+
+    <symbol id="outline__plus-circle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
+    </symbol>
 
   </svg>
 </template>

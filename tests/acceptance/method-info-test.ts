@@ -1,29 +1,20 @@
-import Method from 'okapi/models/method';
+import { click, fillIn, visit } from '@ember/test-helpers';
 import Project from 'okapi/models/project';
-import ServerService from 'okapi/services/server';
+import TestingServerService from 'okapi/services/server/-testing';
+import { setupApplicationTest } from 'okapi/tests/helpers';
+import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
+import { module, test } from 'qunit';
 
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+let server: TestingServerService;
+let projects: Project[];
+let project: Project;
 
-export default class DevelopmentServerService extends ServerService {
-  /** Adjustable delay to mimic loading states. */
-  delay = 50;
+module('Acceptance | method info', function (hooks) {
+  setupApplicationTest(hooks);
 
-  // localhost   has many  `Project`
-  // `Project`   has many  `API`       (installed)
-  // `Project`   has many  `Provider`  (installed)
-  // `Provider`  has many  `API`       (implemented)
-  // `API`       has many  `Method`
-
-  // TODO:
-  // `Registry`  has many  `API`       (installable)
-  // `Registry`  has many  `Provider`  (installable)
-  // `API`       has many  `Service`   (possibly?)
-  // `Provider`  has many  `Service`   (implemented) (possibly?)
-  // `Service`   has many  `Method`
-
-  private projectList = [
-    Project.from({
+  hooks.beforeEach(function () {
+    server = this.owner.lookup('service:server') as TestingServerService;
+    project = Project.from({
       name: 'Direwolf',
       providers: [
         {
@@ -98,30 +89,40 @@ export default class DevelopmentServerService extends ServerService {
           ],
         },
       ],
-    }),
-    Project.from({ name: 'Wiredolf', providers: [], apis: [] }),
-    Project.from({ name: 'Firewold', providers: [], apis: [] }),
-  ];
+    });
+    projects = [project];
+    server.mockProjects(projects);
+  });
 
-  async getProjectList(): Promise<Project[]> {
-    await wait(this.delay);
-    return this.projectList;
-  }
+  test('it can call a method', async function (assert) {
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier');
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async findProject(id: string): Promise<Project | null> {
-    return this.projectList.find((m) => m.id === id) ?? null;
-  }
+    await click('[data-test-method-info-toggle-form-button]');
 
-  async call(
-    method: Method,
-    args: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
-    await wait(12 * this.delay);
-    // NOTE: Hardcoded for the Notify response type
-    return {
-      success: true,
-      details: `Called ${method.name} with args ${JSON.stringify(args)}`,
-    };
-  }
-}
+    await snapshotDarkMode(assert, { suffix: '(blank form)' });
+
+    await fillIn(
+      '[data-test-param-input=Notify-request-target]',
+      '#notifications'
+    );
+    await fillIn(
+      '[data-test-param-input=Notify-request-message]',
+      'Important message.'
+    );
+
+    await click('[data-test-method-info-form] button[type="submit"]');
+
+    assert
+      .dom('[data-test-param-input=Notify-response-success]')
+      .hasValue('true')
+      .hasAttribute('readonly');
+    assert
+      .dom('[data-test-param-input=Notify-response-details]')
+      .hasValue(
+        'Called Notify with args {"target":"#notifications","message":"Important message."}'
+      )
+      .hasAttribute('readonly');
+
+    await snapshotDarkMode(assert, { suffix: '(filled in form)' });
+  });
+});

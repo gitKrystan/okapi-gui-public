@@ -67,6 +67,13 @@ textarea {
       color: var(--contrast6);
     }
   }
+
+  &:disabled {
+    :where(&) {
+      border-color: var(--contrast4);
+      color: var(--contrast4);
+    }
+  }
 }
 
 code,
