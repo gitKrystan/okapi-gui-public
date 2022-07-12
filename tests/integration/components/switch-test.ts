@@ -1,11 +1,27 @@
-import { click, render, TestContext } from '@ember/test-helpers';
+import { action } from '@ember/object';
+import {
+  click,
+  render,
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  // @ts-expect-error TODO: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/61215
+  rerender,
+  TestContext,
+} from '@ember/test-helpers';
+import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';
 
+class State {
+  @tracked current = false;
+
+  @action setCurrent(value: boolean): void {
+    this.current = value;
+  }
+}
+
 interface Context extends TestContext {
-  state: boolean;
-  setState(value: boolean): void;
+  state: State;
   assertState(
     value: boolean,
     message: string,
@@ -17,16 +33,17 @@ module('Integration | Component | switch', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function (this: Context, assert) {
-    this.state = false;
-    this.setState = (value: boolean): void => {
-      this.set('state', value);
-    };
+    this.state = new State();
     this.assertState = (
       value: boolean,
       message: string,
       { onText, offText } = { onText: 'on', offText: 'off' }
     ): void => {
-      assert.strictEqual(this.state, value, `${message}: state is correct`);
+      assert.strictEqual(
+        this.state.current,
+        value,
+        `${message}: state is correct`
+      );
       assert
         .dom('button')
         .hasAttribute('role', 'switch', `${message}: role is correct`)
@@ -47,20 +64,21 @@ module('Integration | Component | switch', function (hooks) {
 
   test('it renders an on/off switch by default', async function (this: Context, assert) {
     await render(hbs`
-      <Switch @value={{this.state}} @onToggle={{this.setState}} />
+      <Switch @value={{this.state.current}} @onToggle={{this.state.setCurrent}} />
     `);
 
     assert.dom('[data-test-switch-label]').doesNotExist();
     this.assertState(false, 'test setup');
 
     await click('button');
+    await rerender();
 
     this.assertState(true, 'after click');
   });
 
   test('it renders named blocks', async function (this: Context, assert) {
     await render(hbs`
-      <Switch @value={{this.state}} @onToggle={{this.setState}}>
+      <Switch @value={{this.state.current}} @onToggle={{this.state.setCurrent}}>
         <:label>Beast mode:</:label>
         <:on>beastly</:on>
         <:off>humanly</:off>
@@ -74,6 +92,7 @@ module('Integration | Component | switch', function (hooks) {
     });
 
     await click('button');
+    await rerender();
 
     this.assertState(true, 'after click', {
       onText: 'beastly',
