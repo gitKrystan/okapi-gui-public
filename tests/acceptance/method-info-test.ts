@@ -92,6 +92,12 @@ module('Acceptance | method info', function (hooks) {
     });
     projects = [project];
     server.mockProjects(projects);
+    server.mockMethodCallResponse((method, args) => {
+      return {
+        success: true,
+        details: `Called ${method.name} with args ${JSON.stringify(args)}`,
+      };
+    });
   });
 
   test('it can call a method', async function (assert) {
@@ -114,7 +120,7 @@ module('Acceptance | method info', function (hooks) {
 
     assert
       .dom('[data-test-param-input=Notify-response-success]')
-      .hasValue('true')
+      .isChecked()
       .hasAttribute('readonly');
     assert
       .dom('[data-test-param-input=Notify-response-details]')
