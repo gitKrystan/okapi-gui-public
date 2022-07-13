@@ -1,12 +1,5 @@
 import { action } from '@ember/object';
-import {
-  click,
-  render,
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
-  // @ts-expect-error TODO: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/61215
-  rerender,
-  TestContext,
-} from '@ember/test-helpers';
+import { click, render, rerender, TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'okapi/tests/helpers';
