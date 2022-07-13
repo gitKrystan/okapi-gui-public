@@ -1,4 +1,4 @@
-@use '../../abstracts/type';
+@use '../../abstracts/media';
 
 .MethodInfo__description {
   margin-top: 1rem;
@@ -8,14 +8,17 @@
   margin: 3rem 0 1rem;
 }
 
-.MethodInfo__param-list-item {
+.MethodInfo__item {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   padding: 1rem 0;
   border-top: 1px solid var(--contrast1);
+
+  @include media.for-breakpoint(tablet) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.MethodInfo__param-list-item__second {
+.MethodInfo__item__second {
   grid-column: 2;
 }

@@ -76,9 +76,9 @@ export default class DevelopmentServerService extends ServerService {
                   type: 'string',
                 },
                 {
-                  name: 'message',
-                  description: 'the body of the mortification',
-                  type: 'string',
+                  name: 'shouldMortify',
+                  description: 'whether the mortification should commence',
+                  type: 'boolean',
                 },
               ],
               response: [

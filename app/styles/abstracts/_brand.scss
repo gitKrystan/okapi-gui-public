@@ -21,6 +21,17 @@ $-green: #859900;
 // colors for consistency.
 
 %brand {
+  // Use base colors directly only in special cases where light/dark mode is not
+  // applicable
+  --base03: #{$-base03};
+  --base02: #{$-base02};
+  --base01: #{$-base01};
+  --base00: #{$-base00};
+  --base0: #{$-base0};
+  --base1: #{$-base1};
+  --base2: #{$-base2};
+  --base3: #{$-base3};
+
   --yellow: #{$-yellow};
   --orange: #{$-orange};
   --red: #{$-red};

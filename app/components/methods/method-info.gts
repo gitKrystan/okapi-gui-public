@@ -42,9 +42,15 @@ export default class MethodInfo extends Component<MethodInfoSig> {
 
   <template>
     <div ...attributes>
-      <p class="MethodInfo__description">{{@method.description}}</p>
+      <p
+        class="MethodInfo__description"
+        data-test-method-info-description={{@method.id}}
+      >
+        {{@method.description}}
+      </p>
       <form {{on "submit" (perform this.submit)}} data-test-method-info-form>
         <ParamList
+          data-test-request-params={{@method.id}}
           @id="{{@method.id}}-request"
           @params={{this.methodCall.request}}
           @formEnabled={{@isActive}}
@@ -56,9 +62,10 @@ export default class MethodInfo extends Component<MethodInfoSig> {
           </a>
         </ParamList>
         {{#if @isActive}}
-          <div class="MethodInfo__param-list-item">
+          <div class="MethodInfo__item">
             <Button
-              class="MethodInfo__param-list-item__second {{if this.emphasizeCallButton "Button--theme-primary"}}"
+              data-test-method-info-submit-button
+              class="MethodInfo__item__second {{if this.emphasizeCallButton "Button--theme-primary"}}"
               type="submit"
               disabled={{this.submitStatus.isRunning}}
             >
@@ -72,6 +79,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
         {{/if}}
       </form>
       <ParamList
+        data-test-response-params={{@method.id}}
         @id="{{@method.id}}-response"
         @params={{this.methodCall.response}}
         @formEnabled={{@isActive}}
@@ -85,4 +93,10 @@ export default class MethodInfo extends Component<MethodInfoSig> {
       </ParamList>
     </div>
   </template>
+}
+
+declare module '@glint/environment-ember-loose/registry' {
+  export default interface Registry {
+    'Methods::MethodInfo': typeof MethodInfo;
+  }
 }

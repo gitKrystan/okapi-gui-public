@@ -4,6 +4,12 @@ import ServerService from 'okapi/services/server';
 
 export default class TestingServerService extends ServerService {
   private projectList: Project[] = [];
+  private methodCallResponse:
+    | ((
+        method: Method,
+        args: Record<string, unknown>
+      ) => Record<string, unknown>)
+    | null = null;
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async getProjectList(): Promise<Project[]> {
@@ -20,14 +26,23 @@ export default class TestingServerService extends ServerService {
     method: Method,
     args: Record<string, unknown>
   ): Promise<Record<string, unknown>> {
-    // NOTE: Hardcoded for the Notify response type
-    return {
-      success: true,
-      details: `Called ${method.name} with args ${JSON.stringify(args)}`,
-    };
+    let response = this.methodCallResponse;
+    if (!response) {
+      throw new Error('called a method without a mocked response');
+    }
+    return response(method, args);
   }
 
   mockProjects(projects: Project[]): void {
     this.projectList = projects;
+  }
+
+  mockMethodCallResponse(
+    response: (
+      method: Method,
+      args: Record<string, unknown>
+    ) => Record<string, unknown>
+  ): void {
+    this.methodCallResponse = response;
   }
 }

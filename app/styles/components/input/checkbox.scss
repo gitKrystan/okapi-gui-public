@@ -1,0 +1,48 @@
+.Checkbox-icon {
+  display: grid;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  place-self: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--contrast5);
+  color: var(--base3);
+
+  .Icon {
+    transform: translateY(-1px);
+  }
+}
+
+.Checkbox {
+  position: absolute;
+
+  /* make element invisible w/o hiding it from screen-readers */
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+
+  &:checked {
+    & + .Checkbox-icon {
+      border-color: transparent;
+      background-color: var(--blue);
+    }
+  }
+
+  &:not(:disabled) {
+    &:focus-visible,
+    &:hover {
+      & + .Checkbox-icon {
+        background-color: var(--contrast2);
+        cursor: pointer;
+      }
+
+      &:checked {
+        + .Checkbox-icon {
+          background-color: var(--contrast2);
+        }
+      }
+    }
+  }
+}
