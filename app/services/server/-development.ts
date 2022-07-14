@@ -80,6 +80,11 @@ export default class DevelopmentServerService extends ServerService {
                   description: 'whether the mortification should commence',
                   type: 'boolean',
                 },
+                {
+                  name: 'count',
+                  description: 'how many times the mortification should happen',
+                  type: 'number',
+                },
               ],
               response: [
                 {

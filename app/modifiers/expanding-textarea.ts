@@ -1,10 +1,6 @@
 import { modifier } from 'ember-modifier';
 
 let expandingTextarea = modifier(
-  /**
-   * @param element
-   * @param tracked Optionally pass properties here to recompute when they change.
-   */
   (textarea: HTMLTextAreaElement, tracked: unknown[]) => {
     textarea.setAttribute('rows', '1');
     textarea.style.resize = 'none';

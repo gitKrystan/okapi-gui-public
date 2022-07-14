@@ -1,7 +1,7 @@
 export type ApiMethodParam = {
   name: string; // e.g. 'target'
   description: string; // e.g. 'the body of the notification'
-  type: 'string' | 'boolean';
+  type: 'string' | 'boolean' | 'number';
 };
 
 export type MethodParams = {
