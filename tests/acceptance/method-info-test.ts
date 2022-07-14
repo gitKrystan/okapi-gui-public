@@ -131,4 +131,36 @@ module('Acceptance | method info', function (hooks) {
 
     await snapshotDarkMode(assert, { suffix: '(filled in form)' });
   });
+
+  test('it can can handle really long strings', async function (assert) {
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier');
+
+    await click('[data-test-method-info-toggle-form-button]');
+
+    await fillIn(
+      '[data-test-param-input=Notify-request-target]',
+      '#notifications'
+    );
+    await fillIn(
+      '[data-test-param-input=Notify-request-message]',
+      'Really really really really really really really really really really really really really really really really really really really really really really long important message.'
+    );
+
+    await click('[data-test-method-info-form] button[type="submit"]');
+
+    assert
+      .dom('[data-test-param-input=Notify-response-success]')
+      .isChecked()
+      .hasAttribute('readonly');
+    assert
+      .dom('[data-test-param-input=Notify-response-details]')
+      .hasValue(
+        'Called Notify with args {"target":"#notifications","message":"Really really really really really really really really really really really really really really really really really really really really really really long important message."}'
+      )
+      .hasAttribute('readonly');
+
+    await snapshotDarkMode(assert, {
+      suffix: '(filled in form with very long strings)',
+    });
+  });
 });

@@ -4,6 +4,7 @@ import Component from '@glimmer/component';
 import Checkbox from 'okapi/components/input/checkbox';
 import Token from 'okapi/components/syntax/token';
 import { Param, isStringParam, isBooleanParam } from 'okapi/models/method-call';
+import expandingTextarea from 'okapi/modifiers/expanding-textarea';
 
 export interface ParamListSig {
   Element: HTMLElement;
@@ -48,6 +49,7 @@ export default class ParamList extends Component<ParamListSig> {
                     placeholder={{if @readonly "..." "Input a string value here."}}
                     readonly={{@readonly}}
                     @value={{param.value}}
+                    {{expandingTextarea param.value}}
                   />
                 {{else if (isBooleanParam param)}}
                   <Checkbox
