@@ -26,7 +26,16 @@ export function isBooleanParam(param: unknown): param is BooleanParam {
   return param instanceof BooleanParam;
 }
 
-export type Param = StringParam | BooleanParam;
+export class NumberParam extends MethodCallParam<number> {}
+
+/**
+ * Type guard for NumberParam
+ */
+export function isNumberParam(param: unknown): param is NumberParam {
+  return param instanceof NumberParam;
+}
+
+export type Param = StringParam | BooleanParam | NumberParam;
 
 function makeMethodCallParam(info: ApiMethodParam): Param {
   switch (info.type) {
@@ -34,6 +43,8 @@ function makeMethodCallParam(info: ApiMethodParam): Param {
       return new StringParam(info);
     case 'boolean':
       return new BooleanParam(info);
+    case 'number':
+      return new NumberParam(info);
   }
 }
 

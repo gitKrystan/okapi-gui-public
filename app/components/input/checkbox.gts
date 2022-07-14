@@ -1,6 +1,5 @@
 import { Input } from '@ember/component';
 import { modifier } from 'ember-modifier';
-import { guidFor } from '@ember/object/internals';
 import Component from '@glimmer/component';
 import Icon from 'okapi/components/icon';
 
@@ -58,6 +57,6 @@ export default class Checkbox extends Component<CheckboxSignature> {
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    Checkbox: typeof Checkbox;
+    'Input::Checkbox': typeof Checkbox;
   }
 }

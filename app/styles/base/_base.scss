@@ -58,6 +58,10 @@ textarea {
   :where(&) {
     border-color: var(--contrast5);
     color: var(--contrast5);
+
+    &::placeholder {
+      color: var(--contrast4);
+    }
   }
 
   &:focus,
@@ -72,6 +76,12 @@ textarea {
     :where(&) {
       border-color: var(--contrast4);
       color: var(--contrast4);
+    }
+  }
+
+  &:invalid {
+    :where(&) {
+      border-color: var(--red);
     }
   }
 }
