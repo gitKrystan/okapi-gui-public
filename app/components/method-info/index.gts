@@ -2,7 +2,7 @@ import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { task, timeout } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import perform from 'ember-concurrency/helpers/perform';
 import { taskFor } from 'ember-concurrency-ts';
 import Button from 'okapi/components/button';
@@ -26,19 +26,15 @@ export default class MethodInfo extends Component<MethodInfoSig> {
 
   private methodCall = MethodCall.from(this.args.method);
 
-  private get submitStatus() {
-    // @ts-expect-error Types messed up for GTS
-    return taskFor(this.submit);
-  }
-
   private get emphasizeCallButton(): boolean {
     return this.methodCall.request.every(r => r.value !== undefined);
   }
 
-  @task({ drop: true }) private async submit(e: SubmitEvent): Promise<void> {
+  @task({ drop: true })
+  private submit = taskFor(async (e: SubmitEvent): Promise<void> => {
     e.preventDefault();
-    let response = await this.methodCall.call(this.server);
-  }
+    await this.methodCall.call(this.server);
+  });
 
   <template>
     <div ...attributes>
@@ -67,9 +63,9 @@ export default class MethodInfo extends Component<MethodInfoSig> {
               data-test-method-info-submit-button
               class="MethodInfo__item__second {{if this.emphasizeCallButton "Button--theme-primary"}}"
               type="submit"
-              disabled={{this.submitStatus.isRunning}}
+              disabled={{this.submit.isRunning}}
             >
-              {{#if this.submitStatus.isRunning}}
+              {{#if this.submit.isRunning}}
                 Running
               {{else}}
                 Call
@@ -97,6 +93,6 @@ export default class MethodInfo extends Component<MethodInfoSig> {
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    'Methods::MethodInfo': typeof MethodInfo;
+    'MethodInfo': typeof MethodInfo;
   }
 }

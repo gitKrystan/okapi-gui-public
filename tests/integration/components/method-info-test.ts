@@ -23,7 +23,7 @@ class State {
   @tracked isActive = false;
 }
 
-module('Integration | Component | methods/method-info', function (hooks) {
+module('Integration | Component | method-info', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders information about a method', async function (this: Context, assert) {
@@ -59,7 +59,7 @@ module('Integration | Component | methods/method-info', function (hooks) {
     );
 
     await render(
-      hbs`<Methods::MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
+      hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
     );
 
     assert
@@ -129,7 +129,7 @@ module('Integration | Component | methods/method-info', function (hooks) {
       this.state.isActive = true;
 
       await render(
-        hbs`<Methods::MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
+        hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
       );
 
       await fillIn(
@@ -173,7 +173,7 @@ module('Integration | Component | methods/method-info', function (hooks) {
       this.state.isActive = true;
 
       await render(
-        hbs`<Methods::MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
+        hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
       );
 
       await click(
