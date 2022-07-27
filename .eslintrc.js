@@ -131,6 +131,7 @@ module.exports = {
       extends: ['plugin:qunit/recommended'],
       rules: {
         'qunit/require-expect': 0,
+        'qunit/no-conditional-assertions': 0,
       },
     },
   ],
