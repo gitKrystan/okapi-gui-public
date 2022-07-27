@@ -1,17 +1,11 @@
-import { Textarea } from '@ember/component';
-import { fn } from '@ember/helper';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import Checkbox from 'okapi/components/input/checkbox';
-import NumberInput from 'okapi/components/input/number';
 import Token from 'okapi/components/syntax/token';
-import {
-  Param,
-  isBooleanParam,
-  isStringParam,
-  isNumberParam
-} from 'okapi/models/method-call';
-import expandingTextarea from 'okapi/modifiers/expanding-textarea';
+import { Param } from 'okapi/models/method-call'; // FIXME: Remove the removed methods
+import BooleanInput from './inputs/boolean';
+import NumberInput from './inputs/number';
+import StringInput from './inputs/string';
+import ParamInputSig from './inputs/signature';
 
 export interface ParamListSig {
   Element: HTMLElement;
@@ -29,6 +23,21 @@ export interface ParamListSig {
 export default class ParamList extends Component<ParamListSig> {
   @action private inputId(param: Param): string {
     return `${this.args.id}-${param.info.name}`;
+  }
+
+  private get readonly(): boolean {
+    return this.args.readonly ?? false;
+  }
+
+  private componentFor(param: Param): typeof Component<ParamInputSig<Param>> {
+    switch (param.info.type) {
+      case 'string':
+        return StringInput;
+      case 'boolean':
+        return BooleanInput;
+      case 'number':
+        return NumberInput;
+    }
   }
 
   <template>
@@ -49,34 +58,13 @@ export default class ParamList extends Component<ParamListSig> {
                 <p>{{param.info.description}}</p>
               </div>
               {{#if @formEnabled}}
-                {{#if (isStringParam param)}}
-                  <Textarea
-                    id={{this.inputId param}}
-                    class="MethodInfo__text-input"
-                    data-test-param-input={{this.inputId param}}
-                    placeholder={{if @readonly "..." "Input a string value here."}}
-                    readonly={{@readonly}}
-                    @value={{param.value}}
-                    {{expandingTextarea param.value}}
+                {{#let (this.componentFor param) as |ParamComponent|}}
+                  <ParamComponent
+                    @param={{param}}
+                    @id={{this.inputId param}}
+                    @readonly={{this.readonly}}
                   />
-                {{else if (isBooleanParam param)}}
-                  <Checkbox
-                    id={{this.inputId param}}
-                    data-test-param-input={{this.inputId param}}
-                    @readonly={{@readonly}}
-                    @checked={{param.value}}
-                  />
-                {{else if (isNumberParam param)}}
-                  <NumberInput
-                    id={{this.inputId param}}
-                    class="MethodInfo__text-input"
-                    data-test-param-input={{this.inputId param}}
-                    placeholder={{if @readonly "..." "Input a number value here."}}
-                    readonly={{@readonly}}
-                    @value={{param.value}}
-                    @onChange={{fn (mut param.value)}}
-                  />
-                {{/if}}
+                {{/let}}
               {{/if}}
             </label>
           </li>
