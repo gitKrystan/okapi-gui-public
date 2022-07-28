@@ -1,5 +1,6 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import flag from 'okapi/components/flag';
 import Token from 'okapi/components/syntax/token';
 import { Param } from 'okapi/models/method-call'; // FIXME: Remove the removed methods
 import BooleanInput from './inputs/boolean';
@@ -65,6 +66,9 @@ export default class ParamList extends Component<ParamListSig> {
                     @readonly={{this.readonly}}
                   />
                 {{/let}}
+                {{#flag "enum"}}
+                  ENUM IS ON
+                {{/flag}}
               {{/if}}
             </label>
           </li>
