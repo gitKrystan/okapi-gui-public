@@ -25,6 +25,7 @@ interface BreadcrumbsContainerSignature {
     linkClass: string;
   };
 }
+
 interface BreadcrumbsItemSignature {
   Element: HTMLLIElement;
   Blocks: {
@@ -34,10 +35,30 @@ interface BreadcrumbsItemSignature {
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    'page-title': HelperLike<PageTitleHelperSignature>;
-
+    // @bagaar/ember-breadcrumbs
     BreadcrumbsContainer: ComponentLike<BreadcrumbsContainerSignature>;
     BreadcrumbsItem: ComponentLike<BreadcrumbsItemSignature>;
+
+    // ember-page-title
+    'page-title': HelperLike<PageTitleHelperSignature>;
+
+    // ember-concurrency
+    perform: typeof import('@gavant/glint-template-types/types/ember-concurrency/perform').default;
+
+    // ember-truth-helpers
+    and: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/and').default;
+    eq: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/eq').default;
+    gt: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/gt').default;
+    gte: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/gte').default;
+    'is-array': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-array').default;
+    'is-empty': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-empty').default;
+    'is-equal': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-equal').default;
+    lt: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/lt').default;
+    lte: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/lte').default;
+    'not-eq': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/not-eq').default;
+    not: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/not').default;
+    or: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/or').default;
+    xor: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/xor').default;
   }
 }
 
