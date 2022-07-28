@@ -1,0 +1,43 @@
+$-padding-y: 0.5rem;
+$-border-color: var(--contrast2);
+
+.Combobox {
+  display: grid;
+  position: relative;
+
+  .positioner {
+    width: 100%;
+  }
+}
+
+.Combobox__button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Combobox__dropdown {
+  padding: 0.5rem 0;
+  border: 1px solid $-border-color;
+  background-color: var(--contrast1);
+  color: var(--contrast5);
+
+  .Listbox__item-list__item:focus-visible {
+    outline: none;
+  }
+
+  .Combobox__item {
+    padding: 0.25rem $-padding-y;
+  }
+
+  .Combobox__item--is-description-item {
+    background-color: var(--magenta);
+    color: var(--contrast7);
+  }
+}
+
+.Combobox__dropdown__info {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem $-padding-y 0;
+  border-top: 1px solid $-border-color;
+}

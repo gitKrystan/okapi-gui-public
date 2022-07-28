@@ -44,6 +44,11 @@ export interface ListboxSelectionSignature<T> {
     onItemKeydown?: (item: T, e: KeyboardEvent) => void;
 
     /**
+     * Optional action to call when an item has a mouseenter event.
+     */
+    onItemMousemove?: (item: T, e: MouseEvent) => void;
+
+    /**
      * Handles 'keydown' actions for the listbox.
      */
     list: ListNav['list'];
@@ -79,24 +84,25 @@ export default class ListboxSelection<T> extends Component<
       role="listbox"
       tabindex={{if (eq this.selection undefined) "0" ""}}
       {{@list}}
-      class="listbox"
+      class="Listbox"
       ...attributes
       id={{@id}}
-      data-test-listbox-selection
+      data-test-listbox
     >
-      <ul class="list-none listbox-item-list" role="group">
+      <ul data-test-listbox-item-list class="Listbox__item-list" role="group">
         {{#each @items as |item|}}
           {{#let (eq item this.selection) as |isSelected|}}
             {{! This is the markup recommended by wai-aria best practices }}
             {{! template-lint-disable require-context-role }}
             <li
+              {{on "mousemove" (fn this.onItemMousemove item)}}
               {{on "focus" (fn this.onItemFocus item)}}
               {{on "click" (fn this.onItemClick item)}}
               {{on "keydown" (fn this.onItemKeydown item)}}
               role="option"
               tabindex={{if isSelected "0" "-1"}}
               aria-selected={{if isSelected "true" "false"}}
-              class="Listbox__item {{if isSelected 'Listbox__item--selected'}}"
+              class="Listbox__item-list__item {{if isSelected 'Listbox__item-list__item--selected'}}"
             >
               {{yield item to="items"}}
             </li>
@@ -105,7 +111,7 @@ export default class ListboxSelection<T> extends Component<
       </ul>
 
       {{#if (has-block "extras")}}
-        <ul class="Listbox__extras-list" role="group">
+        <ul data-test-listbox-extras-list class="Listbox__extras-list" role="group">
           {{yield to="extras"}}
         </ul>
       {{/if}}
@@ -115,6 +121,10 @@ export default class ListboxSelection<T> extends Component<
   // NOTE: Do not default this to `null` as the user might pass `null` as
   // an option.
   @tracked private selection = this.args.initialSelection;
+
+  @action private onItemMousemove(item: T, e: MouseEvent): void {
+    this.args.onItemMousemove?.(item, e);
+  }
 
   @action private onItemFocus(item: T): void {
     this.selection = item;
@@ -129,6 +139,8 @@ export default class ListboxSelection<T> extends Component<
   @action private onItemKeydown(item: T, e: KeyboardEvent): void {
     if (e.key === 'Enter' || (e.key === 'ArrowUp' && e.altKey)) {
       e.preventDefault();
+      this.onItemClick(item);
+    } else if (e.key === 'Tab') {
       this.onItemClick(item);
     }
 
