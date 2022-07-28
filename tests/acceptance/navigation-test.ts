@@ -1,6 +1,7 @@
 import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
 import Project from 'okapi/models/project';
+import TestingFeaturesService from 'okapi/services/features/-testing';
 import TestingLocationService from 'okapi/services/location/-testing';
 import TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
@@ -101,6 +102,13 @@ module('Acceptance | navigation', function (hooks) {
   });
 
   test('visiting /', async function (assert) {
+    // FIXME:
+    let testingFeaturesService = this.owner.lookup(
+      'service:features'
+    ) as TestingFeaturesService;
+
+    testingFeaturesService.enable('enum');
+
     await visit('/');
 
     assert.strictEqual(currentURL(), '/');

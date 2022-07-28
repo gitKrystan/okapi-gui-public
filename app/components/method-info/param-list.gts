@@ -1,6 +1,9 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+
 import flag from 'okapi/components/flag';
+import Listbox from 'okapi/components/listbox';
 import Token from 'okapi/components/syntax/token';
 import { Param } from 'okapi/models/method-call'; // FIXME: Remove the removed methods
 import BooleanInput from './inputs/boolean';
@@ -28,6 +31,16 @@ export default class ParamList extends Component<ParamListSig> {
 
   private get readonly(): boolean {
     return this.args.readonly ?? false;
+  }
+
+  private get todoEnumItems(): string[] {
+    return ['yes', 'no', 'maybe'];
+  }
+
+  @tracked private todoCurrentItem: string | null = null;
+
+  @action private todoCommitItem(item: string): void {
+    this.todoCurrentItem = item;
   }
 
   private componentFor(param: Param): typeof Component<ParamInputSig<Param>> {
@@ -67,7 +80,15 @@ export default class ParamList extends Component<ParamListSig> {
                   />
                 {{/let}}
                 {{#flag "enum"}}
-                  ENUM IS ON
+                  <Listbox
+                    @items={{this.todoEnumItems}}
+                    @onCommit={{this.todoCommitItem}}
+                  >
+                    <:items as |item|>
+                      {{item}}
+                    </:items>
+                  </Listbox>
+                  Committed: {{this.todoCurrentItem}}
                 {{/flag}}
               {{/if}}
             </label>
