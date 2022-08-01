@@ -3,7 +3,7 @@ import Component from '@glimmer/component';
 import flag from 'okapi/components/flag';
 
 import Token from 'okapi/components/syntax/token';
-import { Param } from 'okapi/models/method-call'; // FIXME: Remove the removed methods
+import { Param } from 'okapi/models/method-call';
 import BooleanInput from './inputs/boolean';
 import NumberInput from './inputs/number';
 import EnumInput from './inputs/enum';

@@ -10,30 +10,9 @@ class MethodCallParam<T> {
 
 export class StringParam extends MethodCallParam<string> {}
 
-/**
- * Type guard for StringParam
- */
-export function isStringParam(param: unknown): param is StringParam {
-  return param instanceof StringParam;
-}
-
 export class BooleanParam extends MethodCallParam<boolean> {}
 
-/**
- * Type guard for StringParam
- */
-export function isBooleanParam(param: unknown): param is BooleanParam {
-  return param instanceof BooleanParam;
-}
-
 export class NumberParam extends MethodCallParam<number> {}
-
-/**
- * Type guard for NumberParam
- */
-export function isNumberParam(param: unknown): param is NumberParam {
-  return param instanceof NumberParam;
-}
 
 export type Param = StringParam | BooleanParam | NumberParam;
 
