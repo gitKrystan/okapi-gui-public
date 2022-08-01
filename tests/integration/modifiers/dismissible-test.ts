@@ -126,7 +126,15 @@ module('Integration | Modifier | dismissible', function (hooks) {
 
     clickWithinTest();
 
-    relatedTest();
+    relatedTest([
+      { elementId: 'outside', type: 'mousedown' },
+      { elementId: 'outside', type: 'dismissed' },
+      { elementId: 'outside', type: 'focusin' },
+      // Twice bc both mousedown and focus trigger dismissed :-(
+      { elementId: 'outside', type: 'dismissed' },
+      { elementId: 'outside', type: 'mouseup' },
+      { elementId: 'outside', type: 'click' },
+    ]);
 
     disableWhenTest();
   });
@@ -152,7 +160,13 @@ module('Integration | Modifier | dismissible', function (hooks) {
 
     clickWithinTest();
 
-    relatedTest();
+    relatedTest([
+      { elementId: 'outside', type: 'mousedown' },
+      { elementId: 'outside', type: 'dismissed' },
+      { elementId: 'outside', type: 'focusin' },
+      { elementId: 'outside', type: 'mouseup' },
+      { elementId: 'outside', type: 'click' },
+    ]);
 
     disableWhenTest();
   });
@@ -242,8 +256,7 @@ function focusWithinTest(): void {
   });
 }
 
-function relatedTest(): void {
-  // FIXME: What about when you click away?
+function relatedTest(expectedClickawayEvents: TrackedEvent[]): void {
   module('related', function () {
     test('it DOES NOT dismiss when a single `related` HTML element is clicked on', async function (this: Context, assert) {
       let related = document.querySelector('#related-1');
@@ -281,6 +294,8 @@ function relatedTest(): void {
 
       assert.ok(this.state.dismissedCount, 'did dismiss');
     });
+
+    clickAwayTest(expectedClickawayEvents);
   });
 }
 

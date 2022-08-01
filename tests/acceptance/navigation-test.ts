@@ -209,6 +209,13 @@ module('Acceptance | navigation', function (hooks) {
   });
 
   test('visiting /Direwolf/provider/notifier-slack/api/Notifier', async function (assert) {
+    // FIXME:
+    let testingFeaturesService = this.owner.lookup(
+      'service:features'
+    ) as TestingFeaturesService;
+
+    testingFeaturesService.enable('enum');
+
     await visit('/Direwolf/provider/notifier-slack/api/Notifier');
 
     assert.strictEqual(

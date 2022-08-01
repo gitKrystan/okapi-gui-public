@@ -1,0 +1,61 @@
+@use '../abstracts/var';
+
+// BASE POSITIONER STYLES
+// NOTE: We do not control these class names
+
+.positioner {
+  position: absolute;
+  z-index: var.$positioner-z-index;
+}
+
+.positioner-container {
+  .positioner[data-popper-placement='top-start'] &,
+  .positioner[data-popper-placement='bottom-start'] &,
+  .positioner[data-popper-placement='right-start'] &,
+  .positioner[data-popper-placement='right-right'] & {
+    transform-origin: left;
+  }
+
+  .positioner[data-popper-placement='top-end'] &,
+  .positioner[data-popper-placement='bottom-end'] &,
+  .positioner[data-popper-placement='left-start'] &,
+  .positioner[data-popper-placement='left-end'] & {
+    transform-origin: right;
+  }
+}
+
+.positioner-arrow,
+.positioner-arrow::before {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+}
+
+.positioner-arrow {
+  visibility: hidden;
+
+  .positioner[data-popper-placement^='top'] & {
+    bottom: -3px;
+  }
+
+  .positioner[data-popper-placement^='right'] & {
+    left: -3px;
+  }
+
+  .positioner[data-popper-placement^='bottom'] & {
+    top: -3px;
+  }
+
+  .positioner[data-popper-placement^='left'] & {
+    right: -3px;
+  }
+}
+
+.positioner-arrow::before {
+  content: '';
+  visibility: visible;
+  top: 0;
+  left: 0;
+  transform: rotate(45deg);
+}
