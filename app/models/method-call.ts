@@ -1,20 +1,35 @@
 import { tracked } from '@glimmer/tracking';
-import Method, { ApiMethodParam } from 'okapi/models/method';
+import Method, {
+  ApiMethodParam,
+  BooleanMethodParam,
+  EnumMethodParam,
+  EnumMethodParamOption,
+  NumberMethodParam,
+  StringMethodParam,
+} from 'okapi/models/method';
 import ServerService from 'okapi/services/server';
 
-class MethodCallParam<T> {
-  constructor(readonly info: ApiMethodParam) {}
+class MethodCallParam<T, V> {
+  constructor(readonly info: T) {}
 
-  @tracked value: T | undefined;
+  @tracked value: V | undefined;
 }
 
-export class StringParam extends MethodCallParam<string> {}
+export class StringParam extends MethodCallParam<StringMethodParam, string> {}
 
-export class BooleanParam extends MethodCallParam<boolean> {}
+export class BooleanParam extends MethodCallParam<
+  BooleanMethodParam,
+  boolean
+> {}
 
-export class NumberParam extends MethodCallParam<number> {}
+export class NumberParam extends MethodCallParam<NumberMethodParam, number> {}
 
-export type Param = StringParam | BooleanParam | NumberParam;
+export class EnumParam extends MethodCallParam<
+  EnumMethodParam,
+  EnumMethodParamOption
+> {}
+
+export type Param = StringParam | BooleanParam | NumberParam | EnumParam;
 
 function makeMethodCallParam(info: ApiMethodParam): Param {
   switch (info.type) {
@@ -24,6 +39,8 @@ function makeMethodCallParam(info: ApiMethodParam): Param {
       return new BooleanParam(info);
     case 'number':
       return new NumberParam(info);
+    case 'enum':
+      return new EnumParam(info);
   }
 }
 

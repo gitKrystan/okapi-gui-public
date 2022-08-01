@@ -16,6 +16,14 @@ $-border-color: var(--contrast2);
   justify-content: space-between;
 }
 
+.Combobox__button--readonly {
+  cursor: text;
+}
+
+.Combobox__button--empty {
+  color: var(--contrast2);
+}
+
 .Combobox__dropdown {
   padding: 0.5rem 0;
   border: 1px solid $-border-color;

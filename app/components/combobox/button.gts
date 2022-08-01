@@ -1,6 +1,8 @@
 import { on } from '@ember/modifier';
+import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { modifier } from 'ember-modifier';
+
 import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
 
@@ -9,6 +11,7 @@ export interface ComboboxButtonSignature {
   Args: {
     listboxId: string;
     expanded: boolean;
+    readonly: boolean;
     onInsert(target: HTMLElement): void;
     onKeydown(e: KeyboardEvent): void;
     onClick(e: Event): void;
@@ -27,7 +30,7 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
   <template>
     <Button
       ...attributes
-      class="Combobox__button"
+      class="Combobox__button {{if @readonly 'Combobox__button--readonly'}}"
       role="combobox"
       aria-haspopup="listbox"
       aria-controls="{{@listboxId}}"
@@ -35,11 +38,18 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
       data-test-combobox-button
       {{this.didInsert}}
       {{on "keydown" @onKeydown}}
-      {{on "click" @onClick}}
+      {{on "click" this.onClick}}
     >
-      {{yield}} <Icon @type="solid" @id={{if @expanded "chevron-up" "chevron-down"}} />
+      {{yield}}
+      {{#if this.enabled}}
+        <Icon @type="solid" @id={{if @expanded "chevron-up" "chevron-down"}} />
+      {{/if}}
     </Button>
   </template>
+
+  private get enabled(): boolean {
+    return !this.args.readonly;
+  }
 
   private didInsert = modifier(
     (element: HTMLButtonElement) => {
@@ -47,6 +57,12 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
     },
     { eager: false }
   );
+
+  @action private onClick(e: Event): void {
+    if (this.enabled) {
+      this.args.onClick(e);
+    }
+  }
 }
 
 declare module '@glint/environment-ember-loose/registry' {

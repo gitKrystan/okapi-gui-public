@@ -60,7 +60,8 @@ textarea {
     color: var(--contrast5);
 
     &::placeholder {
-      color: var(--contrast4);
+      opacity: 1;
+      color: var(--contrast2);
     }
   }
 

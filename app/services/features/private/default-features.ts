@@ -1,4 +1,4 @@
-import { Features, InternalFeature } from 'okapi/services/features';
+import { Features /* InternalFeature */ } from 'okapi/services/features';
 
 /**
  * Function that returns the initial Features object with defaults to be
@@ -7,9 +7,5 @@ import { Features, InternalFeature } from 'okapi/services/features';
  * Input new features here!
  */
 export default function getDefaultFeatures(): Features {
-  return {
-    enum: new InternalFeature('Enum', {
-      description: 'Enum inputs',
-    }),
-  };
+  return {};
 }

@@ -89,26 +89,28 @@ async function toggleDarkMode(
   assert: Assert,
   options: SnapshotOptions | undefined
 ): Promise<void> {
-  let toggle = find('[data-test-theme-toggle-button]');
-
-  if (toggle) {
-    await click(toggle);
-    assert
-      .dom(toggle)
-      .hasAria(
-        'checked',
-        toDark ? 'true' : 'false',
-        'snapshot setup: toggle checked'
-      );
-  } else {
-    emberAssert(
-      'snapshot setup failure: no data-test-theme-toggle-button element \
-      detected. For non-acceptance tests, you must pass in options.owner',
-      options?.owner
-    );
+  if (options?.owner) {
     let theme = options.owner.lookup('service:theme') as ThemeService;
     theme.toggle();
     await settled();
+  } else {
+    let toggle = find('[data-test-theme-toggle-button]');
+
+    if (toggle) {
+      await click(toggle);
+      assert
+        .dom(toggle)
+        .hasAria(
+          'checked',
+          toDark ? 'true' : 'false',
+          'snapshot setup: toggle checked'
+        );
+    } else {
+      emberAssert(
+        'snapshot setup failure: no data-test-theme-toggle-button element \
+      detected. For non-acceptance tests, you must pass in options.owner'
+      );
+    }
   }
 }
 

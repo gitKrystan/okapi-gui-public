@@ -1,6 +1,5 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import flag from 'okapi/components/flag';
 
 import Token from 'okapi/components/syntax/token';
 import { Param } from 'okapi/models/method-call';
@@ -40,6 +39,8 @@ export default class ParamList extends Component<ParamListSig> {
         return BooleanInput;
       case 'number':
         return NumberInput;
+      case 'enum':
+        return EnumInput as typeof Component<ParamInputSig<Param>>;
     }
   }
 
@@ -69,25 +70,6 @@ export default class ParamList extends Component<ParamListSig> {
               {{/let}}
             {{/if}}
           </li>
-
-          {{#flag "enum"}}
-            <li class="MethodInfo__item">
-              {{!-- FIXME: Connect label to button --}}
-              <label>
-                <div>
-                  <code class="Syntax">
-                    <Token @type="param">Enumy</Token>
-                    <Token @type="type"> TBD</Token>
-                    <Token @type="punctuation">;</Token>
-                  </code>
-                  <p>Choose one</p>
-                </div>
-              </label>
-              {{#if @formEnabled}}
-                <EnumInput />
-              {{/if}}
-            </li>
-          {{/flag}}
         {{/each}}
       </ul>
     {{/if}}

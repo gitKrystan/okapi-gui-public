@@ -1,8 +1,38 @@
-export type ApiMethodParam = {
-  name: string; // e.g. 'target'
-  description: string; // e.g. 'the body of the notification'
-  type: 'string' | 'boolean' | 'number';
+export type StringMethodParam = {
+  type: 'string';
+  name: string;
+  description: string;
 };
+
+export type BooleanMethodParam = {
+  type: 'boolean';
+  name: string;
+  description: string;
+};
+
+export type NumberMethodParam = {
+  type: 'number';
+  name: string;
+  description: string;
+};
+
+export type EnumMethodParam = {
+  type: 'enum';
+  name: string;
+  description: string;
+  options: EnumMethodParamOption[];
+};
+
+export type EnumMethodParamOption = {
+  name: string;
+  description?: string;
+};
+
+export type ApiMethodParam =
+  | StringMethodParam
+  | BooleanMethodParam
+  | NumberMethodParam
+  | EnumMethodParam;
 
 export type MethodParams = {
   name: string; // e.g. 'Notify'
