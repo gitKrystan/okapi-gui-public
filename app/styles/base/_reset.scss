@@ -109,10 +109,12 @@ ul {
   border-collapse: collapse;
 }
 
-:focus-visible {
-  outline-color: var(--cyan);
+button:not(:disabled) {
+  :where(&) {
+    cursor: pointer;
+  }
 }
 
-button:not(:disabled) {
-  cursor: pointer;
+:focus-visible {
+  outline-color: var(--cyan);
 }

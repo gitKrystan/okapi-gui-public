@@ -20,7 +20,9 @@ import isPrintableCharacter from 'okapi/utils/is-printable-character';
 
 interface SelectOnlyComboboxSignature<T> {
   Element: HTMLDivElement;
-  Args: Omit<ListboxSelectionSignature<T>['Args'], 'list'>;
+  Args: Omit<ListboxSelectionSignature<T>['Args'], 'list'> & {
+    readonly: boolean
+  };
   Blocks: {
     trigger: [
       Button: WithBoundArgs<
@@ -84,6 +86,7 @@ export default class SelectOnlyCombobox<T> extends Component<
                   onInsert=p.registerAnchor
                   onKeydown=(fn this.handleTriggerKeydown p nav.moveFocusTo)
                   onClick=(fn this.handleTriggerClick p nav.moveFocusTo)
+                  readonly=@readonly
                 )
                 p
               to="trigger"

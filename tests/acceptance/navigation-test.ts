@@ -1,12 +1,12 @@
 import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
+import { module, test } from 'qunit';
+
 import Project from 'okapi/models/project';
-import TestingFeaturesService from 'okapi/services/features/-testing';
 import TestingLocationService from 'okapi/services/location/-testing';
 import TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
-import { module, test } from 'qunit';
 
 let server: TestingServerService;
 let projects: Project[];
@@ -102,13 +102,6 @@ module('Acceptance | navigation', function (hooks) {
   });
 
   test('visiting /', async function (assert) {
-    // FIXME:
-    let testingFeaturesService = this.owner.lookup(
-      'service:features'
-    ) as TestingFeaturesService;
-
-    testingFeaturesService.enable('enum');
-
     await visit('/');
 
     assert.strictEqual(currentURL(), '/');
@@ -209,13 +202,6 @@ module('Acceptance | navigation', function (hooks) {
   });
 
   test('visiting /Direwolf/provider/notifier-slack/api/Notifier', async function (assert) {
-    // FIXME:
-    let testingFeaturesService = this.owner.lookup(
-      'service:features'
-    ) as TestingFeaturesService;
-
-    testingFeaturesService.enable('enum');
-
     await visit('/Direwolf/provider/notifier-slack/api/Notifier');
 
     assert.strictEqual(

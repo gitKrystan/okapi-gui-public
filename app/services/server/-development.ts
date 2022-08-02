@@ -52,6 +52,21 @@ export default class DevelopmentServerService extends ServerService {
                   description: 'the body of the notification',
                   type: 'string',
                 },
+                {
+                  name: 'emoji',
+                  description: 'emoji to display after the notification',
+                  type: 'enum',
+                  options: [
+                    {
+                      name: ':grimace:',
+                      description: 'Perfect for awkward messages.',
+                    },
+                    {
+                      name: ':joy:',
+                      description: 'Perfect for hilarious messages.',
+                    },
+                  ],
+                },
               ],
               response: [
                 {
@@ -63,6 +78,21 @@ export default class DevelopmentServerService extends ServerService {
                   name: 'details',
                   description: 'failure message or success info. may be blank',
                   type: 'string',
+                },
+                {
+                  name: 'emoji',
+                  description: 'emoji displayed after the notification',
+                  type: 'enum',
+                  options: [
+                    {
+                      name: ':grimace:',
+                      description: 'Perfect for awkward messages.',
+                    },
+                    {
+                      name: ':joy:',
+                      description: 'Perfect for hilarious messages.',
+                    },
+                  ],
                 },
               ],
             },
@@ -127,6 +157,10 @@ export default class DevelopmentServerService extends ServerService {
     return {
       success: true,
       details: `Called ${method.name} with args ${JSON.stringify(args)}`,
+      emoji: {
+        name: ':grimace:',
+        description: 'Perfect for awkward messages.',
+      },
     };
   }
 }

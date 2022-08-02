@@ -6,61 +6,59 @@ import eq from 'ember-truth-helpers/helpers/eq';
 import or from 'ember-truth-helpers/helpers/or';
 
 import Combobox from 'okapi/components/combobox/select-only';
+import { EnumMethodParamOption } from 'okapi/models/method';
+import { EnumParam } from 'okapi/models/method-call';
+import ParamInputSig from './signature';
 
-export interface ParamListSig {
-  Element: HTMLElement;
-  Args: {},
-  Blocks: {
-    default: [];
+export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
+  private get items(): EnumMethodParamOption[] {
+    return this.args.param.info.options;
   }
-}
 
-type EnumItem = {
-  name: string;
-  description: string;
-}
-
-export default class ParamList extends Component<ParamListSig> {
   private get showDescription(): boolean {
-    return this.todoEnumItems.any(i => isPresent(i.description));
+    return this.items.any(i => isPresent(i.description));
   }
 
-  private get todoEnumItems(): EnumItem[] {
-    return [
-      { name: 'yes', description: 'Absolutely yes' },
-      { name: 'no', description: 'Absolutely no' },
-      { name: 'maybe', description: 'Absolutely maybe' }
-    ];
+  private get committedItem(): EnumMethodParamOption | undefined {
+    return this.args.param.value;
   }
 
-  @tracked private committedItem?: EnumItem;
-
-  @action private commitItem(item: EnumItem): void {
+  @action private commitItem(item: EnumMethodParamOption): void {
     this.descriptionItem = item;
-    this.committedItem = item;
+    this.args.param.value = item;
   }
 
-  @tracked private descriptionItem?: EnumItem;
+  @tracked private descriptionItem?: EnumMethodParamOption;
 
-  @action private updateDescription(item: EnumItem): void {
+  @action private updateDescription(item: EnumMethodParamOption): void {
     this.descriptionItem = item;
   }
 
   <template>
     <Combobox
-      @items={{this.todoEnumItems}}
+      @items={{this.items}}
       @onItemMousemove={{this.updateDescription}}
       @onSelection={{this.updateDescription}}
       @onCommit={{this.commitItem}}
       @initialSelection={{this.committedItem}}
+      @readonly={{@readonly}}
     >
       <:trigger as |Trigger|>
-        <Trigger aria-labelledby="listbox-label">
-          {{or this.committedItem.name "Click to select."}}
+        <Trigger
+          aria-labelledby="listbox-label"
+          data-test-param-input={{@id}}
+        >
+          {{#if this.committedItem}}
+            {{this.committedItem.name}}
+          {{else}}
+            <span class="Combobox__button--empty">
+              {{if @readonly "..." "Click to select."}}
+            </span>
+          {{/if}}
         </Trigger>
       </:trigger>
       <:content as |List|>
-        <List aria-labelledby="listbox-label">
+        <List data-test-enum-input-list aria-labelledby="listbox-label">
           <:items as |item|>
             <div class="Combobox__item {{if (eq item this.descriptionItem) 'Combobox__item--is-description-item'}}">
               {{item.name}}

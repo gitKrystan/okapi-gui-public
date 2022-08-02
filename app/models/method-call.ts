@@ -1,41 +1,35 @@
 import { tracked } from '@glimmer/tracking';
-import Method, { ApiMethodParam } from 'okapi/models/method';
+import Method, {
+  ApiMethodParam,
+  BooleanMethodParam,
+  EnumMethodParam,
+  EnumMethodParamOption,
+  NumberMethodParam,
+  StringMethodParam,
+} from 'okapi/models/method';
 import ServerService from 'okapi/services/server';
 
-class MethodCallParam<T> {
-  constructor(readonly info: ApiMethodParam) {}
+class MethodCallParam<T, V> {
+  constructor(readonly info: T) {}
 
-  @tracked value: T | undefined;
+  @tracked value: V | undefined;
 }
 
-export class StringParam extends MethodCallParam<string> {}
+export class StringParam extends MethodCallParam<StringMethodParam, string> {}
 
-/**
- * Type guard for StringParam
- */
-export function isStringParam(param: unknown): param is StringParam {
-  return param instanceof StringParam;
-}
+export class BooleanParam extends MethodCallParam<
+  BooleanMethodParam,
+  boolean
+> {}
 
-export class BooleanParam extends MethodCallParam<boolean> {}
+export class NumberParam extends MethodCallParam<NumberMethodParam, number> {}
 
-/**
- * Type guard for StringParam
- */
-export function isBooleanParam(param: unknown): param is BooleanParam {
-  return param instanceof BooleanParam;
-}
+export class EnumParam extends MethodCallParam<
+  EnumMethodParam,
+  EnumMethodParamOption
+> {}
 
-export class NumberParam extends MethodCallParam<number> {}
-
-/**
- * Type guard for NumberParam
- */
-export function isNumberParam(param: unknown): param is NumberParam {
-  return param instanceof NumberParam;
-}
-
-export type Param = StringParam | BooleanParam | NumberParam;
+export type Param = StringParam | BooleanParam | NumberParam | EnumParam;
 
 function makeMethodCallParam(info: ApiMethodParam): Param {
   switch (info.type) {
@@ -45,6 +39,8 @@ function makeMethodCallParam(info: ApiMethodParam): Param {
       return new BooleanParam(info);
     case 'number':
       return new NumberParam(info);
+    case 'enum':
+      return new EnumParam(info);
   }
 }
 
