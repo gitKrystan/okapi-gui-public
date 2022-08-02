@@ -64,6 +64,7 @@ jobs:
           PERCY_ENABLE: '1'
           COVERAGE: 'true'
       - uses: romeovs/lcov-reporter-action@v0.2.16
+        if: github.actor != 'dependabot[bot]'
         with:
           lcov-file: coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
