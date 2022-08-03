@@ -1,4 +1,3 @@
-import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
 
@@ -71,6 +70,7 @@ export default class ParamList extends Component<ParamListSig> {
                       @id={{this.inputId param}}
                       @readonly={{this.readonly}}
                       {{validate}}
+                      class={{if param.hasErrors 'u--invalid'}}
                     />
                   </HandleInputError>
                 </div>

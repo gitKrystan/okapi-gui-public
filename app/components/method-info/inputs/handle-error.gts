@@ -17,7 +17,7 @@ export interface HandleInputErrorSig {
 export default class HandleInputError extends Component<HandleInputErrorSig> {
   <template>
     {{yield this.validate}}
-    {{#if @param.errorSet.size}}
+    {{#if @param.hasErrors}}
       <ul class="MethodInfo__error" role="alert">
         {{#each @param.errorSet as |error|}}
           <li>{{error}}</li>

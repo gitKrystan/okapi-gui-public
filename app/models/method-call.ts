@@ -9,14 +9,27 @@ import Method, {
   StringMethodParam,
 } from 'okapi/models/method';
 import ServerService from 'okapi/services/server';
+import { squish } from 'okapi/utils/string-util';
 import { TrackedSet } from 'tracked-built-ins';
 
-abstract class MethodCallParam<T, V> {
+abstract class MethodCallParam<T, V, I> {
   constructor(readonly info: T) {}
 
-  @tracked value: V | undefined;
+  @tracked inputValue: I | null | undefined;
+
+  get value(): V | undefined {
+    return this.parse(this.inputValue);
+  }
+
+  set value(newValue: V | undefined) {
+    this.inputValue = this.format(newValue);
+  }
 
   readonly errorSet = new TrackedSet<string>();
+
+  get hasErrors(): boolean {
+    return this.errorSet.size > 0;
+  }
 
   @action validate(): boolean {
     this.errorSet.clear();
@@ -24,41 +37,100 @@ abstract class MethodCallParam<T, V> {
     return this.errorSet.size === 0;
   }
 
-  protected abstract _validate(): void;
+  protected _validate(): void {
+    // No-op by default. Override to add validations.
+  }
+
+  protected abstract parse(inputValue: I | undefined | null): V | undefined;
+
+  protected abstract format(value: V | undefined): I | undefined;
 }
 
-export class StringParam extends MethodCallParam<StringMethodParam, string> {
-  _validate(): void {
-    if (typeof this.value !== 'string') {
-      this.errorSet.add('Must supply a string value');
-    }
+export class StringParam extends MethodCallParam<
+  StringMethodParam,
+  string,
+  string
+> {
+  protected parse(inputValue: string | undefined | null): string | undefined {
+    return squish(inputValue) || undefined;
+  }
+
+  protected format(value: string | undefined): string | undefined {
+    return value;
   }
 }
 
-export class BooleanParam extends MethodCallParam<BooleanMethodParam, boolean> {
-  _validate(): void {
-    if (typeof this.value !== 'boolean') {
-      this.errorSet.add('Must supply a boolean value');
-    }
+export class BooleanParam extends MethodCallParam<
+  BooleanMethodParam,
+  boolean,
+  boolean
+> {
+  protected parse(inputValue: boolean | undefined | null): boolean | undefined {
+    return inputValue ?? undefined;
+  }
+
+  protected format(value: boolean | undefined): boolean | undefined {
+    return value;
   }
 }
 
-export class NumberParam extends MethodCallParam<NumberMethodParam, number> {
+// NOTE: Value maybe be NaN or an otherwise invalid number but `validate` will fail in this case.
+export class NumberParam extends MethodCallParam<
+  NumberMethodParam,
+  number,
+  string
+> {
+  private pattern = '^[-,0-9.]+$';
+
   _validate(): void {
-    if (typeof this.value !== 'number') {
-      this.errorSet.add('Must supply a number value');
+    if (this.value !== undefined && isNaN(this.value)) {
+      this.errorSet.add('Value is not a number');
+    }
+
+    if (this.inputValue) {
+      let pattern = new RegExp(this.pattern);
+      if (!pattern.test(this.inputValue)) {
+        // TODO: Be more specific re: float, integer, signed, etc
+        this.errorSet.add('Value contains invalid characters');
+      }
+    }
+  }
+
+  protected parse(inputValue: string | undefined | null): number | undefined {
+    if (inputValue) {
+      inputValue = squish(inputValue);
+      let sign = inputValue.startsWith('-') ? -1 : 1;
+      inputValue = inputValue.replace(/[^0-9.]/g, ''); // remove non-numeric characters
+      return sign * parseFloat(inputValue);
+    } else {
+      return undefined;
+    }
+  }
+
+  protected format(value: number | undefined): string | undefined {
+    if (value === undefined || value === null) {
+      return undefined;
+    } else {
+      return value.toLocaleString();
     }
   }
 }
 
 export class EnumParam extends MethodCallParam<
   EnumMethodParam,
+  EnumMethodParamOption,
   EnumMethodParamOption
 > {
-  _validate(): void {
-    if (!this.value) {
-      this.errorSet.add('Must choose a value');
-    }
+  protected parse(
+    inputValue: EnumMethodParamOption | undefined
+  ): EnumMethodParamOption | undefined {
+    return inputValue;
+  }
+
+  protected format(
+    value: EnumMethodParamOption | undefined
+  ): EnumMethodParamOption | undefined {
+    return value;
   }
 }
 
@@ -100,7 +172,9 @@ export default class MethodCall {
       if (!fieldValid) {
         isValid = false;
       }
-      request[r.info.name] = r.value;
+      if (r.value !== undefined) {
+        request[r.info.name] = r.value;
+      }
     });
 
     if (isValid) {
