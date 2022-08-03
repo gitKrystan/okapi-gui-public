@@ -26,17 +26,17 @@ class State<T> {
 
   @tracked initialSelection?: T;
 
-  @tracked committedItem?: T;
+  @tracked selection?: T;
 
-  @tracked selectedItem?: T;
+  @tracked focusedItem?: T;
 
-  @action handleCommit(item: T): void {
+  @action handleSelect(item: T): void {
     this.initialSelection = item;
-    this.committedItem = item;
+    this.selection = item;
   }
 
-  @action handleSelection(item: T): void {
-    this.selectedItem = item;
+  @action handleFocus(item: T): void {
+    this.focusedItem = item;
   }
 
   extraClicks = 0;
@@ -45,25 +45,25 @@ class State<T> {
     this.extraClicks++;
   }
 
-  assertSelection(n: number): void {
+  assertFocus(n: number): void {
     this.assert.dom(listItem(n)).isFocused();
     this.assert.strictEqual(
-      this.selectedItem,
+      this.focusedItem,
       this.items[n],
-      `Item at index ${n} is selected`
+      `Item at index ${n} is focused`
     );
   }
 
-  assertCommit(n: number): void {
+  assertSelect(n: number): void {
     this.assert.strictEqual(
-      this.selectedItem,
+      this.focusedItem,
       this.items[n],
-      `Item at index ${n} is selected`
+      `Item at index ${n} is focused`
     );
     this.assert.strictEqual(
-      this.committedItem,
+      this.selection,
       this.items[n],
-      `Item at index ${n} is committed`
+      `Item at index ${n} is selected`
     );
   }
 }
@@ -78,13 +78,13 @@ module('Integration | Component | combobox/select-only', function (hooks) {
       await render(hbs`
         <Combobox::SelectOnly
           @initialSelection={{this.state.initialSelection}}
-          @onSelection={{this.state.handleSelection}}
-          @onCommit={{this.state.handleCommit}}
+          @onFocus={{this.state.handleFocus}}
+          @onSelect={{this.state.handleSelect}}
           @items={{this.state.items}}
         >
           <:trigger as |Trigger|>
             <Trigger aria-label="Select your favorite animal">
-              {{or this.state.committedItem "I hate animals"}}
+              {{or this.state.selection "I hate animals"}}
             </Trigger>
           </:trigger>
           <:content as |List|>
@@ -115,69 +115,69 @@ module('Integration | Component | combobox/select-only', function (hooks) {
         await keydown('ArrowDown');
 
         assert.dom(list).exists('Trigger ArrowDown keydown opens list');
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await keydown('ArrowDown');
 
-        this.state.assertSelection(1);
+        this.state.assertFocus(1);
 
         await keydown('ArrowDown');
 
-        this.state.assertSelection(2);
+        this.state.assertFocus(2);
 
         await keydown('ArrowDown');
 
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await keydown('ArrowUp');
 
-        this.state.assertSelection(2);
+        this.state.assertFocus(2);
 
         await keydown('ArrowUp');
 
-        this.state.assertSelection(1);
+        this.state.assertFocus(1);
 
         await keydown('ArrowUp');
 
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await keydown('Enter');
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(0);
+        this.state.assertSelect(0);
         assert.dom(trigger).isFocused();
 
         await keydown('ArrowDown');
 
         assert.dom(list).exists('Trigger ArrowDown keydown opens list again');
-        this.state.assertSelection(1);
+        this.state.assertFocus(1);
 
         await keydown('Enter');
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(1);
+        this.state.assertSelect(1);
         assert.dom(trigger).isFocused();
 
         await keydown('A');
 
         assert.dom(list).exists('Keydown opens list again');
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await keydown('Enter');
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(0);
+        this.state.assertSelect(0);
         assert.dom(trigger).isFocused();
 
         await keydown('ArrowDown');
 
         assert.dom(list).exists('Trigger ArrowDown keydown opens list again');
-        this.state.assertSelection(1);
+        this.state.assertFocus(1);
 
         await keydown('ArrowUp', { altKey: true });
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(1);
+        this.state.assertSelect(1);
         assert.dom(trigger).isFocused();
       });
 
@@ -192,23 +192,23 @@ module('Integration | Component | combobox/select-only', function (hooks) {
         await click(trigger);
 
         assert.dom(list).exists('Trigger click opens list');
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await click(listItem(0));
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(0);
+        this.state.assertSelect(0);
         assert.dom(trigger).isFocused();
 
         await click(trigger);
 
         assert.dom(list).exists('Trigger click opens list again');
-        this.state.assertSelection(0);
+        this.state.assertFocus(0);
 
         await click(listItem(1));
 
         assert.dom(list).doesNotExist();
-        this.state.assertCommit(1);
+        this.state.assertSelect(1);
         assert.dom(trigger).isFocused();
       });
     });
@@ -239,36 +239,36 @@ module('Integration | Component | combobox/select-only', function (hooks) {
           await keydown('ArrowDown');
 
           assert.dom(list).exists('Trigger ArrowDown keydown opens list');
-          this.state.assertSelection(nextIndex);
+          this.state.assertFocus(nextIndex);
 
           await keydown('Enter');
 
           assert.dom(list).doesNotExist();
-          this.state.assertCommit(nextIndex);
+          this.state.assertSelect(nextIndex);
           assert.dom(trigger).isFocused();
 
           await keydown('ArrowDown', { altKey: true });
           assert
             .dom(list)
             .exists('Trigger arrow keydown + alt opens list again');
-          this.state.assertSelection(nextIndex);
+          this.state.assertFocus(nextIndex);
 
           await tab();
 
           assert.dom(list).doesNotExist();
-          this.state.assertCommit(nextIndex);
+          this.state.assertSelect(nextIndex);
 
           await focus(trigger);
           await keydown('ArrowDown', { altKey: true });
           assert
             .dom(list)
             .exists('Trigger arrow keydown + alt opens list again');
-          this.state.assertSelection(nextIndex);
+          this.state.assertFocus(nextIndex);
 
           await keydown(' ');
 
           assert.dom(list).doesNotExist();
-          this.state.assertCommit(nextIndex);
+          this.state.assertSelect(nextIndex);
           assert.dom(trigger).isFocused();
         }
       });
@@ -294,23 +294,23 @@ module('Integration | Component | combobox/select-only', function (hooks) {
           await click(trigger);
 
           assert.dom(list).exists('Trigger click opens list');
-          this.state.assertSelection(index);
+          this.state.assertFocus(index);
 
           await click(listItem(nextIndex));
 
           assert.dom(list).doesNotExist();
-          this.state.assertCommit(nextIndex);
+          this.state.assertSelect(nextIndex);
           assert.dom(trigger).isFocused();
 
           await click(trigger);
 
           assert.dom(list).exists('Trigger click opens list again');
-          this.state.assertSelection(nextIndex);
+          this.state.assertFocus(nextIndex);
 
           await click('#outside');
 
           assert.dom(list).doesNotExist();
-          this.state.assertCommit(nextIndex);
+          this.state.assertSelect(nextIndex);
           assert.dom('#outside').isFocused();
         }
       });
@@ -324,13 +324,13 @@ module('Integration | Component | combobox/select-only', function (hooks) {
       await render(hbs`
         <Combobox::SelectOnly
           @initialSelection={{this.state.initialSelection}}
-          @onSelection={{this.state.handleSelection}}
-          @onCommit={{this.state.handleCommit}}
+          @onFocus={{this.state.handleFocus}}
+          @onSelect={{this.state.handleSelect}}
           @items={{this.state.items}}
         >
           <:trigger as |Trigger|>
             <Trigger aria-label="Select your favorite animal">
-              {{or this.state.committedItem "I hate animals"}}
+              {{or this.state.selection "I hate animals"}}
             </Trigger>
           </:trigger>
           <:content as |List|>
@@ -373,15 +373,15 @@ module('Integration | Component | combobox/select-only', function (hooks) {
       await keydown('ArrowDown');
 
       assert.dom(list).exists('Trigger ArrowDown keydown opens list');
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await keydown('ArrowDown');
 
-      this.state.assertSelection(1);
+      this.state.assertFocus(1);
 
       await keydown('ArrowDown');
 
-      this.state.assertSelection(2);
+      this.state.assertFocus(2);
 
       await keydown('ArrowDown');
 
@@ -389,7 +389,7 @@ module('Integration | Component | combobox/select-only', function (hooks) {
 
       await keydown('ArrowDown');
 
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await keydown('ArrowUp');
 
@@ -397,31 +397,31 @@ module('Integration | Component | combobox/select-only', function (hooks) {
 
       await keydown('ArrowUp');
 
-      this.state.assertSelection(2);
+      this.state.assertFocus(2);
 
       await keydown('ArrowUp');
 
-      this.state.assertSelection(1);
+      this.state.assertFocus(1);
 
       await keydown('ArrowUp');
 
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await keydown('Enter');
 
       assert.dom(list).doesNotExist();
-      this.state.assertCommit(0);
+      this.state.assertSelect(0);
       assert.dom(trigger).isFocused();
 
       await keydown('ArrowDown');
 
       assert.dom(list).exists('Trigger ArrowDown keydown opens list again');
-      this.state.assertSelection(1);
+      this.state.assertFocus(1);
 
       await keydown('Enter');
 
       assert.dom(list).doesNotExist();
-      this.state.assertCommit(1);
+      this.state.assertSelect(1);
       assert.dom(trigger).isFocused();
 
       await keydown('A');
@@ -431,12 +431,12 @@ module('Integration | Component | combobox/select-only', function (hooks) {
 
       await keydown('A');
 
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await keydown('Enter');
 
       assert.dom(list).doesNotExist();
-      this.state.assertCommit(0);
+      this.state.assertSelect(0);
       assert.dom(trigger).isFocused();
 
       await keydown('ArrowDown');
@@ -455,9 +455,9 @@ module('Integration | Component | combobox/select-only', function (hooks) {
         'extra click was triggered once'
       );
       assert.strictEqual(
-        this.state.committedItem,
+        this.state.selection,
         this.state.items[0],
-        'Item at index 0 is still committed'
+        'Item at index 0 is still selected'
       );
     });
 
@@ -473,18 +473,18 @@ module('Integration | Component | combobox/select-only', function (hooks) {
       await click(trigger);
 
       assert.dom(list).exists('Trigger click opens list');
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await click(listItem(0));
 
       assert.dom(list).doesNotExist();
-      this.state.assertCommit(0);
+      this.state.assertSelect(0);
       assert.dom(trigger).isFocused();
 
       await click(trigger);
 
       assert.dom(list).exists('Trigger click opens list again');
-      this.state.assertSelection(0);
+      this.state.assertFocus(0);
 
       await click(extraItem(0));
 
@@ -494,9 +494,9 @@ module('Integration | Component | combobox/select-only', function (hooks) {
         'extra click was triggered once'
       );
       assert.strictEqual(
-        this.state.committedItem,
+        this.state.selection,
         this.state.items[0],
-        'Item at index 0 is still committed'
+        'Item at index 0 is still selected'
       );
     });
   });

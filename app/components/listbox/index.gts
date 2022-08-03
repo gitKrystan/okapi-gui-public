@@ -25,8 +25,8 @@ export default class Listbox<T> extends Component<ListboxSignature<T>> {
         class="Listbox"
         @items={{@items}}
         @initialSelection={{@initialSelection}}
-        @onSelection={{@onSelection}}
-        @onCommit={{@onCommit}}
+        @onFocus={{@onFocus}}
+        @onSelect={{@onSelect}}
         @list={{nav.list}}
       >
         <:items as |item|>

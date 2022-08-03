@@ -80,9 +80,10 @@ textarea {
     }
   }
 
-  &:invalid {
+  &:invalid,
+  &.u--invalid {
     :where(&) {
-      border-color: var(--red);
+      border-color: var(--orange);
     }
   }
 }

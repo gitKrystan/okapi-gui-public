@@ -101,7 +101,7 @@ export default class SelectOnlyCombobox<T> extends Component<
               }}
             >
               {{! @glint-expect-error See Signature type for explanation. }}
-              {{yield (component Selection id=this.id items=@items initialSelection=this.selection onSelection=this.onSelection onCommit=(fn this.onCommit p) onItemMousemove=this.onItemMousemove onItemKeydown=(fn this.handleItemKeydown p) list=nav.list)
+              {{yield (component Selection id=this.id items=@items initialSelection=this.focusedItem onFocus=this.onFocus onSelect=(fn this.onSelect p) onItemMousemove=this.onItemMousemove onItemKeydown=(fn this.handleItemKeydown p) list=nav.list)
                 p
                 to="content"
               }}
@@ -114,16 +114,12 @@ export default class SelectOnlyCombobox<T> extends Component<
 
   private id = guidFor(this);
 
-  // NOTE: Do not default this to `null` as the user might pass `null` as
-  // an option.
-  // We need to hoist tracking of the selection from the base component because
-  // that component is destroyed whenever the dropdown is closed.
-  @tracked protected selection = this.args.initialSelection;
+  @tracked protected focusedItem = this.args.initialSelection;
 
-  @action protected onSelection(item = this.args.initialSelection): void {
-    this.selection = item;
+  @action protected onFocus(item = this.args.initialSelection): void {
+    this.focusedItem = item;
     if (item !== undefined) {
-      this.args.onSelection?.(item);
+      this.args.onFocus?.(item);
     }
   }
 
@@ -174,7 +170,7 @@ export default class SelectOnlyCombobox<T> extends Component<
    * When the user hits "Escape", "cancel" the selection and refocus the anchor.
    */
   @action protected handleDismiss(p: PositionerAPI, e: Event): void {
-    this.onSelection();
+    this.onFocus();
     p.close();
 
     if (e instanceof KeyboardEvent && e.key === 'Escape') {
@@ -183,11 +179,11 @@ export default class SelectOnlyCombobox<T> extends Component<
     }
   }
 
-  @action protected onCommit(p: PositionerAPI, item: T): void {
+  @action protected onSelect(p: PositionerAPI, item: T): void {
     p.close();
     assert('Positioner anchor must exist', p.anchor);
     p.anchor.focus();
-    this.args.onCommit?.(item);
+    this.args.onSelect?.(item);
   }
 
   @action protected onItemMousemove(
@@ -203,17 +199,17 @@ export default class SelectOnlyCombobox<T> extends Component<
     e: KeyboardEvent
   ): void {
     if (e.key === ' ') {
-      this.onCommit(p, item);
+      this.onSelect(p, item);
     }
   }
 
   private get currentIndex(): number | null {
-    let { selection } = this;
-    if (selection === undefined) {
+    let { focusedItem } = this;
+    if (focusedItem === undefined) {
       return null;
     } else {
-      let index = this.args.items.indexOf(selection);
-      assert('expected current selection to be found in items', index >= 0);
+      let index = this.args.items.indexOf(focusedItem);
+      assert('expected current focusedItem to be found in items', index >= 0);
       return index;
     }
   }

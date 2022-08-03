@@ -23,6 +23,15 @@
   grid-column: 2;
 }
 
+.MethodInfo__input-container {
+  display: grid;
+}
+
+.MethodInfo__error {
+  margin-top: 0.5rem;
+  color: var(--orange);
+}
+
 .MethodInfo__text-input {
   padding: 0.75rem 0.5rem;
   font-size: 1rem;

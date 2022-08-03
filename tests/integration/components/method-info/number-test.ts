@@ -1,6 +1,7 @@
 import { fillIn, render, TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
+import { NumberParam } from 'okapi/models/method-call/index';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';
 
@@ -9,15 +10,22 @@ interface Context extends TestContext {
 }
 
 class State {
-  @tracked value: number | null | undefined = null;
+  readonly id = 'an-id';
+
+  readonly param = new NumberParam({
+    type: 'number',
+    name: 'A number',
+    description: 'It is a number',
+  });
+
+  @tracked readonly readonly = false;
 }
 
-module('Integration | Component | input/number', function (hooks) {
+module('Integration | Component | method-info/input/number', function (hooks) {
   setupRenderingTest(hooks);
 
   [
     { initialValue: undefined, expectedInputValue: '' },
-    { initialValue: null, expectedInputValue: '' },
     { initialValue: 1, expectedInputValue: '1' },
     { initialValue: 0, expectedInputValue: '0' },
     { initialValue: -1, expectedInputValue: '-1' },
@@ -27,15 +35,16 @@ module('Integration | Component | input/number', function (hooks) {
       initialValue
     )}`, async function (this: Context, assert) {
       this.state = new State();
-      this.state.value = initialValue;
+      this.state.param.value = initialValue;
 
       await render(
-        hbs`<Input::Number @value={{this.state.value}} @onChange={{fn (mut this.state.value)}} />`
+        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
       );
 
-      assert.dom('input').hasValue(expectedInputValue).isValid();
+      assert.dom('input').hasValue(expectedInputValue);
+      assert.true(this.state.param.validate(), 'param is valid');
       assert.strictEqual(
-        this.state.value,
+        this.state.param.value,
         initialValue,
         `state value is ${String(initialValue)}`
       );
@@ -43,7 +52,7 @@ module('Integration | Component | input/number', function (hooks) {
   });
 
   [
-    { inputValue: '', expectedValue: null },
+    { inputValue: '', expectedValue: undefined },
     { inputValue: '1', expectedValue: 1 },
     { inputValue: '0', expectedValue: 0 },
     { inputValue: '-1', expectedValue: -1 },
@@ -56,7 +65,7 @@ module('Integration | Component | input/number', function (hooks) {
       this.state = new State();
 
       await render(
-        hbs`<Input::Number @value={{this.state.value}} @onChange={{fn (mut this.state.value)}} />`
+        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
       );
 
       assert.dom('input').hasValue('', 'setup');
@@ -65,7 +74,7 @@ module('Integration | Component | input/number', function (hooks) {
 
       assert.dom('input').hasValue(inputValue).isValid();
       assert.strictEqual(
-        this.state.value,
+        this.state.param.value,
         expectedValue,
         `state value is ${String(expectedValue)}`
       );
@@ -73,26 +82,30 @@ module('Integration | Component | input/number', function (hooks) {
   });
 
   [
-    { inputValue: 'hello' },
-    { inputValue: '1hello' },
-    { inputValue: 'hello1' },
-    { inputValue: 'hel1lo' },
-  ].forEach(({ inputValue }) => {
+    { inputValue: 'hello', expectedValue: NaN },
+    { inputValue: '1hello', expectedValue: 1 },
+    { inputValue: 'hello1', expectedValue: 1 },
+    { inputValue: 'hel1lo', expectedValue: 1 },
+  ].forEach(({ inputValue, expectedValue }) => {
     test(`it handles an invalid value of ${String(
       inputValue
     )}`, async function (this: Context, assert) {
       this.state = new State();
 
       await render(
-        hbs`<Input::Number @value={{this.state.value}} @onChange={{fn (mut this.state.value)}} />`
+        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
       );
 
       assert.dom('input').hasValue('', 'setup');
 
       await fillIn('input', inputValue);
 
-      assert.dom('input').hasValue(inputValue).isNotValid();
-      assert.strictEqual(this.state.value, null, 'state value is null');
+      assert.false(this.state.param.validate(), 'param is invalid');
+      assert.deepEqual(
+        this.state.param.value,
+        expectedValue,
+        'state value is correct'
+      );
     });
   });
 });
