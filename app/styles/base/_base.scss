@@ -82,7 +82,7 @@ textarea {
 
   &:invalid {
     :where(&) {
-      border-color: var(--red);
+      border-color: var(--orange);
     }
   }
 }

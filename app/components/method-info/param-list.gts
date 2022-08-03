@@ -1,3 +1,4 @@
+import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
 
@@ -6,6 +7,7 @@ import { Param } from 'okapi/models/method-call';
 import BooleanInput from './inputs/boolean';
 import NumberInput from './inputs/number';
 import EnumInput from './inputs/enum';
+import HandleInputError from './inputs/handle-error';
 import StringInput from './inputs/string';
 import ParamInputSig from './inputs/signature';
 
@@ -52,21 +54,26 @@ export default class ParamList extends Component<ParamListSig> {
       <ul ...attributes>
         {{#each @params as |param|}}
           <li class="MethodInfo__item" data-test-method-param-list-item={{param.info.name}}>
-            <label for={{this.inputId param}}>
-                <code class="Syntax">
-                  <Token @type="param">{{param.info.name}}</Token>
-                  <Token @type="type"> {{param.info.type}}</Token>
-                  <Token @type="punctuation">;</Token>
-                </code>
-                <p>{{param.info.description}}</p>
-            </label>
+            <div id="{{this.inputId param}}-label">
+              <code class="Syntax">
+                <Token @type="param">{{param.info.name}}</Token>
+                <Token @type="type"> {{param.info.type}}</Token>
+                <Token @type="punctuation">;</Token>
+              </code>
+              <p>{{param.info.description}}</p>
+            </div>
             {{#if @formEnabled}}
               {{#let (this.componentFor param) as |ParamComponent|}}
-                <ParamComponent
-                  @param={{param}}
-                  @id={{this.inputId param}}
-                  @readonly={{this.readonly}}
-                />
+                <div class="MethodInfo__input-container">
+                  <HandleInputError @param={{param}} as |validate|>
+                    <ParamComponent
+                      @param={{param}}
+                      @id={{this.inputId param}}
+                      @readonly={{this.readonly}}
+                      {{validate}}
+                    />
+                  </HandleInputError>
+                </div>
               {{/let}}
             {{/if}}
           </li>

@@ -6,8 +6,10 @@ import ParamInputSig from './signature';
 export default class BooleanInput extends Component<ParamInputSig<BooleanParam>> {
   <template>
     <Checkbox
+      ...attributes
       id={{@id}}
       data-test-param-input={{@id}}
+      aria-labelledby="{{@id}}-label"
       @readonly={{@readonly}}
       @checked={{@param.value}}
     />

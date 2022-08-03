@@ -127,13 +127,15 @@ export default class ListboxSelection<T> extends Component<
   }
 
   @action private onItemFocus(item: T): void {
-    this.selection = item;
     this.args.onSelection?.(item);
   }
 
-  @action private onItemClick(item: T): void {
+  @action private onItemClick(item: T, e?: Event): void {
     this.selection = item;
     this.args.onCommit(item);
+    if (e) {
+      e.preventDefault();
+    }
   }
 
   @action private onItemKeydown(item: T, e: KeyboardEvent): void {

@@ -7,8 +7,10 @@ import ParamInputSig from './signature';
 export default class NumberInput extends Component<ParamInputSig<NumberParam>> {
   <template>
     <BaseNumberInput
+      ...attributes
       id={{@id}}
       class="MethodInfo__text-input"
+      aria-labelledby="{{@id}}-label"
       data-test-param-input={{@id}}
       placeholder={{if @readonly "..." "Input a number value here."}}
       readonly={{@readonly}}

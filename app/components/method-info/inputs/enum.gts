@@ -42,10 +42,12 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
       @onCommit={{this.commitItem}}
       @initialSelection={{this.committedItem}}
       @readonly={{@readonly}}
+      ...attributes
     >
       <:trigger as |Trigger|>
         <Trigger
-          aria-labelledby="listbox-label"
+          id={{@id}}
+          aria-labelledby="{{@id}}-label"
           data-test-param-input={{@id}}
         >
           {{#if this.committedItem}}
