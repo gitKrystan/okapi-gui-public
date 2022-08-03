@@ -429,11 +429,6 @@ module('Acceptance | method info', function (hooks) {
     );
     await click('[data-test-param-input=Notify-request-emoji]');
 
-    await snapshotDarkMode(assert, {
-      suffix: '(dropdown open)',
-      owner: this.owner, // so we don't dismiss when clicking toggle
-    });
-
     await triggerEvent(
       '[data-test-enum-input-list] li:nth-child(2)',
       'mousemove'
