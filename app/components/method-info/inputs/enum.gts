@@ -11,26 +11,26 @@ import { EnumParam } from 'okapi/models/method-call';
 import ParamInputSig from './signature';
 
 export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
-  private get items(): EnumMethodParamOption[] {
-    return this.args.param.info.options;
+  private get items(): [null, ...EnumMethodParamOption[]] {
+    return [null, ...this.args.param.info.options];
   }
 
   private get showDescription(): boolean {
-    return this.items.any(i => isPresent(i.description));
+    return this.items.any(i => isPresent(i?.description));
   }
 
-  private get selection(): EnumMethodParamOption | undefined {
+  private get selection(): EnumMethodParamOption | null | undefined {
     return this.args.param.value;
   }
 
-  @action private handleSelect(item: EnumMethodParamOption): void {
+  @action private handleSelect(item: EnumMethodParamOption | null): void {
     this.descriptionItem = item;
-    this.args.param.value = item;
+    this.args.param.inputValue = item;
   }
 
-  @tracked private descriptionItem?: EnumMethodParamOption;
+  @tracked private descriptionItem?: EnumMethodParamOption | null;
 
-  @action private updateDescription(item: EnumMethodParamOption): void {
+  @action private updateDescription(item: EnumMethodParamOption | null): void {
     this.descriptionItem = item;
   }
 
@@ -63,13 +63,17 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
         <List data-test-enum-input-list aria-labelledby="listbox-label">
           <:items as |item|>
             <div class="Combobox__item {{if (eq item this.descriptionItem) 'Combobox__item--is-description-item'}}">
-              {{item.name}}
+              {{or item.name "undefined"}}
             </div>
           </:items>
         </List>
         {{#if this.showDescription}}
           <div class="Combobox__dropdown__info">
-            {{or this.descriptionItem.description "No description provided."}}
+            {{#if (eq this.descriptionItem null)}}
+              If selected, this field will not be sent.
+            {{else}}
+              {{or this.descriptionItem.description "No description provided."}}
+            {{/if}}
           </div>
         {{/if}}
       </:content>

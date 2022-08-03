@@ -122,9 +122,9 @@ export class EnumParam extends MethodCallParam<
   EnumMethodParamOption
 > {
   protected parse(
-    inputValue: EnumMethodParamOption | undefined
+    inputValue: EnumMethodParamOption | null | undefined
   ): EnumMethodParamOption | undefined {
-    return inputValue;
+    return inputValue ?? undefined;
   }
 
   protected format(
