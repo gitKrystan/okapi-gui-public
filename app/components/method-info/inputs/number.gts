@@ -20,3 +20,9 @@ export default class NumberInput extends Component<ParamInputSig<NumberParam>> {
     />
   </template>
 }
+
+declare module '@glint/environment-ember-loose/registry' {
+  export default interface Registry {
+    'MethodInfo::Inputs::Number': typeof NumberInput;
+  }
+}

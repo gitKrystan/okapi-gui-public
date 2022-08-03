@@ -6,6 +6,7 @@ import { modifier } from 'ember-modifier';
 import { Param } from 'okapi/models/method-call';
 
 export interface HandleInputErrorSig {
+  Element: HTMLElement;
   Args: {
     param: Param;
   }
@@ -18,7 +19,7 @@ export default class HandleInputError extends Component<HandleInputErrorSig> {
   <template>
     {{yield this.validate}}
     {{#if @param.hasErrors}}
-      <ul class="MethodInfo__error" role="alert">
+      <ul ...attributes class="MethodInfo__error" role="alert">
         {{#each @param.errorSet as |error|}}
           <li>{{error}}</li>
         {{/each}}

@@ -252,6 +252,94 @@ module('Acceptance | method info', function (hooks) {
     });
   });
 
+  test('it can can handle invalid number inputs', async function (assert) {
+    let server = this.owner.lookup('service:server') as TestingServerService;
+    let project = Project.from({
+      name: 'Direwolf',
+      providers: [
+        {
+          id: 'notifier-slack',
+          name: 'notifier-slack',
+          apiIds: ['Notifier'],
+        },
+      ],
+      apis: [
+        {
+          id: 'Notifier',
+          name: 'Notifier',
+          providerIds: ['notifier-slack'],
+          methods: [
+            {
+              name: 'Notify',
+              description: 'Notifies a target with a message.',
+              request: [
+                {
+                  name: 'target',
+                  description: 'the target to notify',
+                  type: 'string',
+                },
+                {
+                  name: 'count',
+                  description: 'how many times the notification should happen',
+                  type: 'number',
+                },
+              ],
+              response: [
+                {
+                  name: 'details',
+                  description: 'failure message or success info. may be blank',
+                  type: 'string',
+                },
+                {
+                  name: 'count',
+                  description: 'how many times the notification happened',
+                  type: 'number',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    server.mockProjects([project]);
+    server.mockMethodCallResponse((method, args) => {
+      return {
+        count: args['count'],
+        details: `Called ${method.name} with args ${JSON.stringify(args)}`,
+      };
+    });
+
+    await visit('/Direwolf/provider/notifier-slack/api/Notifier');
+
+    await click('[data-test-method-info-toggle-form-button]');
+
+    // Include a Textarea also for Percy diffs to ensure it looks correct next
+    // to a regular Input
+    await fillIn(
+      '[data-test-param-input=Notify-request-target]',
+      '#notifications'
+    );
+    await fillIn('[data-test-param-input=Notify-request-count]', 'hello');
+
+    await click('[data-test-method-info-form] button[type="submit"]');
+
+    assert
+      .dom('[data-test-param-error=Notify-request-count]')
+      .hasText('Value is not a number Value contains invalid characters');
+    assert
+      .dom('[data-test-param-input=Notify-response-count]')
+      .hasValue('')
+      .hasAttribute('readonly');
+    assert
+      .dom('[data-test-param-input=Notify-response-details]')
+      .hasValue('')
+      .hasAttribute('readonly');
+
+    await snapshotDarkMode(assert, {
+      suffix: '(filled in form numbers)',
+    });
+  });
+
   test('it can can handle enums', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
     let project = Project.from({
@@ -347,7 +435,7 @@ module('Acceptance | method info', function (hooks) {
     });
 
     await triggerEvent(
-      '[data-test-enum-input-list] li:nth-child(1)',
+      '[data-test-enum-input-list] li:nth-child(2)',
       'mousemove'
     );
 
@@ -356,7 +444,7 @@ module('Acceptance | method info', function (hooks) {
       owner: this.owner, // so we don't dismiss when clicking toggle
     });
 
-    await click('[data-test-enum-input-list] li:nth-child(1)');
+    await click('[data-test-enum-input-list] li:nth-child(2)');
 
     await click('[data-test-method-info-form] button[type="submit"]');
 

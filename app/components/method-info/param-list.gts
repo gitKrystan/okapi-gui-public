@@ -62,10 +62,14 @@ export default class ParamList extends Component<ParamListSig> {
               <p>{{param.info.description}}</p>
             </div>
             {{#if @formEnabled}}
-              {{#let (this.componentFor param) as |ParamComponent|}}
+              {{#let (this.componentFor param) as |ParamInput|}}
                 <div class="MethodInfo__input-container">
-                  <HandleInputError @param={{param}} as |validate|>
-                    <ParamComponent
+                  <HandleInputError
+                    data-test-param-error={{this.inputId param}}
+                    @param={{param}}
+                      as |validate|
+                  >
+                    <ParamInput
                       @param={{param}}
                       @id={{this.inputId param}}
                       @readonly={{this.readonly}}
