@@ -29,14 +29,14 @@ export interface ListboxSelectionSignature<T> {
     initialSelection?: T;
 
     /**
-     * Action to call when an item is "committed" via click/Enter.
+     * Action to call when an item is "selected" via click/Enter.
      */
-    onCommit: (item: T) => void;
+    onSelect: (item: T) => void;
 
     /**
-     * Optional action to call when the "selected" item is updated.
+     * Optional action to call when the focused item is updated.
      */
-    onSelection?: (item: T) => void;
+    onFocus?: (item: T) => void;
 
     /**
      * Optional action to call when an item has a keydown event.
@@ -127,12 +127,12 @@ export default class ListboxSelection<T> extends Component<
   }
 
   @action private onItemFocus(item: T): void {
-    this.args.onSelection?.(item);
+    this.args.onFocus?.(item);
   }
 
   @action private onItemClick(item: T, e?: Event): void {
     this.selection = item;
-    this.args.onCommit(item);
+    this.args.onSelect(item);
     if (e) {
       e.preventDefault();
     }

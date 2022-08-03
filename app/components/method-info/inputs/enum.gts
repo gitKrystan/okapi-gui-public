@@ -19,11 +19,11 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
     return this.items.any(i => isPresent(i.description));
   }
 
-  private get committedItem(): EnumMethodParamOption | undefined {
+  private get selection(): EnumMethodParamOption | undefined {
     return this.args.param.value;
   }
 
-  @action private commitItem(item: EnumMethodParamOption): void {
+  @action private handleSelect(item: EnumMethodParamOption): void {
     this.descriptionItem = item;
     this.args.param.value = item;
   }
@@ -38,9 +38,9 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
     <Combobox
       @items={{this.items}}
       @onItemMousemove={{this.updateDescription}}
-      @onSelection={{this.updateDescription}}
-      @onCommit={{this.commitItem}}
-      @initialSelection={{this.committedItem}}
+      @onFocus={{this.updateDescription}}
+      @onSelect={{this.handleSelect}}
+      @initialSelection={{this.selection}}
       @readonly={{@readonly}}
       ...attributes
     >
@@ -50,8 +50,8 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
           aria-labelledby="{{@id}}-label"
           data-test-param-input={{@id}}
         >
-          {{#if this.committedItem}}
-            {{this.committedItem.name}}
+          {{#if this.selection}}
+            {{this.selection.name}}
           {{else}}
             <span class="Combobox__button--empty">
               {{if @readonly "..." "Click to select."}}
