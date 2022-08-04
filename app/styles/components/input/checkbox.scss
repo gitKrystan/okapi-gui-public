@@ -1,4 +1,8 @@
-.Checkbox-icon {
+.Checkbox {
+  display: grid;
+}
+
+.Checkbox__icon {
   display: grid;
   align-items: center;
   align-self: center;
@@ -14,7 +18,7 @@
   }
 }
 
-.Checkbox {
+.Checkbox__input {
   position: absolute;
 
   /* make element invisible w/o hiding it from screen-readers */
@@ -24,7 +28,7 @@
   clip: rect(1px, 1px, 1px, 1px);
 
   &:checked {
-    & + .Checkbox-icon {
+    & + .Checkbox__icon {
       border-color: transparent;
       background-color: var(--blue);
     }
@@ -33,13 +37,13 @@
   &:not(:disabled) {
     &:focus-visible,
     &:hover {
-      & + .Checkbox-icon {
+      & + .Checkbox__icon {
         background-color: var(--contrast2);
         cursor: pointer;
       }
 
       &:checked {
-        + .Checkbox-icon {
+        + .Checkbox__icon {
           background-color: var(--contrast2);
         }
       }

@@ -113,7 +113,17 @@ export default class DevelopmentServerService extends ServerService {
                 {
                   name: 'count',
                   description: 'how many times the mortification should happen',
-                  type: 'number',
+                  type: 'f32',
+                },
+                {
+                  name: 'count2',
+                  description: 'how many times the mortification should happen',
+                  type: 'i8',
+                },
+                {
+                  name: 'count3',
+                  description: 'how many times the mortification should happen',
+                  type: 'u8',
                 },
               ],
               response: [

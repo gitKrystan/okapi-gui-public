@@ -20,7 +20,7 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
   }
 
   private get selection(): EnumMethodParamOption | null | undefined {
-    return this.args.param.value;
+    return this.args.param.inputValue;
   }
 
   @action private handleSelect(item: EnumMethodParamOption | null): void {

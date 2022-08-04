@@ -11,7 +11,19 @@ export type BooleanMethodParam = {
 };
 
 export type NumberMethodParam = {
-  type: 'number';
+  type:
+    | 'f32'
+    | 'f64'
+    | 'i8'
+    | 'i16'
+    | 'i32'
+    | 'i64'
+    | 'i128'
+    | 'u8'
+    | 'u16'
+    | 'u32'
+    | 'u64'
+    | 'u128';
   name: string;
   description: string;
 };

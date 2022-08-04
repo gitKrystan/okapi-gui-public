@@ -1,14 +1,21 @@
 import { StringMethodParam } from 'okapi/models/method';
-import { squish } from 'okapi/utils/string-util';
 import AbstractParam from './abstract-param';
 
 export default class StringParam extends AbstractParam<
   StringMethodParam,
   string,
-  string
+  string | null
 > {
-  protected parse(inputValue: string | undefined | null): string | undefined {
-    return squish(inputValue) || undefined;
+  protected normalize(
+    rawInputValue: string | null | undefined
+  ): string | undefined {
+    return rawInputValue ?? undefined;
+  }
+
+  protected parse(
+    normalizedInputValue: string | undefined
+  ): string | undefined {
+    return normalizedInputValue;
   }
 
   protected format(value: string | undefined): string | undefined {

@@ -14,8 +14,8 @@ export default class StringInput extends Component<ParamInputSig<StringParam>> {
       data-test-param-input={{@id}}
       placeholder={{if @readonly "..." "Input a string value here."}}
       readonly={{@readonly}}
-      @value={{@param.value}}
-      {{expandingTextarea @param.value}}
+      @value={{@param.inputValue}}
+      {{expandingTextarea @param.inputValue}}
     />
   </template>
 }

@@ -11,7 +11,7 @@ export default class BooleanInput extends Component<ParamInputSig<BooleanParam>>
       data-test-param-input={{@id}}
       aria-labelledby="{{@id}}-label"
       @readonly={{@readonly}}
-      @checked={{@param.value}}
+      @checked={{@param.inputValue}}
     />
   </template>
 }

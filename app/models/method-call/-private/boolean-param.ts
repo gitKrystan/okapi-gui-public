@@ -6,8 +6,14 @@ export default class BooleanParam extends AbstractParam<
   boolean,
   boolean
 > {
-  protected parse(inputValue: boolean | undefined | null): boolean | undefined {
-    return inputValue ?? undefined;
+  protected normalize(rawInputValue: boolean | undefined): boolean | undefined {
+    return rawInputValue ?? undefined;
+  }
+
+  protected parse(
+    normalizedInputValue: boolean | undefined
+  ): boolean | undefined {
+    return normalizedInputValue;
   }
 
   protected format(value: boolean | undefined): boolean | undefined {
