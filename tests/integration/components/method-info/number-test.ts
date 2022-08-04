@@ -1,111 +1,144 @@
-import { fillIn, render, TestContext } from '@ember/test-helpers';
+import { fillIn, render, tab, TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
+import { NumberMethodParam } from 'okapi/models/method';
 import { NumberParam } from 'okapi/models/method-call/index';
 import { setupRenderingTest } from 'okapi/tests/helpers';
+import inspect from 'okapi/utils/inspect';
 import { module, test } from 'qunit';
 
 interface Context extends TestContext {
   state: State;
 }
 
+type TestCase = {
+  inputValue: string;
+  value: number | undefined;
+  expectedErrors: string[];
+};
+
 class State {
   readonly id = 'an-id';
 
-  readonly param = new NumberParam({
-    type: 'number',
-    name: 'A number',
-    description: 'It is a number',
-  });
+  readonly param: NumberParam;
 
   @tracked readonly readonly = false;
+
+  constructor(type: NumberMethodParam['type']) {
+    this.param = new NumberParam({
+      type,
+      name: 'A number',
+      description: 'It is a number',
+    });
+  }
 }
+
+const IntegerError = 'Value must be an integer';
+const NegativeError = 'Value cannot be negative';
 
 module('Integration | Component | method-info/input/number', function (hooks) {
   setupRenderingTest(hooks);
 
-  [
-    { initialValue: undefined, expectedInputValue: '' },
-    { initialValue: 1, expectedInputValue: '1' },
-    { initialValue: 0, expectedInputValue: '0' },
-    { initialValue: -1, expectedInputValue: '-1' },
-    { initialValue: 42.36, expectedInputValue: '42.36' },
-  ].forEach(({ initialValue, expectedInputValue }) => {
-    test(`it renders an input with starting value ${String(
-      initialValue
-    )}`, async function (this: Context, assert) {
-      this.state = new State();
-      this.state.param.value = initialValue;
+  itHandlesValueInput('f32', [
+    { inputValue: '', value: undefined, expectedErrors: [] },
+    { inputValue: '  ', value: undefined, expectedErrors: [] },
+    { inputValue: '-', value: undefined, expectedErrors: [] },
+    { inputValue: '.', value: undefined, expectedErrors: [] },
+    { inputValue: '1', value: 1, expectedErrors: [] },
+    { inputValue: '0', value: 0, expectedErrors: [] },
+    { inputValue: '-1', value: -1, expectedErrors: [] },
+    { inputValue: '42.36', value: 42.36, expectedErrors: [] },
+    { inputValue: '1,000', value: 1000, expectedErrors: [] },
+    { inputValue: 'hello', value: undefined, expectedErrors: [] },
+    { inputValue: '1hello', value: 1, expectedErrors: [] },
+    { inputValue: 'hello1', value: 1, expectedErrors: [] },
+    { inputValue: 'hel1lo', value: 1, expectedErrors: [] },
+    { inputValue: '42.36.78', value: 42.3678, expectedErrors: [] },
+  ]);
 
-      await render(
-        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
-      );
+  itHandlesValueInput('i32', [
+    { inputValue: '', value: undefined, expectedErrors: [] },
+    { inputValue: '  ', value: undefined, expectedErrors: [] },
+    { inputValue: '-', value: undefined, expectedErrors: [] },
+    { inputValue: '.', value: undefined, expectedErrors: [] },
+    { inputValue: '1', value: 1, expectedErrors: [] },
+    { inputValue: '0', value: 0, expectedErrors: [] },
+    { inputValue: '-1', value: -1, expectedErrors: [] },
+    { inputValue: '42.36', value: 42.36, expectedErrors: [IntegerError] },
+    { inputValue: '1,000', value: 1000, expectedErrors: [] },
+    { inputValue: 'hello', value: undefined, expectedErrors: [] },
+    { inputValue: '1hello', value: 1, expectedErrors: [] },
+    { inputValue: 'hello1', value: 1, expectedErrors: [] },
+    { inputValue: 'hel1lo', value: 1, expectedErrors: [] },
+    {
+      inputValue: '42.36.78',
+      value: 42.3678,
+      expectedErrors: [IntegerError],
+    },
+  ]);
 
-      assert.dom('input').hasValue(expectedInputValue);
-      assert.true(this.state.param.validate(), 'param is valid');
-      assert.strictEqual(
-        this.state.param.value,
-        initialValue,
-        `state value is ${String(initialValue)}`
-      );
-    });
-  });
-
-  [
-    { inputValue: '', expectedValue: undefined },
-    { inputValue: '1', expectedValue: 1 },
-    { inputValue: '0', expectedValue: 0 },
-    { inputValue: '-1', expectedValue: -1 },
-    { inputValue: '42.36', expectedValue: 42.36 },
-    { inputValue: '1,000', expectedValue: 1000 },
-  ].forEach(({ inputValue, expectedValue }) => {
-    test(`it handles an input of ${String(
-      inputValue
-    )}`, async function (this: Context, assert) {
-      this.state = new State();
-
-      await render(
-        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
-      );
-
-      assert.dom('input').hasValue('', 'setup');
-
-      await fillIn('input', inputValue);
-
-      assert.dom('input').hasValue(inputValue).isValid();
-      assert.strictEqual(
-        this.state.param.value,
-        expectedValue,
-        `state value is ${String(expectedValue)}`
-      );
-    });
-  });
-
-  [
-    { inputValue: 'hello', expectedValue: NaN },
-    { inputValue: '1hello', expectedValue: 1 },
-    { inputValue: 'hello1', expectedValue: 1 },
-    { inputValue: 'hel1lo', expectedValue: 1 },
-  ].forEach(({ inputValue, expectedValue }) => {
-    test(`it handles an invalid value of ${String(
-      inputValue
-    )}`, async function (this: Context, assert) {
-      this.state = new State();
-
-      await render(
-        hbs`<MethodInfo::Inputs::Number @id={{this.state.id}} @param={{this.state.param}} @readonly={{this.state.readonly}} />`
-      );
-
-      assert.dom('input').hasValue('', 'setup');
-
-      await fillIn('input', inputValue);
-
-      assert.false(this.state.param.validate(), 'param is invalid');
-      assert.deepEqual(
-        this.state.param.value,
-        expectedValue,
-        'state value is correct'
-      );
-    });
-  });
+  itHandlesValueInput('u32', [
+    { inputValue: '', value: undefined, expectedErrors: [] },
+    { inputValue: '  ', value: undefined, expectedErrors: [] },
+    { inputValue: '-', value: undefined, expectedErrors: [] },
+    { inputValue: '.', value: undefined, expectedErrors: [] },
+    { inputValue: '1', value: 1, expectedErrors: [] },
+    { inputValue: '0', value: 0, expectedErrors: [] },
+    { inputValue: '-1', value: -1, expectedErrors: [NegativeError] },
+    { inputValue: '42.36', value: 42.36, expectedErrors: [IntegerError] },
+    { inputValue: '1,000', value: 1000, expectedErrors: [] },
+    { inputValue: 'hello', value: undefined, expectedErrors: [] },
+    { inputValue: '1hello', value: 1, expectedErrors: [] },
+    { inputValue: 'hello1', value: 1, expectedErrors: [] },
+    { inputValue: 'hel1lo', value: 1, expectedErrors: [] },
+    {
+      inputValue: '42.36.78',
+      value: 42.3678,
+      expectedErrors: [IntegerError],
+    },
+  ]);
 });
+
+function itHandlesValueInput(
+  type: NumberMethodParam['type'],
+  cases: TestCase[]
+): void {
+  module(type, function () {
+    cases.forEach(({ inputValue, value, expectedErrors }) => {
+      test(`it handles an input of ${inspect(
+        inputValue
+      )}`, async function (this: Context, assert) {
+        this.state = new State(type);
+
+        await render(
+          hbs`
+            <MethodInfo::Validator @param={{this.state.param}} as |validator|>
+              <MethodInfo::Inputs::Number
+                @id={{this.state.id}}
+                @param={{this.state.param}}
+                @readonly={{this.state.readonly}}
+                {{validator}}
+              />
+            </MethodInfo::Validator>
+            <a href="#">Click outside</a>
+          `
+        );
+
+        assert.dom('input').hasValue('', 'setup');
+
+        await fillIn('input', inputValue);
+        await tab();
+
+        assert
+          .dom('input')
+          .hasValue(typeof value === 'number' ? value.toString() : '');
+        assert.deepEqual([...this.state.param.errorSet], expectedErrors);
+        assert.strictEqual(
+          this.state.param.value,
+          value,
+          `state value is ${inspect(value)}`
+        );
+      });
+    });
+  });
+}

@@ -29,29 +29,37 @@ interface CheckboxSignature {
     checked: boolean | undefined;
     readonly?: boolean;
   };
+  Blocks: {
+    before: [];
+    after: [];
+  }
 }
 
 /**
  * A basic reusable checkbox component with custom styles.
- * Must be placed inside of a `<label>` element.
+ *
  * Can be made "readonly" by passing `@readonly={{true}}`. (Because the
  * `readonly` attribute is essentially no-op for checkbox inputs.)
  */
 export default class Checkbox extends Component<CheckboxSignature> {
   <template>
-    <Input
-      @type="checkbox"
-      @checked={{@checked}}
-      class="Checkbox"
-      ...attributes
-      {{maybeReadonly @readonly}}
-      readonly={{@readonly}}
-    />
-    <div class="Checkbox-icon">
-      {{#if @checked}}
-        <Icon @type="solid" @id="check" />
-      {{/if}}
-    </div>
+    <label class="Checkbox">
+      {{yield to="before"}}
+      <Input
+        @type="checkbox"
+        @checked={{@checked}}
+        class="Checkbox__input"
+        ...attributes
+        {{maybeReadonly @readonly}}
+        readonly={{@readonly}}
+      />
+      <div class="Checkbox__icon">
+        {{#if @checked}}
+          <Icon @type="solid" @id="check" />
+        {{/if}}
+      </div>
+      {{yield to="after"}}
+    </label>
   </template>
 }
 

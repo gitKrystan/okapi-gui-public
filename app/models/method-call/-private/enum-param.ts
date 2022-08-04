@@ -4,12 +4,18 @@ import AbstractParam from './abstract-param';
 export default class EnumParam extends AbstractParam<
   EnumMethodParam,
   EnumMethodParamOption,
-  EnumMethodParamOption
+  EnumMethodParamOption | null
 > {
-  protected parse(
-    inputValue: EnumMethodParamOption | null | undefined
+  protected normalize(
+    rawInputValue: EnumMethodParamOption | null | undefined
   ): EnumMethodParamOption | undefined {
-    return inputValue ?? undefined;
+    return rawInputValue ?? undefined;
+  }
+
+  protected parse(
+    normalizedInputValue: EnumMethodParamOption | undefined
+  ): EnumMethodParamOption | undefined {
+    return normalizedInputValue;
   }
 
   protected format(

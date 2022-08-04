@@ -6,9 +6,9 @@ import { Param } from 'okapi/models/method-call';
 import BooleanInput from './inputs/boolean';
 import NumberInput from './inputs/number';
 import EnumInput from './inputs/enum';
-import HandleInputError from './inputs/handle-error';
 import StringInput from './inputs/string';
 import ParamInputSig from './inputs/signature';
+import Validator from './validator';
 
 export interface ParamListSig {
   Element: HTMLElement;
@@ -38,8 +38,19 @@ export default class ParamList extends Component<ParamListSig> {
         return StringInput;
       case 'boolean':
         return BooleanInput;
-      case 'number':
-        return NumberInput;
+      case 'f32':
+      case 'f64':
+      case 'i8':
+      case 'i16':
+      case 'i32':
+      case 'i64':
+      case 'i128':
+      case 'u8':
+      case 'u16':
+      case 'u32':
+      case 'u64':
+      case 'u128':
+        return NumberInput as typeof Component<ParamInputSig<Param>>;
       case 'enum':
         return EnumInput as typeof Component<ParamInputSig<Param>>;
     }
@@ -64,19 +75,19 @@ export default class ParamList extends Component<ParamListSig> {
             {{#if @formEnabled}}
               {{#let (this.componentFor param) as |ParamInput|}}
                 <div class="MethodInfo__input-container">
-                  <HandleInputError
+                  <Validator
                     data-test-param-error={{this.inputId param}}
                     @param={{param}}
-                      as |validate|
+                      as |validator|
                   >
                     <ParamInput
                       @param={{param}}
                       @id={{this.inputId param}}
                       @readonly={{this.readonly}}
-                      {{validate}}
+                      {{validator}}
                       class={{if param.hasErrors 'u--invalid'}}
                     />
-                  </HandleInputError>
+                  </Validator>
                 </div>
               {{/let}}
             {{/if}}

@@ -194,7 +194,7 @@ module('Acceptance | method info', function (hooks) {
                 {
                   name: 'count',
                   description: 'how many times the notification should happen',
-                  type: 'number',
+                  type: 'f32',
                 },
               ],
               response: [
@@ -206,7 +206,7 @@ module('Acceptance | method info', function (hooks) {
                 {
                   name: 'count',
                   description: 'how many times the notification happened',
-                  type: 'number',
+                  type: 'f32',
                 },
               ],
             },
@@ -281,7 +281,7 @@ module('Acceptance | method info', function (hooks) {
                 {
                   name: 'count',
                   description: 'how many times the notification should happen',
-                  type: 'number',
+                  type: 'u32',
                 },
               ],
               response: [
@@ -293,7 +293,7 @@ module('Acceptance | method info', function (hooks) {
                 {
                   name: 'count',
                   description: 'how many times the notification happened',
-                  type: 'number',
+                  type: 'u32',
                 },
               ],
             },
@@ -319,13 +319,13 @@ module('Acceptance | method info', function (hooks) {
       '[data-test-param-input=Notify-request-target]',
       '#notifications'
     );
-    await fillIn('[data-test-param-input=Notify-request-count]', 'hello');
+    await fillIn('[data-test-param-input=Notify-request-count]', '-42.2');
 
     await click('[data-test-method-info-form] button[type="submit"]');
 
     assert
       .dom('[data-test-param-error=Notify-request-count]')
-      .hasText('Value is not a number Value contains invalid characters');
+      .hasText('Value must be an integer Value cannot be negative');
     assert
       .dom('[data-test-param-input=Notify-response-count]')
       .hasValue('')
