@@ -53,7 +53,7 @@ export class InternalFeature {
    * Whether the flag is visible on the Labs page.
    * Always `false` for internal features.
    */
-  readonly isVisible: false = false;
+  readonly isVisible = false as const;
 
   readonly description?: string;
 
@@ -135,7 +135,7 @@ export class ExternalFeature {
    * Whether the flag is visible on the Labs page.
    * Always `true` for external features.
    */
-  readonly isVisible: true = true;
+  readonly isVisible = true as const;
 
   readonly description: string;
 
