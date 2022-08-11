@@ -24,12 +24,10 @@ function makeParam(info: ApiMethodParam): Param {
     case 'i16':
     case 'i32':
     case 'i64':
-    case 'i128':
     case 'u8':
     case 'u16':
     case 'u32':
     case 'u64':
-    case 'u128':
       return new NumberParam(info);
     case 'enum':
       return new EnumParam(info);

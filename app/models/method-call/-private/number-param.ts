@@ -5,24 +5,13 @@ import AbstractParam from './abstract-param';
 export { default as Boolean } from 'okapi/models/method-call/-private/boolean-param';
 export { default as StringParam } from 'okapi/models/method-call/-private/string-param';
 
-export enum NumberInputType {
-  SignedFloat = 'signed float',
-  SignedInteger = 'signed integer',
-  UnsignedInteger = 'unsigned integer',
-}
+const NumericInputPattern = /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
 
-function isIntegerType(type: NumberInputType): boolean {
-  return (
-    type === NumberInputType.SignedInteger ||
-    type === NumberInputType.UnsignedInteger
-  );
-}
-
-function isUnsignedType(type: NumberInputType): boolean {
-  return type === NumberInputType.UnsignedInteger;
-}
-
-const NumericPattern = /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
+type TypeInfo = {
+  signed: boolean;
+  integer: boolean;
+  bits: number;
+};
 
 // NOTE: Value maybe be NaN or an otherwise invalid number but `validate` will
 // fail in this case.
@@ -37,21 +26,34 @@ export default class NumberParam extends AbstractParam<
   ): void {
     // Theoretically this shouldn't be possible due to normalization in the
     // number field.
-    if (value !== undefined && isNaN(value)) {
+    if (value !== undefined && Number.isNaN(value)) {
       this.errorSet.add('Value is not a number');
     }
 
-    if (normalizedInputValue) {
-      let { type } = this;
-      if (!NumericPattern.test(normalizedInputValue)) {
-        this.errorSet.add('Value cannot be parsed as a number');
-      } else {
-        if (isIntegerType(type) && normalizedInputValue.includes('.')) {
-          this.errorSet.add('Value must be an integer');
-        }
-        if (isUnsignedType(type) && normalizedInputValue.startsWith('-')) {
-          this.errorSet.add('Value cannot be negative');
-        }
+    if (
+      normalizedInputValue &&
+      this.validateNormalizedInputValue(normalizedInputValue) &&
+      typeof value == 'number'
+    ) {
+      let { signed, integer, bits } = this.typeInfo;
+
+      if (integer) {
+        this.validateInteger(value);
+        this.validateMaxInteger(bits, value);
+      }
+
+      if (integer && signed) {
+        this.validateMinSignedInteger(bits, value);
+      } else if (!signed) {
+        this.validateUnsigned(value);
+      }
+
+      if (value >= Number.MAX_SAFE_INTEGER) {
+        this.errorSet.add('Value is too large to be handled by JavaScript 😬');
+      }
+
+      if (value <= Number.MIN_SAFE_INTEGER) {
+        this.errorSet.add('Value is too small to be handled by JavaScript 😬');
       }
     }
   }
@@ -81,14 +83,7 @@ export default class NumberParam extends AbstractParam<
     }
   }
 
-  private get type(): NumberInputType {
-    return this.typeInfo.type ?? NumberInputType.SignedFloat;
-  }
-
-  private get typeInfo(): {
-    type: NumberInputType;
-    bits: number;
-  } {
+  private get typeInfo(): TypeInfo {
     let fullType = this.info.type;
     let regex = /^([fiu])([\d]+)$/;
 
@@ -96,16 +91,9 @@ export default class NumberParam extends AbstractParam<
     assert(`${fullType} does not match regex ${regex.source}`, matches);
 
     let typeId = matches[1];
-    let bitStr = matches[2];
-
     assert(`typeId not found in string ${fullType}`, typeId);
-    let type = {
-      f: NumberInputType.SignedFloat,
-      i: NumberInputType.SignedInteger,
-      u: NumberInputType.UnsignedInteger,
-    }[typeId];
-    assert(`type not found in string ${fullType}`, type);
 
+    let bitStr = matches[2];
     assert(
       `bitStr '${String(bitStr)} in string ${fullType}' not found`,
       bitStr
@@ -116,6 +104,56 @@ export default class NumberParam extends AbstractParam<
       !isNaN(bits)
     );
 
-    return { type, bits };
+    if (typeId === 'f') {
+      return { signed: true, integer: false, bits };
+    } else if (typeId === 'i') {
+      return { signed: true, integer: true, bits };
+    } else if (typeId === 'u') {
+      return { signed: false, integer: true, bits };
+    } else {
+      assert(`type not found in string ${fullType}`);
+    }
+  }
+
+  private validateNormalizedInputValue(normalizedInputValue: string): boolean {
+    let isValidNumericInput = NumericInputPattern.test(normalizedInputValue);
+    if (!isValidNumericInput) {
+      this.errorSet.add('Value cannot be parsed as a number');
+    }
+    return isValidNumericInput;
+  }
+
+  private validateInteger(value: number): void {
+    if (!Number.isInteger(value)) {
+      this.errorSet.add('Value must be an integer');
+    }
+  }
+
+  private validateMaxInteger(bits: number, value: number): void {
+    let maxNumber = 2 ** (bits - 1) - 1;
+    if (value > maxNumber) {
+      this.errorSet.add(
+        `Value exceeds maximum of ${maxNumber.toLocaleString()} for type ${
+          this.info.type
+        }`
+      );
+    }
+  }
+
+  private validateMinSignedInteger(bits: number, value: number): void {
+    let minNumber = -1 * 2 ** (bits - 1);
+    if (value < minNumber) {
+      this.errorSet.add(
+        `Value is less than the minimum of ${minNumber.toLocaleString()} for type ${
+          this.info.type
+        }`
+      );
+    }
+  }
+
+  private validateUnsigned(value: number): void {
+    if (value < 0) {
+      this.errorSet.add('Value cannot be negative');
+    }
   }
 }

@@ -44,12 +44,10 @@ export default class ParamList extends Component<ParamListSig> {
       case 'i16':
       case 'i32':
       case 'i64':
-      case 'i128':
       case 'u8':
       case 'u16':
       case 'u32':
       case 'u64':
-      case 'u128':
         return NumberInput as typeof Component<ParamInputSig<Param>>;
       case 'enum':
         return EnumInput as typeof Component<ParamInputSig<Param>>;
