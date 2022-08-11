@@ -2,6 +2,7 @@ import { action } from '@ember/object';
 import { isPresent } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import and from 'ember-truth-helpers/helpers/and';
 import eq from 'ember-truth-helpers/helpers/eq';
 import or from 'ember-truth-helpers/helpers/or';
 
@@ -11,29 +12,6 @@ import { EnumParam } from 'okapi/models/method-call';
 import ParamInputSig from './signature';
 
 export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
-  private get items(): [null, ...EnumMethodParamOption[]] {
-    return [null, ...this.args.param.info.options];
-  }
-
-  private get showDescription(): boolean {
-    return this.items.any(i => isPresent(i?.description));
-  }
-
-  private get selection(): EnumMethodParamOption | null | undefined {
-    return this.args.param.inputValue;
-  }
-
-  @action private handleSelect(item: EnumMethodParamOption | null): void {
-    this.descriptionItem = item;
-    this.args.param.inputValue = item;
-  }
-
-  @tracked private descriptionItem?: EnumMethodParamOption | null;
-
-  @action private updateDescription(item: EnumMethodParamOption | null): void {
-    this.descriptionItem = item;
-  }
-
   <template>
     <Combobox
       @items={{this.items}}
@@ -60,23 +38,56 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
         </Trigger>
       </:trigger>
       <:content as |List|>
-        <List data-test-enum-input-list aria-labelledby="listbox-label">
+        <List data-test-enum-input-list>
           <:items as |item|>
             <div class="Combobox__item {{if (eq item this.descriptionItem) 'Combobox__item--is-description-item'}}">
               {{or item.name "undefined"}}
+              <p class="u_visually-hidden">
+                Description: {{this.descriptionFor item}}
+              </p>
             </div>
           </:items>
         </List>
-        {{#if this.showDescription}}
-          <div class="Combobox__dropdown__info">
-            {{#if (eq this.descriptionItem null)}}
-              If selected, this field will not be sent.
-            {{else}}
-              {{or this.descriptionItem.description "No description provided."}}
-            {{/if}}
+        {{#if (and this.descriptionItem this.showDescription)}}
+          {{!-- Hide this item from aria because we have a visually hidden description above. --}}
+          <div class="Combobox__dropdown__info" aria-hidden="true">
+            {{if this.descriptionItem (this.descriptionFor this.descriptionItem)}}
           </div>
         {{/if}}
       </:content>
     </Combobox>
   </template>
+
+  private get items(): [null, ...EnumMethodParamOption[]] {
+    return [null, ...this.args.param.info.options];
+  }
+
+  private get showDescription(): boolean {
+    return this.items.any(i => isPresent(i?.description));
+  }
+
+  private get selection(): EnumMethodParamOption | null | undefined {
+    return this.args.param.inputValue;
+  }
+
+  @action private handleSelect(item: EnumMethodParamOption | null): void {
+    this.descriptionItem = item;
+    this.args.param.inputValue = item;
+  }
+
+  @tracked private descriptionItem?: EnumMethodParamOption | null;
+
+  @action private updateDescription(item: EnumMethodParamOption | null): void {
+    this.descriptionItem = item;
+  }
+
+  @action private descriptionFor(item: EnumMethodParamOption | null): string {
+    if (item === null) {
+      return "If selected, this field will not be sent.";
+    } else if (item.description) {
+      return item.description;
+    } else {
+      return "No description provided.";
+    }
+  }
 }

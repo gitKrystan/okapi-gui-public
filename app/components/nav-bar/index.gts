@@ -12,12 +12,12 @@ export default class NavBar extends Component<NavBarSig> {
   @service declare private theme: ThemeService;
 
   <template>
-    <nav ...attributes>
+    <header aria-label="Okapi" ...attributes>
       <div class="NavBar__content">
-        <LinkTo @route="index" class="NavBar__logo">OKAPI!</LinkTo>
+        <LinkTo @route="index" class="NavBar__logo" aria-label="Home" id="site-header">OKAPI!</LinkTo>
         <ThemeSwitch />
       </div>
-    </nav>
+    </header>
   </template>
 }
 

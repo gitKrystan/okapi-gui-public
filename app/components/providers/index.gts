@@ -10,7 +10,7 @@ export interface ProvidersSig {
 
 export default class Providers extends Component<ProvidersSig> {
   <template>
-    <h1>Providers</h1>
+    <h1 id="main-label">Providers</h1>
     <ul data-test-providers-list>
       {{#each @project.providers as |provider|}}
         <Provider @provider={{provider}} />

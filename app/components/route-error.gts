@@ -7,7 +7,7 @@ interface RouteErrorSig {
 }
 
 const RouteError: TemplateOnlyComponent<RouteErrorSig> = <template>
-  <h1>Oops! There was an error.</h1>
+  <h1 id="main-label">Oops! There was an error.</h1>
   <p data-test-route-error-message>{{@message}}</p>
 </template>
 

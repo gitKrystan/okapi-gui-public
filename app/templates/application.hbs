@@ -4,11 +4,15 @@
 
 <NavBar />
 
-<main>
+<nav class="BreadcrumbNav" aria-label="Breadcrumb">
   <BreadcrumbsContainer
     @itemClass="Breadcrumbs__item"
     @linkClass="Breadcrumbs__link"
     class="Breadcrumbs"
   />
+</nav>
+
+{{! NOTE: You must manually add `id="main-label"` to a heading for this to work. }}
+<main class="MainContainer" aria-labelledby="main-label">
   {{outlet}}
 </main>

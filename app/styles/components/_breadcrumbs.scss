@@ -2,7 +2,6 @@
 @use '../abstracts/type';
 
 .Breadcrumbs {
-  margin: 1rem 0;
   font-family: type.$font-fam-mono;
 }
 
@@ -13,7 +12,12 @@
 
   + .Breadcrumbs__item {
     &::before {
-      content: ' > ';
+      content: '';
+      display: inline-block;
+      height: 1em;
+      margin-right: 1ch;
+      transform: rotate(15deg) translateY(0.3em);
+      border-right: 0.1em solid currentcolor;
     }
   }
 }

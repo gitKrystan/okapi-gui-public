@@ -58,7 +58,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
           </a>
         </ParamList>
         {{#if @isActive}}
-          <div class="MethodInfo__item">
+          <div class="MethodInfo__item" id="{{@method.id}}-call-button">
             <Button
               data-test-method-info-submit-button
               class="MethodInfo__item__second {{if this.emphasizeCallButton "Button--theme-primary"}}"
