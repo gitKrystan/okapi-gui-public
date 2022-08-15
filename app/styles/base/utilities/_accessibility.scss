@@ -1,0 +1,5 @@
+@use '../../abstracts/accessibility';
+
+.u_visually-hidden {
+  @include accessibility.visually-hidden;
+}

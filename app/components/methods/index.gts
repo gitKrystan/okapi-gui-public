@@ -10,8 +10,8 @@ export interface MethodsSig {
 
 export default class Methods extends Component<MethodsSig> {
   <template>
-    <h1>Methods</h1>
-    <ul data-test-methods-list class="Methods">
+    <h1 id="main-label">Methods</h1>
+    <ul data-test-methods-list class="Methods" aria-labelledby="main-label">
       {{#each @api.methods as |method|}}
         <Method @method={{method}} />
       {{/each}}

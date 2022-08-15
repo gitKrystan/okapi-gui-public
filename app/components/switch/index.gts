@@ -50,13 +50,15 @@ export default class Switch extends Component<SwitchSig> {
           {{#if (has-block "on")}}
             {{yield to="on"}}
           {{else}}
-            on
+            {{!-- role="switch" on the button means "on" will already be read --}}
+            <span aria-hidden="true">on</span>
           {{/if}}
         {{else}}
           {{#if (has-block "off")}}
             {{yield to="off"}}
           {{else}}
-            off
+            {{!-- role="switch" on the button means "off" will already be read --}}
+            <span aria-hidden="true">off</span>
           {{/if}}
         {{/if}}
       </span>

@@ -1,9 +1,14 @@
 @use '../abstracts/layout';
 
-main {
+.BreadcrumbNav {
   @extend %container;
 
-  padding-top: 2vw;
+  padding-top: 6vw;
+  padding-bottom: 2vw;
+}
+
+.MainContainer {
+  @extend %container;
 }
 
 .NavBar__content {

@@ -10,7 +10,7 @@ export interface ProjectsComponentSig {
 
 export default class Projects extends Component<ProjectsComponentSig> {
   <template>
-    <h1>My Projects</h1>
+    <h1 id="main-label">My Projects</h1>
     <ul data-test-projects-list>
       {{#each @projects as |project|}}
         <Project @project={{project}} />

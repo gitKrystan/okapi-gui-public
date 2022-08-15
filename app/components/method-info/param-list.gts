@@ -56,12 +56,15 @@ export default class ParamList extends Component<ParamListSig> {
 
   <template>
     {{#if @params}}
-      <h3 class="MethodInfo__ParamList-heading">
+      <h3 class="MethodInfo__ParamList-heading" id="{{this.args.id}}-heading">
         {{yield}}
       </h3>
-      <ul ...attributes>
+      <ul ...attributes aria-labelledby="{{this.args.id}}-heading">
         {{#each @params as |param|}}
-          <li class="MethodInfo__item" data-test-method-param-list-item={{param.info.name}}>
+          <li
+            class="MethodInfo__item"
+            data-test-method-param-list-item={{param.info.name}}
+          >
             <div id="{{this.inputId param}}-label">
               <code class="Syntax">
                 <Token @type="param">{{param.info.name}}</Token>

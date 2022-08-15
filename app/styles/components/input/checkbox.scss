@@ -1,3 +1,5 @@
+@use '../../abstracts/accessibility';
+
 .Checkbox {
   display: grid;
 }
@@ -19,13 +21,7 @@
 }
 
 .Checkbox__input {
-  position: absolute;
-
-  /* make element invisible w/o hiding it from screen-readers */
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
+  @include accessibility.visually-hidden;
 
   &:checked {
     & + .Checkbox__icon {
