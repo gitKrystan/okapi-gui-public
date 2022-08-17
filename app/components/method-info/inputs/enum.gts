@@ -1,8 +1,7 @@
 import { action } from '@ember/object';
-import { isPresent } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import and from 'ember-truth-helpers/helpers/and';
+
 import eq from 'ember-truth-helpers/helpers/eq';
 import or from 'ember-truth-helpers/helpers/or';
 
@@ -48,22 +47,16 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
             </div>
           </:items>
         </List>
-        {{#if (and this.descriptionItem this.showDescription)}}
-          {{!-- Hide this item from aria because we have a visually hidden description above. --}}
-          <div class="Combobox__dropdown__info" aria-hidden="true">
-            {{if this.descriptionItem (this.descriptionFor this.descriptionItem)}}
-          </div>
-        {{/if}}
+        {{!-- Hide this item from aria because we have a visually hidden description above. --}}
+        <div class="Combobox__dropdown__info" aria-hidden="true">
+          {{this.descriptionFor this.descriptionItem}}
+        </div>
       </:content>
     </Combobox>
   </template>
 
   private get items(): [null, ...EnumMethodParamOption[]] {
     return [null, ...this.args.param.info.options];
-  }
-
-  private get showDescription(): boolean {
-    return this.items.any(i => isPresent(i?.description));
   }
 
   private get selection(): EnumMethodParamOption | null | undefined {
@@ -81,9 +74,11 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
     this.descriptionItem = item;
   }
 
-  @action private descriptionFor(item: EnumMethodParamOption | null): string {
+  @action private descriptionFor(item: EnumMethodParamOption | null | undefined): string {
     if (item === null) {
       return "If selected, this field will not be sent.";
+    } else if (item === undefined) {
+      return "No item selected.";
     } else if (item.description) {
       return item.description;
     } else {
