@@ -1,4 +1,4 @@
-import { tracked } from 'tracked-built-ins';
+import { tracked } from '@glimmer/tracking';
 
 export interface InternalFeatureOptions {
   description?: string;
