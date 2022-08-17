@@ -114,16 +114,16 @@ export default class SelectOnlyCombobox<T> extends Component<
 
   private id = guidFor(this);
 
-  @tracked protected focusedItem = this.args.initialSelection;
+  @tracked private focusedItem = this.args.initialSelection;
 
-  @action protected onFocus(item = this.args.initialSelection): void {
+  @action private onFocus(item = this.args.initialSelection): void {
     this.focusedItem = item;
     if (item !== undefined) {
       this.args.onFocus?.(item);
     }
   }
 
-  @action protected handleTriggerClick(
+  @action private handleTriggerClick(
     p: PositionerAPI,
     moveFocusTo: MoveFocusSignature
   ): void {
@@ -135,7 +135,7 @@ export default class SelectOnlyCombobox<T> extends Component<
     }
   }
 
-  @action protected handleTriggerKeydown(
+  @action private handleTriggerKeydown(
     p: PositionerAPI,
     moveFocusTo: MoveFocusSignature,
     e: KeyboardEvent
@@ -169,7 +169,7 @@ export default class SelectOnlyCombobox<T> extends Component<
   /**
    * When the user hits "Escape", "cancel" the selection and refocus the anchor.
    */
-  @action protected handleDismiss(p: PositionerAPI, e: Event): void {
+  @action private handleDismiss(p: PositionerAPI, e: Event): void {
     this.onFocus();
     p.close();
 
@@ -179,21 +179,21 @@ export default class SelectOnlyCombobox<T> extends Component<
     }
   }
 
-  @action protected onSelect(p: PositionerAPI, item: T): void {
+  @action private onSelect(p: PositionerAPI, item: T): void {
     p.close();
     assert('Positioner anchor must exist', p.anchor);
     p.anchor.focus();
     this.args.onSelect?.(item);
   }
 
-  @action protected onItemMousemove(
+  @action private onItemMousemove(
     item: T,
     e: MouseEvent
   ): void {
     this.args.onItemMousemove?.(item, e)
   }
 
-  @action protected handleItemKeydown(
+  @action private handleItemKeydown(
     p: PositionerAPI,
     item: T,
     e: KeyboardEvent
