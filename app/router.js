@@ -19,6 +19,7 @@ Router.map(function () {
       this.route('apis', { path: 'api' });
       this.route('api', { path: 'api/:api_id' });
     });
+    this.route('settings');
   });
 
   this.route('not-found', { path: '/*path' });
