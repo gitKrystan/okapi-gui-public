@@ -331,4 +331,13 @@ module('Acceptance | navigation', function (hooks) {
 
     await snapshotDarkMode(assert);
   });
+
+  test('visiting /Direwolf/settings', async function (assert) {
+    await visit('/Direwolf/settings');
+
+    assert.strictEqual(currentURL(), '/Direwolf/settings');
+    assert.strictEqual(getPageTitle(), 'Settings | Direwolf | Okapi');
+
+    await snapshotDarkMode(assert);
+  });
 });
