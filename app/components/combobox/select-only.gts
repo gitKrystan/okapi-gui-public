@@ -3,9 +3,10 @@ import { fn } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 import { ComponentLike, WithBoundArgs } from '@glint/template';
+
 import Positioner, { PositionerAPI } from 'ember-positioner';
+
 import ListNav from 'okapi/components/list-nav/index';
 import {
   FocusDirection,
@@ -14,14 +15,16 @@ import {
 import ComboboxButton, {
   ComboboxButtonSignature,
 } from 'okapi/components/combobox/button';
-import Selection, { ListboxSelectionSignature } from 'okapi/components/listbox/selection';
+import Selection, {
+  ListboxSelectionSignature
+} from 'okapi/components/listbox/selection';
 import dismissible from 'okapi/modifiers/dismissible';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
 
 interface SelectOnlyComboboxSignature<T> {
   Element: HTMLDivElement;
   Args: Omit<ListboxSelectionSignature<T>['Args'], 'list'> & {
-    readonly: boolean
+    readonly?: boolean;
   };
   Blocks: {
     trigger: [
@@ -101,7 +104,7 @@ export default class SelectOnlyCombobox<T> extends Component<
               }}
             >
               {{! @glint-expect-error See Signature type for explanation. }}
-              {{yield (component Selection id=this.id items=@items initialSelection=this.focusedItem onFocus=this.onFocus onSelect=(fn this.onSelect p) onItemMousemove=this.onItemMousemove onItemKeydown=(fn this.handleItemKeydown p) list=nav.list)
+              {{yield (component Selection id=this.id items=@items initialSelection=@initialSelection onFocus=@onFocus onSelect=(fn this.onSelect p) onItemMousemove=@onItemMousemove onItemKeydown=(fn this.handleItemKeydown p) list=nav.list)
                 p
                 to="content"
               }}
@@ -114,28 +117,24 @@ export default class SelectOnlyCombobox<T> extends Component<
 
   private id = guidFor(this);
 
-  @tracked protected focusedItem = this.args.initialSelection;
-
-  @action protected onFocus(item = this.args.initialSelection): void {
-    this.focusedItem = item;
-    if (item !== undefined) {
-      this.args.onFocus?.(item);
-    }
+  private get items(): T[] {
+    return this.args.items.toArray?.() ?? this.args.items;
   }
 
-  @action protected handleTriggerClick(
+  @action private handleTriggerClick(
     p: PositionerAPI,
     moveFocusTo: MoveFocusSignature
   ): void {
     if (p.isHidden) {
-      void p.open();
-      moveFocusTo(this.currentIndex ?? 0);
+      p.open({
+        didOpen: () => moveFocusTo(this.currentIndex ?? 0)
+      });
     } else {
-      void p.close();
+      p.close();
     }
   }
 
-  @action protected handleTriggerKeydown(
+  @action private handleTriggerKeydown(
     p: PositionerAPI,
     moveFocusTo: MoveFocusSignature,
     e: KeyboardEvent
@@ -145,23 +144,28 @@ export default class SelectOnlyCombobox<T> extends Component<
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
-        p.open();
-        moveFocusTo(FocusDirection.Previous, currentIndex);
+        p.open({
+          didOpen: () => moveFocusTo(FocusDirection.Previous, currentIndex)
+        });
         break;
       case 'ArrowDown':
         e.preventDefault();
-        p.open();
-        if (e.altKey) {
-          moveFocusTo(currentIndex);
-        } else {
-          moveFocusTo(FocusDirection.Next, currentIndex);
-        }
+        p.open({
+          didOpen: () => {
+            if (e.altKey) {
+              moveFocusTo(currentIndex);
+            } else {
+              moveFocusTo(FocusDirection.Next, currentIndex);
+            }
+          }
+        });
         break;
       default:
         if (isPrintableCharacter(e.key)) {
           e.preventDefault();
-          p.open();
-          moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key);
+          p.open({
+            didOpen: () => moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key)
+          });
         }
     }
   }
@@ -169,8 +173,7 @@ export default class SelectOnlyCombobox<T> extends Component<
   /**
    * When the user hits "Escape", "cancel" the selection and refocus the anchor.
    */
-  @action protected handleDismiss(p: PositionerAPI, e: Event): void {
-    this.onFocus();
+  @action private handleDismiss(p: PositionerAPI, e: Event): void {
     p.close();
 
     if (e instanceof KeyboardEvent && e.key === 'Escape') {
@@ -179,21 +182,14 @@ export default class SelectOnlyCombobox<T> extends Component<
     }
   }
 
-  @action protected onSelect(p: PositionerAPI, item: T): void {
+  @action private onSelect(p: PositionerAPI, item: T): void {
     p.close();
     assert('Positioner anchor must exist', p.anchor);
     p.anchor.focus();
     this.args.onSelect?.(item);
   }
 
-  @action protected onItemMousemove(
-    item: T,
-    e: MouseEvent
-  ): void {
-    this.args.onItemMousemove?.(item, e)
-  }
-
-  @action protected handleItemKeydown(
+  @action private handleItemKeydown(
     p: PositionerAPI,
     item: T,
     e: KeyboardEvent
@@ -204,12 +200,12 @@ export default class SelectOnlyCombobox<T> extends Component<
   }
 
   private get currentIndex(): number | null {
-    let { focusedItem } = this;
-    if (focusedItem === undefined) {
+    let { initialSelection } = this.args;
+    if (initialSelection === undefined) {
       return null;
     } else {
-      let index = this.args.items.indexOf(focusedItem);
-      assert('expected current focusedItem to be found in items', index >= 0);
+      let index = this.items.indexOf(initialSelection);
+      assert('expected current item to be found in items', index >= 0);
       return index;
     }
   }

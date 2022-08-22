@@ -11,11 +11,12 @@ import {
 import triggerKeyEvent, {
   KeyModifiers,
 } from '@ember/test-helpers/dom/trigger-key-event';
+import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { keyboardClick } from 'okapi/tests/helpers/dom-interaction';
 import { module, test } from 'qunit';
-import { tracked } from 'tracked-built-ins';
+
+import { keyboardClick } from 'okapi/tests/helpers/dom-interaction';
 
 interface Context<T> extends TestContext {
   state: State<T>;

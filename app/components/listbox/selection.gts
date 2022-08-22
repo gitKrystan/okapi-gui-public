@@ -3,8 +3,9 @@ import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+
 import eq from 'ember-truth-helpers/helpers/eq';
-import { tracked } from 'tracked-built-ins';
 
 import ListNav from 'okapi/components/list-nav/index';
 
