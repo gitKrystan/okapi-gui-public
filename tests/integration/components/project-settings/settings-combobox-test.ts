@@ -13,7 +13,7 @@ interface Context extends TestContext {
 class State {
   settings: ProjectSetting[] = [];
 
-  @action onSelect(item: ProjectSetting): void {
+  @action onCommit(item: ProjectSetting): void {
     this.settings.push(item);
   }
 }
@@ -27,19 +27,27 @@ module(
       this.state = new State();
 
       await render(
-        hbs`<ProjectSettings::SettingsCombobox @onSelect={{this.state.onSelect}} />`
+        hbs`<ProjectSettings::SettingsCombobox @onCommit={{this.state.onCommit}} />`
       );
 
-      assert.dom().hasText('');
-      assert.dom('[data-test-listbox-item-list]').doesNotExist();
+      assert.dom().hasText('Choose a setting to configure.');
+      assert
+        .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+        .doesNotExist();
 
-      await click('[data-test-settings-combobox-button]');
+      await click('[data-test-settings-combobox] [data-test-combobox-input]');
 
-      assert.dom('[data-test-listbox-item-list]').exists();
+      assert
+        .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+        .exists();
 
-      await click('[data-test-listbox-item-list] li:nth-child(1)');
+      await click(
+        '[data-test-settings-combobox] [data-test-combobox-listbox] li:nth-child(1)'
+      );
 
-      assert.dom('[data-test-listbox-item-list]').doesNotExist();
+      assert
+        .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+        .doesNotExist();
       assert.strictEqual(
         this.state.settings.length,
         1,

@@ -9,6 +9,6 @@ module('Integration | Component | project-settings/form', function (hooks) {
   test('it renders', async function (assert) {
     await render(hbs`<ProjectSettings::Form />`);
 
-    assert.dom().hasText('');
+    assert.dom().hasText('Choose a setting to configure.');
   });
 });

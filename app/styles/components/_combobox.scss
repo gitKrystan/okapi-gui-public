@@ -34,3 +34,27 @@ $-padding-y: 0.5rem;
   padding: 0.5rem $-padding-y 0;
   border-top: 1px solid dropdown.$border-color;
 }
+
+.Combobox--has-input {
+  grid-template-columns: auto 2rem;
+
+  :focus-visible {
+    outline: none;
+  }
+
+  &.u_focus-visible-within {
+    outline: 2px solid var(--cyan);
+    outline-offset: -1px;
+  }
+
+  .Combobox__input:focus + .Combobox__button {
+    border-color: var(--contrast6);
+    color: var(--contrast6);
+  }
+
+  .Listbox__item-list__item:hover,
+  .Listbox__item-list__item--selected {
+    background-color: var(--magenta);
+    color: var(--contrast7);
+  }
+}

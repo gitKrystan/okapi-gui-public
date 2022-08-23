@@ -19,7 +19,7 @@ export default class ProjectSettingsForm extends Component<ProjectSettingsFormSi
         </li>
       {{/each}}
     </ul>
-    <SettingsCombobox @onSelect={{this.handleSettingsSelect}} />
+    <SettingsCombobox @onCommit={{this.addSetting}} />
   </template>
 
   private settings = new TrackedSet<ProjectSetting>();
@@ -28,7 +28,7 @@ export default class ProjectSettingsForm extends Component<ProjectSettingsFormSi
     return [...this.settings].sort((a, b) => a.id.localeCompare(b.id))
   }
 
-  @action private handleSettingsSelect(item: ProjectSetting): void {
+  @action private addSetting(item: ProjectSetting): void {
     this.settings.add(item);
   }
 }

@@ -116,5 +116,6 @@ button:not(:disabled) {
 }
 
 :focus-visible {
-  outline-color: var(--cyan);
+  outline: 2px solid var(--cyan);
+  outline-offset: -1px;
 }

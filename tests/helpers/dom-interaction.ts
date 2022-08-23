@@ -48,7 +48,12 @@ export async function pointerClick(target: Target): Promise<void> {
 
   await triggerEvent(el, 'pointerdown');
   await triggerEvent(el, 'mousedown');
-  await focus(el); // focus and focusin
+
+  if (el instanceof HTMLElement) {
+    el.focus();
+    await triggerEvent(el, 'focus');
+  }
+  // await focus(el); // focus and focusin
   await triggerEvent(el, 'pointerup');
   await triggerEvent(el, 'mouseup');
   await triggerEvent(el, 'click');
