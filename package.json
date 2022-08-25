@@ -95,7 +95,7 @@
     "ember-concurrency-async": "^1.0.0",
     "ember-concurrency-ts": "^0.3.1",
     "ember-exam": "^8.0.0",
-    "ember-fetch": "^8.1.1",
+    "ember-fetch": "^8.1.2",
     "ember-load-initializers": "^2.1.2",
     "ember-modifier": "^3.2.7",
     "ember-page-title": "^7.0.0",
