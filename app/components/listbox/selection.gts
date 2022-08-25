@@ -79,7 +79,6 @@ export interface ListboxSelectionSignature<T> {
 export default class ListboxSelection<T> extends Component<
   ListboxSelectionSignature<T>
 > {
-  // @ts-expect-error FIXME
   <template>
     <div
       role="listbox"

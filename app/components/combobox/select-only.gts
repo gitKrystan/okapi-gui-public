@@ -71,7 +71,6 @@ interface SelectOnlyComboboxSignature<T> {
 export default class SelectOnlyCombobox<T> extends Component<
   SelectOnlyComboboxSignature<T>
 > {
-  // @ts-expect-error FIXME
   <template>
     <ListNav @itemRole="option" as |nav|>
       <div ...attributes class="Combobox">

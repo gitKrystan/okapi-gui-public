@@ -17,7 +17,6 @@ interface ListboxSignature<T> {
  * https://www.w3.org/TR/wai-aria-practices-1.1/examples/listbox/listbox-scrollable.html
  */
 export default class Listbox<T> extends Component<ListboxSignature<T>> {
-  // @ts-expect-error FIXME
   <template>
     <ListNav @itemRole="option" as |nav|>
       <Selection
