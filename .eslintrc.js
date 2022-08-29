@@ -90,6 +90,7 @@ module.exports = {
           { accessibility: 'no-public' },
         ],
         '@typescript-eslint/explicit-function-return-type': 2,
+        '@typescript-eslint/method-signature-style': 2,
         '@typescript-eslint/no-base-to-string': 2,
         '@typescript-eslint/no-confusing-non-null-assertion': 2,
         '@typescript-eslint/no-dynamic-delete': 2,

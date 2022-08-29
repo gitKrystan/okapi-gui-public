@@ -15,11 +15,11 @@ class State {
 
 interface Context extends TestContext {
   state: State;
-  assertState(
+  assertState: (
     value: boolean,
     message: string,
     options?: { onText: string; offText: string }
-  ): void;
+  ) => void;
 }
 
 module('Integration | Component | switch', function (hooks) {
