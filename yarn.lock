@@ -1772,10 +1772,10 @@
   resolved "https://registry.yarnpkg.com/@percy/dom/-/dom-1.10.0.tgz#879d94fde1d5ae63f5dbb96b1a75e48ba8ca5525"
   integrity sha512-aHCy+Vk8xc3azFDPSV4Z3+wiO/bp9OlGfi8aNwa6fpuEIx0SMN8TyLVGaKTwIlrhDVEqSbmTYsrh67HS+Uweqg==
 
-"@percy/ember@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@percy/ember/-/ember-3.0.1.tgz#2f1f74993db8b327391ff657316d3083a8e27ecb"
-  integrity sha512-TOTwai5AsjtpAUWnCijKp8djfsWXfo4eUfF0Wc4QUjba+d3rk9FzvcppjJSmDPSJplyBlAyv1bxO1NMIfr80WQ==
+"@percy/ember@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@percy/ember/-/ember-4.0.0.tgz#d1d220e667466aa935ed8d63aa215f219a9d364f"
+  integrity sha512-x0/R/EnoiGYnfmo+qIg6p6D2/IeGeQbVEszt6U7l59lsDl0+fEUe0rNEEcDCOjvThSWLzBS+9SPlDWVJxhLPCg==
   dependencies:
     "@percy/sdk-utils" "^1.6.4"
     ember-cli-babel "^7.26.11"
@@ -2062,10 +2062,17 @@
   dependencies:
     "@types/ember__application" "*"
 
-"@types/ember__utils@*", "@types/ember__utils@^4.0.0":
+"@types/ember__utils@*":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/ember__utils/-/ember__utils-4.0.0.tgz#a7e9e11334b5e203324e6155ff74c2b33ec21567"
   integrity sha512-gwSFUm+6t6StkQxSllbn9lqRms/dXMCQDieRfaTGN8IRatnKjJoEPME3A0T6O9afsU6viBQyqlPyFxsOWknYkg==
+  dependencies:
+    "@types/ember" "*"
+
+"@types/ember__utils@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/ember__utils/-/ember__utils-4.0.1.tgz#106a7a9652bacc44c735ed1ffd6d3651ac03fdce"
+  integrity sha512-FhXZ37uY1BNgt63XoPH++PkAsMnF7P5wjPRluXecbFpEFHXP6enFbx1F5vjyoPtFjLEl4R3ftLM5QbEWsuyF5g==
   dependencies:
     "@types/ember" "*"
 
