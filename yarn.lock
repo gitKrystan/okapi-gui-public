@@ -6370,10 +6370,10 @@ ember-swappable-service@^0.6.1:
     ember-cli-htmlbars "^6.0.1"
     silent-error "^1.1.1"
 
-ember-template-imports@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.1.0.tgz#03c94757ad120ecb70926d72dce6879abc015295"
-  integrity sha512-ecdGz/2pPxz199DaKnRD5LbE/OB18F0OlxluiPqSs6tK8lk2GCcx36L1WhK49hhSIdgkn54a5fhynYEvaEUYQQ==
+ember-template-imports@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/ember-template-imports/-/ember-template-imports-3.1.1.tgz#9b7a4f37c0a638b3d3d9894dade494efceb30f9a"
+  integrity sha512-ZsujuOwaF6lWDDeKC0NleCUAC8f06CfxWQPmejNnxg5gUdqHFTfW9L++X9RLLV/pJZ6eCtax7L94XkXQJ1LfBA==
   dependencies:
     babel-import-util "^0.2.0"
     broccoli-stew "^3.0.0"
