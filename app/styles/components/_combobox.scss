@@ -42,7 +42,7 @@ $-padding-y: 0.5rem;
     outline: none;
   }
 
-  &.u_focus-visible-within {
+  &:focus-within {
     outline: 2px solid var(--cyan);
     outline-offset: -1px;
   }

@@ -17,7 +17,6 @@ import eq from 'ember-truth-helpers/helpers/eq';
 import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
 import dismissible from 'okapi/modifiers/dismissible';
-import focusVisibleWithin from 'okapi/modifiers/focus-visible-within';
 
 type Autocomplete =
   /** No list filtration or inline autofill (except for on commit). */
@@ -72,7 +71,6 @@ export default class Combobox<T extends { id: string }> extends Component<
       ...attributes
       data-test-combobox-parent
       class="Combobox Combobox--has-input"
-      {{focusVisibleWithin ignoreKeyboardModality=true}}
       {{dismissible dismissed=(perform this.delayedClose)}}
     >
       <input

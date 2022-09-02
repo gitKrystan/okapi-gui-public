@@ -119,12 +119,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
         });
 
@@ -277,7 +271,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -289,7 +282,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -308,12 +300,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'An');
@@ -491,7 +477,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -503,7 +488,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -522,12 +506,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await keyboard(assert, 'Enter');
@@ -664,7 +642,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -692,7 +669,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -706,12 +682,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'An');
@@ -756,7 +726,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).hasClass('u_focus-visible-within');
         });
 
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
@@ -787,7 +756,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -830,7 +798,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -851,12 +818,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
         });
 
@@ -1009,7 +970,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1021,7 +981,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1040,12 +999,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'Ant');
@@ -1223,7 +1176,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1235,7 +1187,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1254,12 +1205,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await keyboard(assert, 'Enter');
@@ -1398,7 +1343,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -1426,7 +1370,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -1440,12 +1383,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'Ant');
@@ -1491,7 +1428,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).hasClass('u_focus-visible-within');
         });
 
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
@@ -1522,7 +1458,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -1565,7 +1500,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -1586,12 +1520,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
         });
 
@@ -1744,7 +1672,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1756,7 +1683,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -1775,12 +1701,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'A');
@@ -1950,7 +1870,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 1 }, 'Input click opens list; list is filtered');
@@ -1962,7 +1881,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 1 }, 'Input click opens list; list is filtered');
@@ -1981,12 +1899,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await keyboard(assert, 'Enter');
@@ -2125,7 +2037,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -2153,7 +2064,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -2167,12 +2077,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'Ant');
@@ -2214,7 +2118,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).hasClass('u_focus-visible-within');
         });
 
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
@@ -2245,7 +2148,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -2284,7 +2186,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -2305,12 +2206,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
         });
 
@@ -2463,7 +2358,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -2475,7 +2369,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 3 }, 'Input click opens list; list is unfiltered');
@@ -2494,12 +2387,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'A');
@@ -2669,7 +2556,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 1 }, 'Input click opens list; list is filtered');
@@ -2681,7 +2567,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(trigger);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists({ count: 1 }, 'Input click opens list; list is filtered');
@@ -2700,12 +2585,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await keyboard(assert, 'Enter');
@@ -2844,7 +2723,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -2872,7 +2750,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
@@ -2886,12 +2763,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await tab();
 
           assert.dom(input).isFocused('SETUP: Input focused');
-          assert
-            .dom(parent)
-            .hasClass(
-              'u_focus-visible-within',
-              'SETUP: Parent has focus-visible-within'
-            );
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
           await fillIn(input, 'Ant');
@@ -2933,7 +2804,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).hasClass('u_focus-visible-within');
         });
 
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
@@ -2964,7 +2834,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
           await pointerClick(input);
 
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
           assert
             .dom(listItems)
             .exists(
@@ -3003,7 +2872,6 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
           assert.dom(list).doesNotExist();
           assert.dom(input).isFocused();
-          assert.dom(parent).doesNotHaveClass('u_focus-visible-within');
         });
       });
     });
