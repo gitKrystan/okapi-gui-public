@@ -1,0 +1,17 @@
+$border-color: var(--contrast2);
+
+.Dropdown {
+  display: grid;
+  position: relative;
+}
+
+.Dropdown__content {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  padding: 0.5rem 0;
+  border: 1px solid $border-color;
+  background-color: var(--contrast1);
+  color: var(--contrast5);
+}

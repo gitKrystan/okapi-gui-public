@@ -102,7 +102,6 @@ export default class ListboxSelection<T> extends Component<
               role="option"
               tabindex={{if isSelected "0" "-1"}}
               aria-selected={{if isSelected "true" "false"}}
-              class="Listbox__item-list__item {{if isSelected 'Listbox__item-list__item--selected'}}"
             >
               {{yield item to="items"}}
             </li>
