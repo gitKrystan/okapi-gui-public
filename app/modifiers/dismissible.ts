@@ -1,25 +1,35 @@
-import { action } from '@ember/object';
-import Modifier, { ArgsFor, PositionalArgs, NamedArgs } from 'ember-modifier';
-import { registerDestructor } from '@ember/destroyable';
 import { assert } from '@ember/debug';
+import { registerDestructor } from '@ember/destroyable';
+import { action } from '@ember/object';
+
+import Modifier, { ArgsFor, NamedArgs, PositionalArgs } from 'ember-modifier';
+
+import mergeOptions from 'okapi/utils/merge-options';
 
 type Dismissed = (e: Event) => void;
+
+interface DismissibleOptions {
+  disableWhen: boolean;
+  dismissOnFocusChange: boolean;
+  related: Element | Element[] | null;
+}
 
 interface DismissibleSignature {
   Element: HTMLElement;
   Args: {
-    Named: {
-      dismissed: Dismissed;
-      disableWhen?: boolean;
-      dismissOnFocusChange?: boolean;
-      related?: Element | Element[] | null;
-    };
+    Named: { dismissed: Dismissed } & Partial<DismissibleOptions>;
   };
 }
 
 function NOOP(_e: Event): void {
   /* no-op */
 }
+
+const DEFAULT_OPTIONS = {
+  dismissOnFocusChange: true,
+  disableWhen: false,
+  related: null,
+};
 
 /**
  * Calls the passed-in `dismissed` action whenever the user mouses down outside the
@@ -70,43 +80,36 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
   modify(
     element: DismissibleSignature['Element'],
     _positional: PositionalArgs<DismissibleSignature>,
-    {
-      dismissed,
-      disableWhen,
-      dismissOnFocusChange,
-      related,
-    }: NamedArgs<DismissibleSignature>
+    { dismissed, ...options }: NamedArgs<DismissibleSignature>
   ): void {
     this.el = element;
     this._dismissed = dismissed;
-    this.dismissOnFocusChange = dismissOnFocusChange ?? true;
-    this.disableWhen = disableWhen ?? false;
-    this.related = related ?? null;
 
-    if (disableWhen) {
+    this.options = mergeOptions(DEFAULT_OPTIONS, options);
+
+    if (options.disableWhen) {
       this.removeListeners();
     } else {
-      document.addEventListener('mousedown', this.handleMousedown);
+      document.addEventListener('pointerdown', this.handlePointerdown);
       document.addEventListener('keydown', this.handleKeydown);
       document.addEventListener('focusin', this.handleFocusIn);
     }
   }
 
   private el?: DismissibleSignature['Element'];
-  private dismissOnFocusChange = true;
-  private disableWhen = false;
-  private related: Element | Element[] | null = null;
+
+  private options: DismissibleOptions = DEFAULT_OPTIONS;
 
   private _dismissed?: Dismissed;
   private get dismissed(): Dismissed {
     assert('expected `dismissed` to be defined', this._dismissed);
-    return this.disableWhen ? NOOP : this._dismissed;
+    return this.options.disableWhen ? NOOP : this._dismissed;
   }
 
   private get containers(): Element[] {
     assert('expected this.el to be set', this.el);
     let containers: Element[] = [this.el];
-    let { related } = this;
+    let { related } = this.options;
 
     if (related instanceof Element) {
       containers.push(related);
@@ -126,7 +129,7 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
     );
   }
 
-  @action private handleMousedown(e: MouseEvent): void {
+  @action private handlePointerdown(e: PointerEvent): void {
     /**
      * Generally, we want to run the passed in `dismissed` callback when a user
      * clicks outside `this.element`, approximated by checking that `this.element`
@@ -150,7 +153,7 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
     if (
       this.didFocusOutside(e) &&
       e.target instanceof Node &&
-      document.body.contains(e.target)
+      (document.body.contains(e.target) || e.target.nodeName === 'HTML')
     ) {
       this.dismissed(e);
     }
@@ -172,13 +175,13 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
      * such as tabbing within the dismissible container, temporarily losing focus
      * to the context menu, the window itself losing focus, etc.
      */
-    if (this.dismissOnFocusChange && this.didFocusOutside(e)) {
+    if (this.options.dismissOnFocusChange && this.didFocusOutside(e)) {
       this.dismissed(e);
     }
   }
 
   @action private removeListeners(): void {
-    document.removeEventListener('mousedown', this.handleMousedown);
+    document.removeEventListener('pointerdown', this.handlePointerdown);
     document.removeEventListener('keydown', this.handleKeydown);
     document.removeEventListener('focusin', this.handleFocusIn);
   }
