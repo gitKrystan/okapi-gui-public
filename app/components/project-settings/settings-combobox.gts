@@ -43,6 +43,7 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
       @onSelect={{this.updateDescription}}
       @onItemMousemove={{this.updateDescription}}
       @onItemFocus={{this.updateDescription}}
+      {{!-- FIXME: both --}}
       @autocomplete="inline"
       @labelClass="u_visually-hidden"
     >

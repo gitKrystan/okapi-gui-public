@@ -243,14 +243,17 @@ export default class Combobox<T extends { id: string }> extends Component<
     d.toggle();
   }
 
-  @action private handleInputKeyDown(d: DropdownApi, event: KeyboardEvent): void {
+  @action private handleInputKeyDown(
+    d: DropdownApi,
+    event: KeyboardEvent
+  ): void {
     let { key, altKey, ctrlKey, shiftKey, metaKey } = event;
 
     if (ctrlKey || shiftKey || metaKey) {
       return;
     }
 
-    console.warn('handleInputKeyDown', { key });
+    console.warn('handleInputKeyDown', { key }); // FIXME
 
     let value = this.inputEl.value;
     let shouldConsumeEvent = false;
@@ -332,16 +335,24 @@ export default class Combobox<T extends { id: string }> extends Component<
     }
   }
 
-  @action private handleInput(d: DropdownApi, _event: Event): void {
+  @action private handleInput(d: DropdownApi, event: Event): void {
+    assert('Input event should be InputEvent', event instanceof InputEvent);
+
     let value = this.inputEl.value;
 
-    console.warn('handleInput', { value, filter: this.filter });
+    console.warn('handleInput', { value, filter: this.filter }); // FIXME
 
     this.setValue({ filter: value });
     if (value) {
       let match = this.filteredOptions[0] ?? null;
       this.setSelection(match, {
-        updateAutocomplete: !!match
+        updateAutocomplete:
+          !!match &&
+          // If `event.data` is null, the user is deleting text, so don't update
+          // the autocomplete, because this will likely just replace the text
+          // they just deleted. There is no good way to test this behavior,
+          // so be very careful if you delete this line.
+          event.data !== null
       });
       d.open();
     } else {
@@ -470,5 +481,4 @@ export default class Combobox<T extends { id: string }> extends Component<
 }
 
 // FIXME: BUGS
-// Backspace not working w/ inline?
-// Case insensitive search broken w/ inline
+// Case insensitive search broken (w/ inline?)
