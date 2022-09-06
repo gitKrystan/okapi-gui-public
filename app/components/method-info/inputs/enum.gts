@@ -39,16 +39,23 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
       <:content as |List|>
         <List data-test-enum-input-list>
           <:items as |item|>
-            <div class="Combobox__item {{if (eq item this.descriptionItem) 'Combobox__item--is-description-item'}}">
+            <div
+              class="Combobox__item
+                {{if
+                  (eq item this.descriptionItem)
+                  'Combobox__item--is-description-item'
+                }}"
+            >
               {{or item.name "undefined"}}
               <p class="u_visually-hidden">
-                Description: {{this.descriptionFor item}}
+                Description:
+                {{this.descriptionFor item}}
               </p>
             </div>
           </:items>
         </List>
-        {{!-- Hide this item from aria because we have a visually hidden description above. --}}
-        <div class="Combobox__dropdown__info" aria-hidden="true">
+        {{! Hide this item from aria because we have a visually hidden description above. }}
+        <div class="Combobox__Dropdown__info" aria-hidden="true">
           {{this.descriptionFor this.descriptionItem}}
         </div>
       </:content>
@@ -74,15 +81,17 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
     this.descriptionItem = item;
   }
 
-  @action private descriptionFor(item: EnumMethodParamOption | null | undefined): string {
+  @action private descriptionFor(
+    item: EnumMethodParamOption | null | undefined
+  ): string {
     if (item === null) {
-      return "If selected, this field will not be sent.";
+      return 'If selected, this field will not be sent.';
     } else if (item === undefined) {
-      return "No item selected.";
+      return 'No item selected.';
     } else if (item.description) {
       return item.description;
     } else {
-      return "No description provided.";
+      return 'No description provided.';
     }
   }
 }

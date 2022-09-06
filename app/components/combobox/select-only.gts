@@ -5,20 +5,21 @@ import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { ComponentLike, WithBoundArgs } from '@glint/template';
 
-import Positioner, { PositionerAPI } from 'ember-positioner';
-
+import Dropdown from 'okapi/components/dropdown/index';
+// Ideally we'd re-export from the dropdown component but that's not working yet
+// with GTS.
+import DropdownApi from 'okapi/components/dropdown/private/api';
 import ListNav from 'okapi/components/list-nav/index';
 import {
   FocusDirection,
-  MoveFocusSignature,
+  MoveFocusSignature
 } from 'okapi/components/list-nav/types';
 import ComboboxButton, {
-  ComboboxButtonSignature,
+  ComboboxButtonSignature
 } from 'okapi/components/combobox/button';
 import Selection, {
   ListboxSelectionSignature
 } from 'okapi/components/listbox/selection';
-import dismissible from 'okapi/modifiers/dismissible';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
 
 interface SelectOnlyComboboxSignature<T> {
@@ -31,8 +32,7 @@ interface SelectOnlyComboboxSignature<T> {
       Button: WithBoundArgs<
         typeof ComboboxButton,
         keyof ComboboxButtonSignature['Args']
-      >,
-      positioner: PositionerAPI,
+      >
     ];
 
     content: [
@@ -42,8 +42,7 @@ interface SelectOnlyComboboxSignature<T> {
       List: WithBoundArgs<
         ComponentLike<ListboxSelectionSignature<T>>,
         keyof ListboxSelectionSignature<T>['Args']
-      >,
-      positioner: PositionerAPI,
+      >
     ];
   };
 }
@@ -73,44 +72,26 @@ export default class SelectOnlyCombobox<T> extends Component<
 > {
   <template>
     <ListNav @itemRole="option" as |nav|>
-      <div ...attributes class="Combobox">
-        <Positioner
-          @placement="bottom"
-          @hideArrow={{true}}
-          @offsetDistance={{0}}
-        >
-          <:trigger as |p|>
-            {{yield
-                (component
-                  ComboboxButton
-                  listboxId=this.id
-                  expanded=p.isOpened
-                  onInsert=p.registerAnchor
-                  onKeydown=(fn this.handleTriggerKeydown p nav.moveFocusTo)
-                  onClick=(fn this.handleTriggerClick p nav.moveFocusTo)
-                  readonly=@readonly
-                )
-                p
-              to="trigger"
-            }}
-          </:trigger>
-          <:content as |p|>
-            <div
-              class="Combobox__dropdown"
-              {{dismissible
-                dismissed=(fn this.handleDismiss p)
-                related=p.anchor
-              }}
-            >
-              {{! @glint-expect-error See Signature type for explanation. }}
-              {{yield (component Selection id=this.id items=@items initialSelection=@initialSelection onFocus=@onFocus onSelect=(fn this.onSelect p) onItemMousemove=@onItemMousemove onItemKeydown=(fn this.handleItemKeydown p) list=nav.list)
-                p
-                to="content"
-              }}
-            </div>
-          </:content>
-        </Positioner>
-      </div>
+      <Dropdown ...attributes @didDismiss={{this.didDismiss}}>
+        <:trigger as |d|>
+          {{yield
+            (component
+              ComboboxButton
+              listboxId=this.id
+              expanded=d.isExpanded
+              onInsert=this.registerButton
+              onKeydown=(fn this.handleTriggerKeydown d nav.moveFocusTo)
+              onClick=(fn this.handleTriggerClick d nav.moveFocusTo)
+              readonly=@readonly
+            )
+            to="trigger"
+          }}
+        </:trigger>
+        <:content as |d|>
+          {{! @glint-expect-error See Signature type for explanation. }}
+          {{yield (component Selection id=this.id items=@items initialSelection=@initialSelection onFocus=@onFocus onSelect=(fn this.onSelect d) onItemMousemove=@onItemMousemove onItemKeydown=(fn this.handleItemKeydown d) list=nav.list) to="content"}}
+        </:content>
+      </Dropdown>
     </ListNav>
   </template>
 
@@ -121,20 +102,16 @@ export default class SelectOnlyCombobox<T> extends Component<
   }
 
   @action private handleTriggerClick(
-    p: PositionerAPI,
+    d: DropdownApi,
     moveFocusTo: MoveFocusSignature
   ): void {
-    if (p.isHidden) {
-      p.open({
-        didOpen: () => moveFocusTo(this.currentIndex ?? 0)
-      });
-    } else {
-      p.close();
-    }
+    d.toggle({
+      didOpen: () => moveFocusTo(this.currentIndex ?? 0)
+    });
   }
 
   @action private handleTriggerKeydown(
-    p: PositionerAPI,
+    d: DropdownApi,
     moveFocusTo: MoveFocusSignature,
     e: KeyboardEvent
   ): void {
@@ -143,13 +120,13 @@ export default class SelectOnlyCombobox<T> extends Component<
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
-        p.open({
+        d.open({
           didOpen: () => moveFocusTo(FocusDirection.Previous, currentIndex)
         });
         break;
       case 'ArrowDown':
         e.preventDefault();
-        p.open({
+        d.open({
           didOpen: () => {
             if (e.altKey) {
               moveFocusTo(currentIndex);
@@ -162,8 +139,9 @@ export default class SelectOnlyCombobox<T> extends Component<
       default:
         if (isPrintableCharacter(e.key)) {
           e.preventDefault();
-          p.open({
-            didOpen: () => moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key)
+          d.open({
+            didOpen: () =>
+              moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key)
           });
         }
     }
@@ -172,29 +150,27 @@ export default class SelectOnlyCombobox<T> extends Component<
   /**
    * When the user hits "Escape", "cancel" the selection and refocus the anchor.
    */
-  @action private handleDismiss(p: PositionerAPI, e: Event): void {
-    p.close();
-
+  @action private didDismiss(e: Event): void {
     if (e instanceof KeyboardEvent && e.key === 'Escape') {
-      assert('Positioner anchor must exist', p.anchor);
-      p.anchor.focus();
+      assert('Button element must exist', this.buttonEl);
+      this.buttonEl.focus();
     }
   }
 
-  @action private onSelect(p: PositionerAPI, item: T): void {
-    p.close();
-    assert('Positioner anchor must exist', p.anchor);
-    p.anchor.focus();
+  @action private onSelect(d: DropdownApi, item: T): void {
+    d.close();
+    assert('Button element must exist', this.buttonEl);
+    this.buttonEl.focus();
     this.args.onSelect?.(item);
   }
 
   @action private handleItemKeydown(
-    p: PositionerAPI,
+    d: DropdownApi,
     item: T,
     e: KeyboardEvent
   ): void {
     if (e.key === ' ') {
-      this.onSelect(p, item);
+      this.onSelect(d, item);
     }
   }
 
@@ -207,6 +183,22 @@ export default class SelectOnlyCombobox<T> extends Component<
       assert('expected current item to be found in items', index >= 0);
       return index;
     }
+  }
+
+  // Element registration
+
+  @action private registerButton(el: HTMLButtonElement): void {
+    this._buttonEl = el;
+  }
+
+  private _buttonEl?: HTMLElement;
+
+  private get buttonEl(): HTMLButtonElement {
+    assert(
+      `incorrect comboboxEl, was ${this._buttonEl}`,
+      this._buttonEl instanceof HTMLButtonElement
+    );
+    return this._buttonEl;
   }
 }
 

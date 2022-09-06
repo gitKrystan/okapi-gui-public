@@ -62,7 +62,7 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
           </:items>
         </List>
         {{!-- Hide this item from aria because we have a visually hidden description above. --}}
-        <div class="Combobox__dropdown__info" aria-hidden="true">
+        <div class="Combobox__Dropdown__info" aria-hidden="true">
           {{this.descriptionFor this.descriptionItem}}
         </div>
       </:content>
