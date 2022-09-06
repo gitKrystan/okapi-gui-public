@@ -46,7 +46,7 @@
     "@glint/core": "^0.9.2",
     "@glint/environment-ember-loose": "^0.9.3",
     "@glint/environment-ember-template-imports": "^0.9.2",
-    "@percy/cli": "^1.10.0",
+    "@percy/cli": "^1.10.1",
     "@percy/ember": "^4.0.0",
     "@types/ember-qunit": "^5.0.1",
     "@types/ember-resolver": "^5.0.11",
