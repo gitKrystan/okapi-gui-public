@@ -51,10 +51,4 @@ $-padding-y: 0.5rem;
     border-color: var(--contrast6);
     color: var(--contrast6);
   }
-
-  .Listbox__item-list__item:hover,
-  .Listbox__item-list__item--selected {
-    background-color: var(--magenta);
-    color: var(--contrast7);
-  }
 }

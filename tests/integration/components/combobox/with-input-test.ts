@@ -26,7 +26,6 @@ interface Context<T extends { id: string } = { id: string }>
   state: State<T>;
 }
 
-const parent = '[data-test-combobox-parent]';
 const trigger = '[data-test-combobox-button]';
 const input = '[data-test-combobox-input]';
 const list = '[data-test-combobox-listbox]';
@@ -2900,8 +2899,7 @@ function listItem(n: number): string {
   return `[data-test-combobox-listbox] li:nth-child(${n + 1})`;
 }
 
-// FIXME: Remove note default
-function assertSelection(assert: Assert, n: number | null, note = ''): void {
+function assertSelection(assert: Assert, n: number | null, note: string): void {
   assert.dom(input).isFocused();
   let selectedItems = findAll(selectedItem);
   if (!note) {

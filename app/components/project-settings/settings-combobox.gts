@@ -2,6 +2,8 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
+import eq from 'ember-truth-helpers/helpers/eq';
+
 import Combobox from 'okapi/components/combobox/with-input';
 import ProjectSetting from 'okapi/models/project-setting';
 
@@ -48,10 +50,18 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
         Choose a setting to configure.
       </:label>
       <:options as |option|>
-        {{option.id}}: {{option.name}}
-        <p class="u_visually-hidden">
-          Description: {{this.descriptionFor option}}
-        </p>
+        <div
+          class="Combobox__item
+            {{if
+              (eq option this.descriptionItem)
+              'Combobox__item--is-description-item'
+            }}"
+        >
+          {{option.id}}: {{option.name}}
+          <p class="u_visually-hidden">
+            Description: {{this.descriptionFor option}}
+          </p>
+        </div>
       </:options>
       <:extra>
         {{!-- Hide this item from aria because we have a visually hidden description above. --}}

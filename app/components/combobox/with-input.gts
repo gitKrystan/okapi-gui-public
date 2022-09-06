@@ -6,17 +6,16 @@ import { guidFor } from '@ember/object/internals';
 import { dasherize } from '@ember/string';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import Ember from 'ember'; // For Ember.testing
 
-import { task, timeout } from 'ember-concurrency';
-import perform from 'ember-concurrency/helpers/perform';
-import { taskFor } from 'ember-concurrency-ts';
 import { modifier } from 'ember-modifier';
 import eq from 'ember-truth-helpers/helpers/eq';
 
 import Button from 'okapi/components/button';
+import Dropdown from 'okapi/components/dropdown/index';
+// Ideally we'd re-export from the dropdown component but that's not working yet
+// with GTS.
+import DropdownApi from 'okapi/components/dropdown/private/api';
 import Icon from 'okapi/components/icon';
-import dismissible from 'okapi/modifiers/dismissible';
 
 type Autocomplete =
   /** No list filtration or inline autofill (except for on commit). */
@@ -27,14 +26,6 @@ type Autocomplete =
   | 'inline'
   /** List will filter based on input and input will be autofilled. */
   | 'both';
-
-interface OpenOptions {
-  onOpen?: () => void;
-}
-
-interface CloseOptions {
-  onClose?: () => void;
-}
 
 export interface ComboboxSignature<T extends { id: string }> {
   Element: HTMLDivElement;
@@ -67,12 +58,8 @@ export default class Combobox<T extends { id: string }> extends Component<
     <label id="{{this.id}}-label" for="{{this.id}}-input" class={{@labelClass}}>
       {{yield to="label"}}
     </label>
-    <div
-      ...attributes
-      data-test-combobox-parent
-      class="Combobox Combobox--has-input"
-      {{dismissible dismissed=(perform this.delayedClose)}}
-    >
+    <Dropdown ...attributes class="Combobox--has-input">
+      <:trigger as |d|>
       <input
         data-test-combobox-input
         id="{{this.id}}-input"
@@ -82,24 +69,25 @@ export default class Combobox<T extends { id: string }> extends Component<
         autocomplete="off"
         aria-controls="{{this.id}}-listbox"
         aria-autocomplete={{this.autocomplete}}
-        aria-expanded="{{this.isExpanded}}"
+        aria-expanded="{{d.isExpanded}}"
         {{this.registerInput}}
         {{on "focus" this.handleInputFocus}}
         {{on "blur" this.handleInputBlur}}
-        {{on "click" this.handleInputClick}}
-        {{on "keydown" this.handleInputKeyDown}}
-        {{on "input" this.handleInput}}
+        {{on "click" (fn this.handleInputClick d)}}
+        {{on "keydown" (fn this.handleInputKeyDown d)}}
+        {{on "input" (fn this.handleInput d)}}
       />
+      {{!-- FIXME: Use component --}}
       <Button
         data-test-combobox-button
         class="Combobox__button {{if @readonly 'Combobox__button--readonly'}}"
         role="combobox"
         aria-haspopup="listbox"
         aria-controls="{{this.id}}-listbox"
-        aria-expanded="{{this.isExpanded}}"
+        aria-expanded="{{d.isExpanded}}"
         aria-labelledby="{{this.id}}-label"
         tabindex="-1"
-        {{on "click" this.handleButtonClick}}
+        {{on "click" (fn this.handleButtonClick d)}}
       >
         {{#if (has-block "button")}}
           {{yield to="button"}}
@@ -107,11 +95,12 @@ export default class Combobox<T extends { id: string }> extends Component<
         {{#if this.isEnabled}}
           <Icon
             @type="solid"
-            @id={{if this.isExpanded "chevron-up" "chevron-down"}}
+            @id={{if d.isExpanded "chevron-up" "chevron-down"}}
           />
         {{/if}}
       </Button>
-      {{#if this.isExpanded}}
+      </:trigger>
+      <:content as |d|>
         <ul
           data-test-combobox-listbox
           id="{{this.id}}-listbox"
@@ -127,10 +116,8 @@ export default class Combobox<T extends { id: string }> extends Component<
             {{#let (eq option this.selection) as |isSelected|}}
               <li
                 id={{this.idFor option}}
-                class="Listbox__item-list__item
-                  {{if isSelected 'Listbox__item-list__item--selected'}}"
                 role="option"
-                {{on "click" (fn this.handleOptionClick option)}}
+                {{on "click" (fn this.handleOptionClick d option)}}
                 {{on "mousemove" (fn this.onItemMousemove option)}}
                 {{on "focus" (fn this.onItemFocus option)}}
                 aria-selected={{if isSelected "true" "false"}}
@@ -139,26 +126,26 @@ export default class Combobox<T extends { id: string }> extends Component<
               </li>
             {{/let}}
           {{else}}
-            <li class="Listbox__item-list__item">
+            <li>
               {{#if (has-block "empty")}}
                 {{yield to="empty"}}
               {{else}}
-                No items{{if
-                  this.filter
-                  (concat ' match the filter "' this.filter '"')
-                }}.
+                <div class="Combobox__item">
+                  No items{{if
+                    this.filter
+                    (concat ' match the filter "' this.filter '"')
+                  }}.
+                </div>
               {{/if}}
             </li>
           {{/each}}
           {{yield to="extra"}}
         </ul>
-      {{/if}}
-    </div>
+      </:content>
+    </Dropdown>
   </template>
 
   private id = guidFor(this);
-
-  @tracked private isExpanded = false;
 
   @tracked private hasFocus = false;
 
@@ -252,11 +239,11 @@ export default class Combobox<T extends { id: string }> extends Component<
     this.hasFocus = false;
   }
 
-  @action private handleInputClick(): void {
-    this.toggle();
+  @action private handleInputClick(d: DropdownApi): void {
+    d.toggle();
   }
 
-  @action private handleInputKeyDown(event: KeyboardEvent): void {
+  @action private handleInputKeyDown(d: DropdownApi, event: KeyboardEvent): void {
     let { key, altKey, ctrlKey, shiftKey, metaKey } = event;
 
     if (ctrlKey || shiftKey || metaKey) {
@@ -270,8 +257,8 @@ export default class Combobox<T extends { id: string }> extends Component<
 
     switch (key) {
       case 'Enter':
-        this.toggle({
-          onClose: () => this.commitSelection()
+        d.toggle({
+          didClose: () => this.commitSelection()
         });
 
         shouldConsumeEvent = true;
@@ -288,7 +275,7 @@ export default class Combobox<T extends { id: string }> extends Component<
             clearFilter: !this.hasListAutocomplete
           }
         );
-        this.open();
+        d.open();
         shouldConsumeEvent = true;
         break;
 
@@ -303,7 +290,7 @@ export default class Combobox<T extends { id: string }> extends Component<
             clearFilter: !this.hasListAutocomplete
           }
         );
-        this.open();
+        d.open();
         shouldConsumeEvent = true;
         break;
 
@@ -311,7 +298,7 @@ export default class Combobox<T extends { id: string }> extends Component<
       case 'ArrowLeft':
       case 'Right':
       case 'ArrowRight':
-        this.acceptSuggestion(value);
+        this.acceptSuggestion(d, value);
         // NOTE: Do not set `shouldConsumeEvent = true` here. It will prevent
         // the cursor from moving. Unfortunately, there is no good way to test
         // this behavior.
@@ -320,20 +307,20 @@ export default class Combobox<T extends { id: string }> extends Component<
       case 'Esc':
       case 'Escape':
         // NOTE: Dismissible will handle the first time Escape is pressed
-        if (!this.isExpanded) {
+        if (!d.isExpanded) {
           this.setSelection(null);
           this.commitSelection();
         }
         break;
 
       case 'Home':
-        this.acceptSuggestion(value);
+        this.acceptSuggestion(d, value);
         this.inputEl.setSelectionRange(0, 0);
         shouldConsumeEvent = true;
         break;
 
       case 'End':
-        this.acceptSuggestion(value);
+        this.acceptSuggestion(d, value);
         this.inputEl.setSelectionRange(value.length, value.length);
         shouldConsumeEvent = true;
         break;
@@ -345,7 +332,7 @@ export default class Combobox<T extends { id: string }> extends Component<
     }
   }
 
-  @action private handleInput(_event: Event): void {
+  @action private handleInput(d: DropdownApi, _event: Event): void {
     let value = this.inputEl.value;
 
     console.warn('handleInput', { value, filter: this.filter });
@@ -356,7 +343,7 @@ export default class Combobox<T extends { id: string }> extends Component<
       this.setSelection(match, {
         updateAutocomplete: !!match
       });
-      this.open();
+      d.open();
     } else {
       this.setSelection(null);
     }
@@ -364,17 +351,17 @@ export default class Combobox<T extends { id: string }> extends Component<
 
   // Button events
 
-  @action private handleButtonClick(): void {
+  @action private handleButtonClick(d: DropdownApi): void {
     this.inputEl.focus();
-    this.handleInputClick();
+    this.handleInputClick(d);
   }
 
   // Listbox events
 
-  @action private handleOptionClick(option: T): void {
+  @action private handleOptionClick(d: DropdownApi, option: T): void {
     this.setSelection(option);
     this.commitSelection();
-    this.close();
+    d.close();
     this.inputEl.focus();
   }
 
@@ -386,44 +373,12 @@ export default class Combobox<T extends { id: string }> extends Component<
     this.args.onItemFocus?.(option);
   }
 
-  // Expanding and collapsing
-
-  private open({ onOpen }: OpenOptions = {}): void {
-    if (!this.isExpanded) {
-      console.warn('open', { selection: this.selection }); // FIXME
-      this.isExpanded = true;
-      this.filterOptions();
-      onOpen?.();
-    }
-  }
-
-  private close({ onClose }: CloseOptions = {}): void {
-    if (this.isExpanded) {
-      this.isExpanded = false;
-      console.warn('close', { selection: this.selection }); // FIXME
-      onClose?.();
-    }
-  }
-
-  private toggle({ onClose, onOpen }: CloseOptions & OpenOptions = {}): void {
-    if (this.isExpanded) {
-      this.close({ onClose });
-    } else {
-      this.open({ onOpen });
-    }
-  }
-
-  @task({ drop: true }) private delayedClose = taskFor(async () => {
-    await timeout(Ember.testing ? 0 : 300);
-    this.close();
-  });
-
   // State management
 
-  private acceptSuggestion(filter: string): void {
+  private acceptSuggestion(d: DropdownApi, filter: string): void {
     this.setValue({ filter }, { setSelectionRange: false });
     if (filter) {
-      this.open();
+      d.open();
     } else {
       this.setSelection(null);
     }
