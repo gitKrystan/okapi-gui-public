@@ -32,6 +32,7 @@ export interface ComboboxSignature<T extends { id: string }> {
   Args: {
     options: T[];
     autocomplete?: Autocomplete;
+    caseSensitive?: boolean;
     readonly?: boolean;
     labelClass?: string;
     onSelect?: (selection: T | null) => void;
@@ -210,6 +211,10 @@ export default class Combobox<T extends { id: string }> extends Component<
     return ['inline', 'both'].includes(this.autocomplete);
   }
 
+  private get caseSensitive(): boolean {
+    return this.args.caseSensitive ?? false;
+  }
+
   // Element registration
 
   private registerInput = modifier(
@@ -336,7 +341,10 @@ export default class Combobox<T extends { id: string }> extends Component<
   }
 
   @action private handleInput(d: DropdownApi, event: Event): void {
-    assert('Input event should be InputEvent', event instanceof InputEvent);
+    assert(
+      'Input event should be InputEvent. If you are writing a test, use the `fireInputEvent` helper instead of `fillIn`.',
+      event instanceof InputEvent
+    );
 
     let value = this.inputEl.value;
 
@@ -428,13 +436,20 @@ export default class Combobox<T extends { id: string }> extends Component<
       this.filter = newFilter;
     }
 
-    let filter = this.filter.toLowerCase();
+    let { filterPredicate } = this;
+    this.filteredOptions = this.args.options.filter(filterPredicate);
+  }
+
+  private get filterPredicate(): (option: T) => boolean {
+    let { caseSensitive, filter } = this;
+
     if (filter.length) {
-      this.filteredOptions = this.args.options.filter(o =>
-        this.getLowercaseContent(o).startsWith(filter)
-      );
+      let transform = (text: string): string => caseSensitive ? text : text.toLowerCase();
+      filter = transform(filter);
+      // FIXME: Allow dev to specify inner El for content
+      return (option: T) => transform(option.id).startsWith(filter);
     } else {
-      this.filteredOptions = this.args.options;
+      return () => true;
     }
   }
 
@@ -450,7 +465,7 @@ export default class Combobox<T extends { id: string }> extends Component<
       if (selection) {
         let filter = clearFilter ? '' : this.filter;
         let value = selection?.id ?? '';
-        let filterTest = new RegExp(`^${filter}`);
+        let filterTest = new RegExp(`^${filter}`, 'i');
         let suggestion = value.replace(filterTest, '');
         this.setValue({ filter, suggestion });
       } else {
@@ -473,12 +488,4 @@ export default class Combobox<T extends { id: string }> extends Component<
   @action private idFor(option: T | null): string | undefined {
     return option ? `${this.id}-option-${dasherize(option.id)}` : undefined;
   }
-
-  private getLowercaseContent(option: T): string {
-    // FIXME: Allow dev to specify inner El for content
-    return option.id.toLowerCase();
-  }
 }
-
-// FIXME: BUGS
-// Case insensitive search broken (w/ inline?)
