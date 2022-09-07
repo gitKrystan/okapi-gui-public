@@ -12,7 +12,7 @@
     },
 
     // Overrides of @tsconfig/ember defaults:
-    "noEmitOnError": true
+    "noEmitOnError": false
   },
   "include": ["app/**/*", "tests/**/*", "types/**/*"],
   "glint": {
