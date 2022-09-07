@@ -1,16 +1,15 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { guidFor } from '@ember/object/internals';
 import { tracked } from '@glimmer/tracking';
 
 import eq from 'ember-truth-helpers/helpers/eq';
 
-import Combobox from 'okapi/components/combobox/select-only';
+import Combobox from 'okapi/components/combobox/editable';
 import ProjectSetting from 'okapi/models/project-setting';
 
 interface SettingsComboboxSignature {
   Args: {
-    onSelect: (item: ProjectSetting) => void;
+    onCommit: (item: ProjectSetting) => void;
   };
 }
 
@@ -38,46 +37,48 @@ const ALL = [
 export default class SettingsCombobox extends Component<SettingsComboboxSignature> {
   <template>
     <Combobox
-      @items={{this.allSettings}}
-      @onSelect={{this.onSelect}}
+      data-test-settings-combobox
+      @options={{this.allSettings}}
+      @onCommit={{this.onCommit}}
+      @onSelect={{this.updateDescription}}
       @onItemMousemove={{this.updateDescription}}
-      @onFocus={{this.updateDescription}}
+      @onItemFocus={{this.updateDescription}}
+      @autocomplete="both"
+      @labelClass="u_visually-hidden"
     >
-      <:trigger as |Trigger|>
-        <Trigger
-          id={{this.id}}
-          aria-label="Choose a setting to configure."
-          data-test-settings-combobox-button
-        />
-      </:trigger>
-      <:content as |List|>
-        <List>
-          <:items as |item|>
-            <div class="Combobox__item {{if (eq item this.descriptionItem) 'Combobox__item--is-description-item'}}">
-              {{item.id}}: {{item.name}}
-              <p class="u_visually-hidden">
-                Description: {{this.descriptionFor item}}
-              </p>
-            </div>
-          </:items>
-        </List>
+      <:label>
+        Choose a setting to configure.
+      </:label>
+      <:options as |option|>
+        <div
+          class="Combobox__item
+            {{if
+              (eq option this.descriptionItem)
+              'Combobox__item--is-description-item'
+            }}"
+        >
+          {{option.id}}: {{option.name}}
+          <p class="u_visually-hidden">
+            Description: {{this.descriptionFor option}}
+          </p>
+        </div>
+      </:options>
+      <:extra>
         {{!-- Hide this item from aria because we have a visually hidden description above. --}}
         <div class="Combobox__Dropdown__info" aria-hidden="true">
           {{this.descriptionFor this.descriptionItem}}
         </div>
-      </:content>
+      </:extra>
     </Combobox>
   </template>
-
-  private id = guidFor(this);
 
   private get allSettings(): ProjectSetting[] {
     return ALL;
   };
 
-  @tracked private descriptionItem = this.allSettings[0];
+  @tracked private descriptionItem = this.allSettings[0] ?? null;
 
-  @action private descriptionFor(item: ProjectSetting | undefined): string {
+  @action private descriptionFor(item: ProjectSetting | null): string {
     if (item?.description) {
       return item.description;
     } else if (item) {
@@ -87,12 +88,14 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
     }
   }
 
-  @action private onSelect(item: ProjectSetting): void {
+  @action private onCommit(item: ProjectSetting | null): void {
     this.descriptionItem = item;
-    this.args.onSelect(item);
+    if (item) {
+      this.args.onCommit(item);
+    }
   }
 
-  @action private updateDescription(item: ProjectSetting): void {
+  @action private updateDescription(item: ProjectSetting | null): void {
     this.descriptionItem = item;
   }
 }

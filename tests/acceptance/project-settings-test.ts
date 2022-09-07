@@ -29,20 +29,28 @@ module('Acceptance | project settings', function (hooks) {
 
     assert.strictEqual(currentURL(), '/Direwolf/settings');
 
-    assert.dom('[data-test-listbox-item-list]').doesNotExist();
+    assert
+      .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+      .doesNotExist();
 
-    await click('[data-test-settings-combobox-button]');
+    await click('[data-test-settings-combobox] [data-test-combobox-input]');
 
-    assert.dom('[data-test-listbox-item-list]').exists();
+    assert
+      .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+      .exists();
 
     await snapshotDarkMode(assert, {
       owner: this.owner, // so we don't dismiss when clicking toggle
       suffix: '(dropdown open)',
     });
 
-    await click('[data-test-listbox-item-list] li:nth-child(1)');
+    await click(
+      '[data-test-settings-combobox] [data-test-combobox-listbox] li:nth-child(1)'
+    );
 
-    assert.dom('[data-test-listbox-item-list]').doesNotExist();
+    assert
+      .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
+      .doesNotExist();
 
     assert
       .dom('[data-test-project-settings-list]')

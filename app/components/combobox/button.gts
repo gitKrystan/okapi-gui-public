@@ -12,9 +12,9 @@ export interface ComboboxButtonSignature {
     listboxId: string;
     expanded: boolean;
     readonly: boolean;
-    onInsert(target: HTMLElement): void;
-    onKeydown(e: KeyboardEvent): void;
     onClick(e: Event): void;
+    onInsert?(target: HTMLElement): void;
+    onKeydown?(e: KeyboardEvent): void;
   };
   Blocks: {
     default: [];
@@ -37,7 +37,7 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
       aria-expanded="{{@expanded}}"
       data-test-combobox-button
       {{this.didInsert}}
-      {{on "keydown" @onKeydown}}
+      {{on "keydown" this.onKeydown}}
       {{on "click" this.onClick}}
     >
       {{yield}}
@@ -53,10 +53,16 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
 
   private didInsert = modifier(
     (element: HTMLButtonElement) => {
-      this.args.onInsert(element);
+      this.args.onInsert?.(element);
     },
     { eager: false }
   );
+
+  @action private onKeydown(e: KeyboardEvent): void {
+    if (this.enabled) {
+      this.args.onKeydown?.(e);
+    }
+  }
 
   @action private onClick(e: Event): void {
     if (this.enabled) {
