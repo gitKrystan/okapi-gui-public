@@ -186,9 +186,3 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
     document.removeEventListener('focusin', this.handleFocusIn);
   }
 }
-
-declare module '@glint/environment-ember-loose/registry' {
-  export default interface Registry {
-    dismissible: typeof DismissibleModifier;
-  }
-}
