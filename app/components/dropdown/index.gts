@@ -4,7 +4,6 @@ import { tracked } from '@glimmer/tracking';
 import Ember from 'ember'; // For Ember.testing
 
 import { task, timeout } from 'ember-concurrency';
-import { taskFor } from 'ember-concurrency-ts';
 
 import dismissible from 'okapi/modifiers/dismissible';
 import DropdownApi, { OpenOptions, CloseOptions } from './private/api';
@@ -30,11 +29,7 @@ export default class Dropdown
   implements DropdownApi
 {
   <template>
-    <div
-      ...attributes
-      class="Dropdown"
-      {{dismissible dismissed=this.onDismiss}}
-    >
+    <div ...attributes class="Dropdown" {{dismissible dismissed=this.onDismiss}}>
       {{yield this to="trigger"}}
       {{#if this.isExpanded}}
         <div class="Dropdown__content">
@@ -80,7 +75,8 @@ export default class Dropdown
     this.doDelayedClose.perform(options);
   }
 
-  @task({ drop: true }) private doDelayedClose = taskFor(
+  private doDelayedClose = task(
+    { drop: true },
     async (options: CloseOptions) => {
       await timeout(Ember.testing ? 0 : 300);
       this.close(options);

@@ -4,9 +4,10 @@ import { action } from '@ember/object';
 import { schedule } from '@ember/runloop';
 import Component from '@glimmer/component';
 import Ember from 'ember';
+
 import { task, timeout } from 'ember-concurrency';
-import { taskFor } from 'ember-concurrency-ts';
 import { modifier } from 'ember-modifier';
+
 import isHTMLElement from 'okapi/utils/is-html-element';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
 import { FocusDirection, MoveFocusSignature } from './types';
@@ -207,11 +208,13 @@ export default class ListNav extends Component<ListNavSignature> {
    * Within a `startsWith` search, clears `keysSorFar` if it's not
    * restarted within 500 milliseconds (or 0 in tests).
    */
-  @task({ restartable: true })
-  private debouncedSearch = taskFor(async (): Promise<void> => {
-    await timeout(Ember.testing ? 0 : 500);
-    this.keysSoFar = '';
-  });
+  private debouncedSearch = task(
+    { restartable: true },
+    async (): Promise<void> => {
+      await timeout(Ember.testing ? 0 : 500);
+      this.keysSoFar = '';
+    }
+  );
 
   /**
    * Finds a character match within a given range of `items`.

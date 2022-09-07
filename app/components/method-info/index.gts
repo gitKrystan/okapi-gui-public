@@ -2,9 +2,10 @@ import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+
 import { task } from 'ember-concurrency';
 import perform from 'ember-concurrency/helpers/perform';
-import { taskFor } from 'ember-concurrency-ts';
+
 import Button from 'okapi/components/button';
 import Token from 'okapi/components/syntax/token';
 import Method from 'okapi/models/method';
@@ -22,20 +23,6 @@ export interface MethodInfoSig {
 }
 
 export default class MethodInfo extends Component<MethodInfoSig> {
-  @service private declare server: ServerService;
-
-  private methodCall = MethodCall.from(this.args.method);
-
-  private get emphasizeCallButton(): boolean {
-    return this.methodCall.request.every(r => r.value !== undefined);
-  }
-
-  @task({ drop: true })
-  private submit = taskFor(async (e: SubmitEvent): Promise<void> => {
-    e.preventDefault();
-    await this.methodCall.call(this.server);
-  });
-
   <template>
     <div ...attributes>
       <p
@@ -61,7 +48,8 @@ export default class MethodInfo extends Component<MethodInfoSig> {
           <div class="MethodInfo__item" id="{{@method.id}}-call-button">
             <Button
               data-test-method-info-submit-button
-              class="MethodInfo__item__second {{if this.emphasizeCallButton "Button--theme-primary"}}"
+              class="MethodInfo__item__second
+                {{if this.emphasizeCallButton 'Button--theme-primary'}}"
               type="submit"
               disabled={{this.submit.isRunning}}
             >
@@ -89,10 +77,26 @@ export default class MethodInfo extends Component<MethodInfoSig> {
       </ParamList>
     </div>
   </template>
+
+  @service private declare server: ServerService;
+
+  private methodCall = MethodCall.from(this.args.method);
+
+  private get emphasizeCallButton(): boolean {
+    return this.methodCall.request.every(r => r.value !== undefined);
+  }
+
+  private submit = task(
+    { drop: true },
+    async (e: SubmitEvent): Promise<void> => {
+      e.preventDefault();
+      await this.methodCall.call(this.server);
+    }
+  );
 }
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    'MethodInfo': typeof MethodInfo;
+    MethodInfo: typeof MethodInfo;
   }
 }
