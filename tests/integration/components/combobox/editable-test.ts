@@ -85,7 +85,7 @@ class State<T extends { id: string } = { id: string }> {
   }
 }
 
-module('Integration | Component | combobox/with-input', function (hooks) {
+module('Integration | Component | combobox/editable', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function (this: Context, assert) {
@@ -97,7 +97,7 @@ module('Integration | Component | combobox/with-input', function (hooks) {
 
     await render(hbs`
       <a id="outside" href="#">Click Outside</a>
-      <Combobox::WithInput
+      <Combobox::Editable
         @options={{this.state.options}}
         @onCommit={{this.state.handleCommit}}
         @autocomplete={{this.state.autocomplete}}
@@ -109,7 +109,7 @@ module('Integration | Component | combobox/with-input', function (hooks) {
         <:options as |option|>
           {{option.id}}
         </:options>
-      </Combobox::WithInput>
+      </Combobox::Editable>
     `);
   });
 

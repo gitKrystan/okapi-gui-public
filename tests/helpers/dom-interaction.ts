@@ -56,7 +56,7 @@ export async function pointerClick(target: Target): Promise<void> {
     el.focus();
     await triggerEvent(el, 'focus');
   }
-  // await focus(el); // focus and focusin
+
   await triggerEvent(el, 'pointerup');
   await triggerEvent(el, 'mouseup');
   await triggerEvent(el, 'click');

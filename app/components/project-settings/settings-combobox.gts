@@ -4,7 +4,7 @@ import { tracked } from '@glimmer/tracking';
 
 import eq from 'ember-truth-helpers/helpers/eq';
 
-import Combobox from 'okapi/components/combobox/with-input';
+import Combobox from 'okapi/components/combobox/editable';
 import ProjectSetting from 'okapi/models/project-setting';
 
 interface SettingsComboboxSignature {
@@ -16,17 +16,17 @@ interface SettingsComboboxSignature {
 const ALL = [
   new ProjectSetting(
     'Vault Schema Migration',
-    'exp1',
+    '1experimental.vault.schema_version',
     'It does a thing.'
   ),
   new ProjectSetting(
     'Vault Schema Migration 2',
-    'exp2',
+    '2experimental.vault.schema_version',
     'It does another thing.'
   ),
   new ProjectSetting(
     'Vault Schema Migration 3',
-    'exp3',
+    '3experimental.vault.schema_version',
     'It does yet another thing.'
   )
 ];

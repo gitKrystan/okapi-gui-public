@@ -17,17 +17,9 @@ import DropdownApi from 'okapi/components/dropdown/private/api';
 import Icon from 'okapi/components/icon';
 import ComboboxButton from './button';
 
-type Autocomplete =
-  /** No list filtration or inline autofill (except for on commit). */
-  | 'none'
-  /** List will filter based on input. Input will only be autofilled on commit. */
-  | 'list'
-  /** Input will be autofilled. List will never filter. */
-  | 'inline'
-  /** List will filter based on input and input will be autofilled. */
-  | 'both';
+type Autocomplete = 'none' | 'list' | 'inline' | 'both';
 
-export interface ComboboxSignature<T extends { id: string }> {
+export interface EditableComboboxSignature<T extends { id: string }> {
   Element: HTMLDivElement;
   Args: {
     options: T[];
@@ -50,16 +42,29 @@ export interface ComboboxSignature<T extends { id: string }> {
 }
 
 /**
- * FIXME
+ * An editable combobox widget as described by the WAI ARIA Authoring Practices
+ * Guide linked below.
+ *
+ * Supports four potential `autocomplete` behaviors:
+ *
+ * - `none` (default): No list filtration or inline autofill (except for on commit).
+ * - `list`: List will filter based on input. Input will only be autofilled on commit.
+ * - `inline`: Input will be autofilled. List will never filter.
+ * - `both`: List will filter based on input AND input will be autofilled.
+ *
+ * @see { @link https://www.w3.org/WAI/ARIA/apg/patterns/combobox/ }
+ * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-none.html }
+ * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-list.html }
+ * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-both.html }
  */
-export default class Combobox<T extends { id: string }> extends Component<
-  ComboboxSignature<T>
+export default class EditableCombobox<T extends { id: string }> extends Component<
+  EditableComboboxSignature<T>
 > {
   <template>
     <label id="{{this.id}}-label" for="{{this.id}}-input" class={{@labelClass}}>
       {{yield to="label"}}
     </label>
-    <Dropdown ...attributes class="Combobox--has-input">
+    <Dropdown ...attributes class="Combobox--editable">
       <:trigger as |d|>
         <input
           data-test-combobox-input
@@ -248,8 +253,6 @@ export default class Combobox<T extends { id: string }> extends Component<
       return;
     }
 
-    console.warn('handleInputKeyDown', { key }); // FIXME
-
     let value = this.inputEl.value;
     let shouldConsumeEvent = false;
 
@@ -338,8 +341,6 @@ export default class Combobox<T extends { id: string }> extends Component<
 
     let value = this.inputEl.value;
 
-    console.warn('handleInput', { value, filter: this.filter }); // FIXME
-
     this.setValue({ filter: value });
     if (value) {
       let match = this.filteredOptions[0] ?? null;
@@ -400,8 +401,6 @@ export default class Combobox<T extends { id: string }> extends Component<
     }: { filter?: string | null; suggestion?: string | null },
     { setSelectionRange = true } = {}
   ) {
-    console.warn('setValue', { filter, suggestion, setSelectionRange }); // FIXME
-
     if (!this.hasInlineAutocomplete) {
       suggestion = '';
     }
@@ -420,8 +419,6 @@ export default class Combobox<T extends { id: string }> extends Component<
       return;
     }
 
-    console.warn('filterOptions', { newFilter, oldFilter: this.filter }); // FIXME
-
     if (typeof newFilter === 'string') {
       this.filter = newFilter;
     }
@@ -434,9 +431,9 @@ export default class Combobox<T extends { id: string }> extends Component<
     let { caseSensitive, filter } = this;
 
     if (filter.length) {
-      let transform = (text: string): string => caseSensitive ? text : text.toLowerCase();
+      let transform = (text: string): string =>
+        caseSensitive ? text : text.toLowerCase();
       filter = transform(filter);
-      // FIXME: Allow dev to specify inner El for content
       return (option: T) => transform(option.id).startsWith(filter);
     } else {
       return () => true;
@@ -447,8 +444,6 @@ export default class Combobox<T extends { id: string }> extends Component<
     selection: T | null,
     { updateAutocomplete = true, clearFilter = false } = {}
   ): void {
-    console.warn('setSelection', { selection, updateAutocomplete }); // FIXME
-
     this.selection = selection;
 
     if (updateAutocomplete && this.hasInlineAutocomplete) {
@@ -467,7 +462,6 @@ export default class Combobox<T extends { id: string }> extends Component<
   }
 
   private commitSelection(): void {
-    console.warn('commitSelection', { selection: this.selection }); // FIXME
     let { selection } = this;
     this.setValue({ filter: selection?.id ?? '' });
     this.args.onCommit?.(selection);

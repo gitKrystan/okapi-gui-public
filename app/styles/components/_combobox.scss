@@ -35,7 +35,7 @@ $-padding-y: 0.5rem;
   border-top: 1px solid dropdown.$border-color;
 }
 
-.Combobox--has-input {
+.Combobox--editable {
   grid-template-columns: auto 2rem;
 
   :focus-visible {
