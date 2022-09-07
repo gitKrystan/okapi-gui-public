@@ -10,12 +10,12 @@ import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 import eq from 'ember-truth-helpers/helpers/eq';
 
-import Button from 'okapi/components/button';
 import Dropdown from 'okapi/components/dropdown/index';
 // Ideally we'd re-export from the dropdown component but that's not working yet
 // with GTS.
 import DropdownApi from 'okapi/components/dropdown/private/api';
 import Icon from 'okapi/components/icon';
+import ComboboxButton from './button';
 
 type Autocomplete =
   /** No list filtration or inline autofill (except for on commit). */
@@ -61,45 +61,35 @@ export default class Combobox<T extends { id: string }> extends Component<
     </label>
     <Dropdown ...attributes class="Combobox--has-input">
       <:trigger as |d|>
-      <input
-        data-test-combobox-input
-        id="{{this.id}}-input"
-        class="Combobox__input"
-        type="text"
-        role="combobox"
-        autocomplete="off"
-        aria-controls="{{this.id}}-listbox"
-        aria-autocomplete={{this.autocomplete}}
-        aria-expanded="{{d.isExpanded}}"
-        {{this.registerInput}}
-        {{on "focus" this.handleInputFocus}}
-        {{on "blur" this.handleInputBlur}}
-        {{on "click" (fn this.handleInputClick d)}}
-        {{on "keydown" (fn this.handleInputKeyDown d)}}
-        {{on "input" (fn this.handleInput d)}}
-      />
-      {{!-- FIXME: Use component --}}
-      <Button
-        data-test-combobox-button
-        class="Combobox__button {{if @readonly 'Combobox__button--readonly'}}"
-        role="combobox"
-        aria-haspopup="listbox"
-        aria-controls="{{this.id}}-listbox"
-        aria-expanded="{{d.isExpanded}}"
-        aria-labelledby="{{this.id}}-label"
-        tabindex="-1"
-        {{on "click" (fn this.handleButtonClick d)}}
-      >
-        {{#if (has-block "button")}}
-          {{yield to="button"}}
-        {{/if}}
-        {{#if this.isEnabled}}
-          <Icon
-            @type="solid"
-            @id={{if d.isExpanded "chevron-up" "chevron-down"}}
-          />
-        {{/if}}
-      </Button>
+        <input
+          data-test-combobox-input
+          id="{{this.id}}-input"
+          class="Combobox__input"
+          type="text"
+          role="combobox"
+          autocomplete="off"
+          aria-controls="{{this.id}}-listbox"
+          aria-autocomplete={{this.autocomplete}}
+          aria-expanded="{{d.isExpanded}}"
+          {{this.registerInput}}
+          {{on "focus" this.handleInputFocus}}
+          {{on "blur" this.handleInputBlur}}
+          {{on "click" (fn this.handleInputClick d)}}
+          {{on "keydown" (fn this.handleInputKeyDown d)}}
+          {{on "input" (fn this.handleInput d)}}
+        />
+        <ComboboxButton
+          @listboxId="{{this.id}}-listbox"
+          @expanded={{d.isExpanded}}
+          @onClick={{fn this.handleButtonClick d}}
+          @readonly={{this.readonly}}
+          aria-labelledby="{{this.id}}-label"
+          tabindex="-1"
+        >
+          {{#if (has-block "button")}}
+            {{yield to="button"}}
+          {{/if}}
+        </ComboboxButton>
       </:trigger>
       <:content as |d|>
         <ul
@@ -195,8 +185,8 @@ export default class Combobox<T extends { id: string }> extends Component<
     return this.hasFocus && !!this.selection;
   }
 
-  private get isEnabled(): boolean {
-    return !this.args.readonly;
+  private get readonly(): boolean {
+    return this.args.readonly ?? false;
   }
 
   private get autocomplete(): Autocomplete {
