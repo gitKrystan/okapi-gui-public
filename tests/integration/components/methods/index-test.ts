@@ -47,7 +47,7 @@ module('Integration | Component | methods', function (hooks) {
         },
       ],
     });
-    await render(hbs`<Methods @api={{this.api}} />`);
+    await render<Context>(hbs`<Methods @api={{this.api}} />`);
 
     assert.dom().containsText('Methods');
     assert.dom().containsText('Notify');

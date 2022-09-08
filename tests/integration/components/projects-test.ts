@@ -17,7 +17,7 @@ module('Integration | Component | projects', function (hooks) {
       Project.from({ name: 'Wiredolf', apis: [], providers: [] }),
       Project.from({ name: 'Firewold', apis: [], providers: [] }),
     ];
-    await render(hbs`<Projects @projects={{this.projects}} />`);
+    await render<Context>(hbs`<Projects @projects={{this.projects}} />`);
 
     assert.dom().containsText('Projects');
     this.projects.forEach((p) => {

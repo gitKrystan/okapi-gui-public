@@ -34,7 +34,7 @@ module('Integration | Component | dropdown', function (hooks) {
   hooks.beforeEach(async function (this: Context, assert) {
     this.state = new State(assert);
 
-    await render(hbs`
+    await render<Context>(hbs`
       <Button id="outside">Click outside</Button>
       <Dropdown @didDismiss={{this.state.didDismiss}}>
         <:trigger as |d|>

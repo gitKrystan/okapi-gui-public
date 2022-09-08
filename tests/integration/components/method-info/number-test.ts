@@ -458,7 +458,7 @@ function itHandlesValueInput(
       )}`, async function (this: Context, assert) {
         this.state = new State(type);
 
-        await render(
+        await render<Context>(
           hbs`
             <MethodInfo::Validator @param={{this.state.param}} as |validator|>
               <MethodInfo::Inputs::Number

@@ -58,7 +58,7 @@ module('Integration | Component | method-info', function (hooks) {
       })
     );
 
-    await render(
+    await render<Context>(
       hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
     );
 
@@ -128,7 +128,7 @@ module('Integration | Component | method-info', function (hooks) {
       );
       this.state.isActive = true;
 
-      await render(
+      await render<Context>(
         hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
       );
 
@@ -172,7 +172,7 @@ module('Integration | Component | method-info', function (hooks) {
       );
       this.state.isActive = true;
 
-      await render(
+      await render<Context>(
         hbs`<MethodInfo @method={{this.state.method}} @isActive={{this.state.isActive}} />`
       );
 

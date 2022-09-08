@@ -20,7 +20,7 @@ module('Integration | Component | providers', function (hooks) {
         { id: 'notifier-email', name: 'notifier-email', apiIds: [] },
       ],
     });
-    await render(hbs`<Providers @project={{this.project}} />`);
+    await render<Context>(hbs`<Providers @project={{this.project}} />`);
 
     assert.dom().containsText('Providers');
     assert.dom().containsText('notifier-slack');

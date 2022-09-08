@@ -26,7 +26,7 @@ module(
     test('it renders', async function (this: Context, assert) {
       this.state = new State();
 
-      await render(
+      await render<Context>(
         hbs`<ProjectSettings::SettingsCombobox @onCommit={{this.state.onCommit}} />`
       );
 

@@ -56,7 +56,7 @@ module('Integration | Component | switch', function (hooks) {
   });
 
   test('it renders an on/off switch by default', async function (this: Context, assert) {
-    await render(hbs`
+    await render<Context>(hbs`
       <Switch @value={{this.state.current}} @onToggle={{this.state.setCurrent}} />
     `);
 
@@ -70,7 +70,7 @@ module('Integration | Component | switch', function (hooks) {
   });
 
   test('it renders named blocks', async function (this: Context, assert) {
-    await render(hbs`
+    await render<Context>(hbs`
       <Switch @value={{this.state.current}} @onToggle={{this.state.setCurrent}}>
         <:label>Beast mode:</:label>
         <:on>beastly</:on>
