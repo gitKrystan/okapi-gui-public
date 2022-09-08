@@ -21,7 +21,7 @@ module('Integration | Component | apis', function (hooks) {
       }),
     ];
 
-    await render(hbs`<Apis @apis={{this.apis}} />`);
+    await render<Context>(hbs`<Apis @apis={{this.apis}} />`);
 
     assert.dom().containsText('APIs');
     assert.dom().containsText('Notifier');

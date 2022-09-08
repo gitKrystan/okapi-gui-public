@@ -7,7 +7,8 @@ module('Integration | Component | project-settings', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function (assert) {
-    await render(hbs`<ProjectSettings />`);
+    // TODO: Should be able to remove the type argument here in a future glint version
+    await render<Record<string, never>>(hbs`<ProjectSettings />`);
 
     assert.dom().hasText('Choose a setting to configure.');
   });

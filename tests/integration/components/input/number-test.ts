@@ -30,7 +30,7 @@ module('Integration | Component | input/number', function (hooks) {
       this.state = new State();
       this.state.value = initialValue;
 
-      await render(
+      await render<Context>(
         hbs`<Input::Number @value={{this.state.value}} @onValueUpdate={{fn (mut this.state.value)}} />`
       );
 
@@ -64,7 +64,7 @@ module('Integration | Component | input/number', function (hooks) {
     )}`, async function (this: Context, assert) {
       this.state = new State();
 
-      await render(
+      await render<Context>(
         hbs`
           <Input::Number @value={{this.state.value}} @onValueUpdate={{fn (mut this.state.value)}} />
           <a href="#">Click outside</a>
