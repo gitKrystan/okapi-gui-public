@@ -1,6 +1,6 @@
 import { AbstractService } from 'ember-swappable-service';
-import Method from 'okapi/models/method';
-import Project from 'okapi/models/project';
+import type Method from 'okapi/models/method';
+import type Project from 'okapi/models/project';
 
 export class ServerError extends Error {
   /**

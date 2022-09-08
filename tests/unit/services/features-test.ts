@@ -1,8 +1,9 @@
 import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
-import { Features, ExternalFeature } from 'okapi/services/features';
-import TestingFeaturesService from 'okapi/services/features/-testing';
+import { ExternalFeature } from 'okapi/services/features';
+import type { Features } from 'okapi/services/features';
+import type TestingFeaturesService from 'okapi/services/features/-testing';
 
 function getTestingFeatures(): Features {
   return {

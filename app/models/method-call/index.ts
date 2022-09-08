@@ -1,9 +1,10 @@
-import Method, { ApiMethodParam } from 'okapi/models/method';
+import type { ApiMethodParam } from 'okapi/models/method';
+import type Method from 'okapi/models/method';
 import BooleanParam from 'okapi/models/method-call/-private/boolean-param';
 import EnumParam from 'okapi/models/method-call/-private/enum-param';
 import NumberParam from 'okapi/models/method-call/-private/number-param';
 import StringParam from 'okapi/models/method-call/-private/string-param';
-import ServerService from 'okapi/services/server';
+import type ServerService from 'okapi/services/server';
 
 export { default as BooleanParam } from 'okapi/models/method-call/-private/boolean-param';
 export { default as EnumParam } from 'okapi/models/method-call/-private/enum-param';

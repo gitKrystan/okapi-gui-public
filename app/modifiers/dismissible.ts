@@ -2,7 +2,8 @@ import { assert } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import { action } from '@ember/object';
 
-import Modifier, { ArgsFor, NamedArgs, PositionalArgs } from 'ember-modifier';
+import type { ArgsFor, NamedArgs, PositionalArgs } from 'ember-modifier';
+import Modifier from 'ember-modifier';
 
 import mergeOptions from 'okapi/utils/merge-options';
 

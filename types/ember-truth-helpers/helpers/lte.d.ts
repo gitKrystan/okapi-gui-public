@@ -1,3 +1,3 @@
-declare const lte: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/lte').default;
+import lte from '@gavant/glint-template-types/types/ember-truth-helpers/lte';
 
 export default lte;

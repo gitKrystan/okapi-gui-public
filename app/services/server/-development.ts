@@ -1,4 +1,4 @@
-import Method from 'okapi/models/method';
+import type Method from 'okapi/models/method';
 import Project from 'okapi/models/project';
 import ServerService from 'okapi/services/server';
 

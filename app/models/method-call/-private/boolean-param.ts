@@ -1,4 +1,4 @@
-import { BooleanMethodParam } from 'okapi/models/method';
+import type { BooleanMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
 
 export default class BooleanParam extends AbstractParam<

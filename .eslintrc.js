@@ -85,6 +85,7 @@ module.exports = {
           },
         ],
         '@typescript-eslint/consistent-type-assertions': 2,
+        '@typescript-eslint/consistent-type-imports': 2,
         '@typescript-eslint/explicit-member-accessibility': [
           2,
           { accessibility: 'no-public' },

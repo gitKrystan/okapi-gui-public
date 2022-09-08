@@ -1,9 +1,10 @@
 import { action } from '@ember/object';
-import { click, render, TestContext } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
-import ProjectSetting from 'okapi/models/project-setting';
+import type ProjectSetting from 'okapi/models/project-setting';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 
 interface Context extends TestContext {

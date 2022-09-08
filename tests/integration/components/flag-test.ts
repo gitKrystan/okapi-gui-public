@@ -3,8 +3,9 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 
-import TestingFeaturesService from 'okapi/services/features/-testing';
-import { ExternalFeature, Features } from 'okapi/services/features';
+import type TestingFeaturesService from 'okapi/services/features/-testing';
+import type { Features } from 'okapi/services/features';
+import { ExternalFeature } from 'okapi/services/features';
 
 function getTestingFeatures(): Features {
   return {

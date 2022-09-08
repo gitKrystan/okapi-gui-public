@@ -1,4 +1,5 @@
-import { render, TestContext } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import Api from 'okapi/models/api';
 import { setupRenderingTest } from 'okapi/tests/helpers';

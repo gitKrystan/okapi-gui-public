@@ -1,7 +1,7 @@
 import { tracked } from '@glimmer/tracking';
 import { AbstractService } from 'ember-swappable-service';
 import getDefaultFeatures from 'okapi/services/features/private/default-features';
-import {
+import type {
   ExternalFeature,
   InternalFeature,
 } from './features/private/feature-classes';

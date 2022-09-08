@@ -1,11 +1,7 @@
 import { assert as emberAssert } from '@ember/debug';
 import { action } from '@ember/object';
-import {
-  focus,
-  render,
-  TestContext,
-  triggerKeyEvent,
-} from '@ember/test-helpers';
+import { focus, render, triggerKeyEvent } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';

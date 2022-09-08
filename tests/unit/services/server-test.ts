@@ -1,5 +1,5 @@
 import Project from 'okapi/models/project';
-import TestingServerService from 'okapi/services/server/-testing';
+import type TestingServerService from 'okapi/services/server/-testing';
 import { setupTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';
 

@@ -1,8 +1,11 @@
 import { assert as emberAssert } from '@ember/debug';
-import { click, find, settled, TestContext } from '@ember/test-helpers';
-import { SnapshotOptions as PercyOptions } from '@percy/core';
+import type { TestContext } from '@ember/test-helpers';
+import { click, find, settled } from '@ember/test-helpers';
+
+import type { SnapshotOptions as PercyOptions } from '@percy/core';
 import percySnapshot from '@percy/ember';
-import ThemeService from 'okapi/services/theme';
+
+import type ThemeService from 'okapi/services/theme';
 
 export interface SnapshotOptions {
   prefix?: string;

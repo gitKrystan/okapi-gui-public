@@ -1,4 +1,4 @@
-import { Param } from 'okapi/models/method-call';
+import type { Param } from 'okapi/models/method-call';
 
 export default interface ParamSig<T extends Param> {
   Element: HTMLElement;

@@ -1,3 +1,3 @@
-declare const and: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/and').default;
+import and from '@gavant/glint-template-types/types/ember-truth-helpers/and';
 
 export default and;

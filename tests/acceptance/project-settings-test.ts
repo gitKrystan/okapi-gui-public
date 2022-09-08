@@ -2,7 +2,7 @@ import { click, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 
 import Project from 'okapi/models/project';
-import TestingServerService from 'okapi/services/server/-testing';
+import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 

@@ -1,15 +1,10 @@
 import { assert as emberAssert } from '@ember/debug';
-import {
-  render,
-  findAll,
-  TestContext,
-  fillIn,
-  click,
-} from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { click, fillIn, findAll, render } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
 import Method from 'okapi/models/method';
-import TestingServerService from 'okapi/services/server/-testing';
+import type TestingServerService from 'okapi/services/server/-testing';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';
 
