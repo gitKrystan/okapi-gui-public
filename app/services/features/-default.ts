@@ -22,7 +22,7 @@ export default class DefaultFeaturesService extends FeaturesService {
     let features: string[] = [];
 
     let loadedFeaturesFromStorage =
-      localStorage.getItem(FEATURE_FLAG_STORAGE_KEY) || '';
+      localStorage.getItem(FEATURE_FLAG_STORAGE_KEY) ?? '';
     for (let feature of loadedFeaturesFromStorage.split(',')) {
       try {
         features.push(feature);

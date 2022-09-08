@@ -13,7 +13,7 @@ import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 import {
@@ -43,7 +43,7 @@ class State<T extends { id: string } = { id: string }> {
 
   @tracked committed: T | null = null;
 
-  @action handleCommit(item: T): void {
+  @action handleCommit(item: T | null): void {
     this.committed = item;
     let { expectedCommit } = this;
     if (expectedCommit === false) {
@@ -94,7 +94,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
       { id: 'Zebra' },
     ]);
 
-    await render(hbs`
+    await render<Context>(hbs`
       <a id="outside" href="#">Click Outside</a>
       <Combobox::Editable
         @options={{this.state.options}}

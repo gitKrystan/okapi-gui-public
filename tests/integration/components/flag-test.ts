@@ -1,6 +1,6 @@
 import { render, rerender } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 import type TestingFeaturesService from 'okapi/services/features/-testing';
@@ -26,7 +26,7 @@ module('Integration | Component | flag', function (hooks) {
 
     testingFeaturesService.overrideDefaultFeatures(getTestingFeatures);
 
-    await render(hbs`
+    await render<Record<string, never>>(hbs`
       {{#flag "aFeature"}}
         Enabled
       {{else}}

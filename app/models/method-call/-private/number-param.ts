@@ -7,11 +7,11 @@ export { default as StringParam } from 'okapi/models/method-call/-private/string
 
 const NumericInputPattern = /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
 
-type TypeInfo = {
+interface TypeInfo {
   signed: boolean;
   integer: boolean;
   bits: number;
-};
+}
 
 // NOTE: Value maybe be NaN or an otherwise invalid number but `validate` will
 // fail in this case.
@@ -61,6 +61,8 @@ export default class NumberParam extends AbstractParam<
   protected normalize(
     rawInputValue: string | null | undefined
   ): string | undefined {
+    // We want to coerce '' and `null` into `undefined` here.
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return rawInputValue || undefined;
   }
 
@@ -76,7 +78,7 @@ export default class NumberParam extends AbstractParam<
   }
 
   protected format(value: number | undefined): string | undefined {
-    if (value === undefined || value === null) {
+    if (value === undefined) {
       return undefined;
     } else {
       return value.toLocaleString();

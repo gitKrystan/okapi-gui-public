@@ -7,9 +7,9 @@ import { NotFound } from 'okapi/services/server';
 
 export type ApiRouteModel = Api;
 
-export type ApiRouteParams = {
+export interface ApiRouteParams {
   api_id: string;
-};
+}
 
 export default class ProjectProviderApiRoute extends Route<
   ApiRouteModel,

@@ -1,12 +1,12 @@
 import type { MethodParams } from 'okapi/models/method';
 import Method from 'okapi/models/method';
 
-export type ApiParams = {
+export interface ApiParams {
   id: string;
   name: string;
   providerIds: string[];
   methods: MethodParams[];
-};
+}
 
 export default class Api {
   static from({ id, name, methods }: ApiParams): Api {

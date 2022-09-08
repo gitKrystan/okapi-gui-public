@@ -3,7 +3,7 @@ import type { TestContext } from '@ember/test-helpers';
 import { click, focus, render, tab } from '@ember/test-helpers';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import type { MoveFocusSignature } from 'okapi/components/list-nav/types';
 import { FocusDirection } from 'okapi/components/list-nav/types';
 import { module, test } from 'qunit';
@@ -39,7 +39,7 @@ module('Integration | Component | list-nav', function (hooks) {
   module('@itemRole="menuitem"', function () {
     module('implicit trigger', function (hooks) {
       hooks.beforeEach(async function () {
-        await render(hbs`
+        await render<Context>(hbs`
           <ListNav @itemRole="menuitem" as |nav|>
             <ul {{nav.list}} tabindex="0" role="menu">
               <li role="menuitem" tabindex="-1">Aardvark</li>
@@ -56,7 +56,7 @@ module('Integration | Component | list-nav', function (hooks) {
 
     module('explicit trigger', function (hooks) {
       hooks.beforeEach(async function () {
-        await render(hbs`
+        await render<Context>(hbs`
           <ListNav @itemRole="menuitem" as |nav|>
             <button
               {{on "click" (fn this.state.handleClick nav.moveFocusTo)}}
@@ -82,7 +82,7 @@ module('Integration | Component | list-nav', function (hooks) {
   module('@itemRole="option"', function () {
     module('implicit trigger', function (hooks) {
       hooks.beforeEach(async function () {
-        await render(hbs`
+        await render<Context>(hbs`
         <ListNav @itemRole="option" as |nav|>
           <ul {{nav.list}} tabindex="0" role="listbox">
             <li role="option" tabindex="-1">Aardvark</li>
@@ -99,7 +99,7 @@ module('Integration | Component | list-nav', function (hooks) {
 
     module('explicit trigger', function (hooks) {
       hooks.beforeEach(async function () {
-        await render(hbs`
+        await render<Context>(hbs`
           <ListNav @itemRole="option" as |nav|>
             <button
               {{on "click" (fn this.state.handleClick nav.moveFocusTo)}}

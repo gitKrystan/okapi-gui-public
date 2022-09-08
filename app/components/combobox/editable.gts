@@ -473,3 +473,9 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
     return option ? `${this.id}-option-${dasherize(option.id)}` : undefined;
   }
 }
+
+declare module '@glint/environment-ember-loose/registry' {
+  export default interface Registry {
+    'Combobox::Editable': typeof EditableCombobox;
+  }
+}

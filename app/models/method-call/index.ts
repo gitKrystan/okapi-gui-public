@@ -53,7 +53,7 @@ export default class MethodCall {
   async call(server: ServerService): Promise<this> {
     let request: Record<string, unknown> = {};
     let isValid = true;
-    this.request.forEach((r) => {
+    for (let r of this.request) {
       let fieldValid = r.validate();
       if (!fieldValid) {
         isValid = false;
@@ -61,7 +61,7 @@ export default class MethodCall {
       if (r.value !== undefined) {
         request[r.info.name] = r.value;
       }
-    });
+    }
 
     if (isValid) {
       let response = await server.call(this.method, request);

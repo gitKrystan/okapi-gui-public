@@ -25,11 +25,11 @@ interface Context extends TestContext {
   state: State;
 }
 
-type TestCase = {
+interface TestCase {
   inputValue: string;
   value: number | undefined;
   expectedErrors: string[];
-};
+}
 
 class State {
   readonly id = 'an-id';
