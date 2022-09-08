@@ -1,16 +1,26 @@
 import { assert as emberAssert } from '@ember/debug';
 import { render } from '@ember/test-helpers';
 import fillIn from '@ember/test-helpers/dom/fill-in';
+import type { TemplateFactory } from 'ember-cli-htmlbars';
+import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 
 module('Integration | Helper | expanding-textarea', function (hooks) {
   setupRenderingTest(hooks);
 
   [
-    { name: 'native', template: hbs`<textarea {{expanding-textarea}} />` },
-    { name: 'component', template: hbs`<Textarea {{expanding-textarea}} />` },
+    {
+      name: 'native',
+      // TODO: This cast should be unnecessary once types are fixed.
+      template:
+        hbs`<textarea {{expanding-textarea}} />` as unknown as TemplateFactory,
+    },
+    {
+      name: 'component',
+      template:
+        hbs`<Textarea {{expanding-textarea}} />` as unknown as TemplateFactory,
+    },
   ].forEach((t) => {
     test(`${t.name}: it adjusts height based on content`, async function (assert) {
       await render(t.template);

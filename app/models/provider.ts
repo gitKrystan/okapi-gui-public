@@ -1,8 +1,8 @@
-export type ProviderParams = {
+export interface ProviderParams {
   id: string;
   name: string;
   apiIds: string[];
-};
+}
 
 export default class Provider {
   static from({ id, name, apiIds }: ProviderParams): Provider {

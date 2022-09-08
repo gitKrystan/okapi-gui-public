@@ -2,9 +2,9 @@ import Route from '@ember/routing/route';
 
 export type NotFoundRouteModel = string;
 
-export type NotFoundRouteParams = {
+export interface NotFoundRouteParams {
   path: string;
-};
+}
 
 export default class NotFoundRoute extends Route<
   NotFoundRouteModel,

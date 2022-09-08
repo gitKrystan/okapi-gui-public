@@ -1,16 +1,16 @@
-export type StringMethodParam = {
+export interface StringMethodParam {
   type: 'string';
   name: string;
   description: string;
-};
+}
 
-export type BooleanMethodParam = {
+export interface BooleanMethodParam {
   type: 'boolean';
   name: string;
   description: string;
-};
+}
 
-export type NumberMethodParam = {
+export interface NumberMethodParam {
   type:
     | 'f32'
     | 'f64'
@@ -24,19 +24,19 @@ export type NumberMethodParam = {
     | 'u64';
   name: string;
   description: string;
-};
+}
 
-export type EnumMethodParam = {
+export interface EnumMethodParam {
   type: 'enum';
   name: string;
   description: string;
   options: EnumMethodParamOption[];
-};
+}
 
-export type EnumMethodParamOption = {
+export interface EnumMethodParamOption {
   name: string;
   description?: string;
-};
+}
 
 export type ApiMethodParam =
   | StringMethodParam
@@ -44,12 +44,12 @@ export type ApiMethodParam =
   | NumberMethodParam
   | EnumMethodParam;
 
-export type MethodParams = {
+export interface MethodParams {
   name: string; // e.g. 'Notify'
   description: string; // e.g. 'Notifies a target with a message.
   request: ApiMethodParam[];
   response: ApiMethodParam[];
-};
+}
 
 export default class Method {
   static from({ name, description, request, response }: MethodParams): Method {

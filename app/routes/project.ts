@@ -5,7 +5,9 @@ import type ServerService from 'okapi/services/server';
 
 export type ProjectRouteModel = Project;
 
-export type ProjectRouteParams = { project_id: string };
+export interface ProjectRouteParams {
+  project_id: string;
+}
 
 export default class ProjectRoute extends Route<
   ProjectRouteModel,

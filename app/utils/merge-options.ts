@@ -9,9 +9,10 @@ export default function mergeOptions<T>(
   options: Partial<T>
 ): Required<T> {
   let mergedOptions: Partial<Record<keyof T, unknown>> = {};
-  unsafeKeys(defaults).forEach((key) => {
+  for (let key of unsafeKeys(defaults)) {
     mergedOptions[key] =
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       options[key] === undefined ? defaults[key] : options[key];
-  });
+  }
   return mergedOptions as Required<T>;
 }

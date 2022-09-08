@@ -2,14 +2,7 @@ import { AbstractService } from 'ember-swappable-service';
 import type Method from 'okapi/models/method';
 import type Project from 'okapi/models/project';
 
-export class ServerError extends Error {
-  /**
-   * @param message This message will be displayed on the error template!
-   */
-  constructor(message: string) {
-    super(message);
-  }
-}
+export class ServerError extends Error {}
 
 export class NotFound extends ServerError {}
 

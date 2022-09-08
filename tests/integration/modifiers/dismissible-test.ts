@@ -4,7 +4,7 @@ import { focus, render, triggerKeyEvent } from '@ember/test-helpers';
 import type { TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 import { modifier } from 'ember-modifier';
@@ -80,7 +80,7 @@ module('Integration | Modifier | dismissible', function (hooks) {
   hooks.beforeEach(async function (this: Context) {
     this.state = new State();
 
-    await render(hbs`
+    await render<Context>(hbs`
       <Button id="related-1">Should not dismiss if added to related</Button>
       <Button id="related-2">Should not dismiss if added to related</Button>
       <div

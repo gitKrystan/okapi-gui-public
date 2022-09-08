@@ -6,14 +6,14 @@ import type Provider from 'okapi/models/provider';
 import type { ProjectRouteModel } from 'okapi/routes/project';
 import { NotFound } from 'okapi/services/server';
 
-export type ProviderRouteModel = {
+export interface ProviderRouteModel {
   provider: Provider;
   apis: Api[];
-};
+}
 
-export type ProviderRouteParams = {
+export interface ProviderRouteParams {
   provider_id: string;
-};
+}
 
 export default class ProjectProviderRoute extends Route<
   ProviderRouteModel,

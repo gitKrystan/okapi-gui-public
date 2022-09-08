@@ -6,7 +6,7 @@ export enum FocusDirection {
   StartsWith = 'startsWith',
 }
 
-export type MoveFocusSignature = {
+export interface MoveFocusSignature {
   (focusTarget: FocusDirection.First | FocusDirection.Last | number): void;
   (
     focusTarget: FocusDirection.Next | FocusDirection.Previous,
@@ -17,4 +17,4 @@ export type MoveFocusSignature = {
     currentIndex: number,
     char: string
   ): void;
-};
+}

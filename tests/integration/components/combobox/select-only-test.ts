@@ -6,7 +6,7 @@ import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 import { keyboardClick } from 'okapi/tests/helpers/dom-interaction';
@@ -69,7 +69,7 @@ module('Integration | Component | combobox/select-only', function (hooks) {
     hooks.beforeEach(async function (this: Context<string | null>, assert) {
       this.state = new State(assert, ['Aardvark', null, 'Zebra']);
 
-      await render(hbs`
+      await render<Context<string | null>>(hbs`
         <Combobox::SelectOnly
           @initialSelection={{this.state.initialSelection}}
           @onFocus={{this.state.handleFocus}}
@@ -315,7 +315,7 @@ module('Integration | Component | combobox/select-only', function (hooks) {
     hooks.beforeEach(async function (this: Context<string | null>, assert) {
       this.state = new State(assert, ['Aardvark', null, 'Zebra']);
 
-      await render(hbs`
+      await render<Context<string | null>>(hbs`
         <Combobox::SelectOnly
           @initialSelection={{this.state.initialSelection}}
           @onFocus={{this.state.handleFocus}}
