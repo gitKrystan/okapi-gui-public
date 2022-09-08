@@ -1,6 +1,20 @@
-import { ComponentLike, HelperLike } from '@glint/template';
+import type { ComponentLike, HelperLike } from '@glint/template';
+import type Ember from 'ember';
 
-import Ember from 'ember';
+import type perform from '@gavant/glint-template-types/types/ember-concurrency/perform';
+import type and from '@gavant/glint-template-types/types/ember-truth-helpers/and';
+import type eq from '@gavant/glint-template-types/types/ember-truth-helpers/eq';
+import type gt from '@gavant/glint-template-types/types/ember-truth-helpers/gt';
+import type gte from '@gavant/glint-template-types/types/ember-truth-helpers/gte';
+import type isArray from '@gavant/glint-template-types/types/ember-truth-helpers/is-array';
+import type isEmpty from '@gavant/glint-template-types/types/ember-truth-helpers/is-empty';
+import type isEqual from '@gavant/glint-template-types/types/ember-truth-helpers/is-equal';
+import type lt from '@gavant/glint-template-types/types/ember-truth-helpers/lt';
+import type lte from '@gavant/glint-template-types/types/ember-truth-helpers/lte';
+import type notEq from '@gavant/glint-template-types/types/ember-truth-helpers/not-eq';
+import type not from '@gavant/glint-template-types/types/ember-truth-helpers/not';
+import type or from '@gavant/glint-template-types/types/ember-truth-helpers/or';
+import type xor from '@gavant/glint-template-types/types/ember-truth-helpers/xor';
 
 declare global {
   // Prevents ESLint from "fixing" this via its auto-fix to turn it into a type
@@ -40,22 +54,22 @@ declare module '@glint/environment-ember-loose/registry' {
     'page-title': HelperLike<PageTitleHelperSignature>;
 
     // ember-concurrency
-    perform: typeof import('@gavant/glint-template-types/types/ember-concurrency/perform').default;
+    perform: typeof perform;
 
     // ember-truth-helpers
-    and: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/and').default;
-    eq: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/eq').default;
-    gt: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/gt').default;
-    gte: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/gte').default;
-    'is-array': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-array').default;
-    'is-empty': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-empty').default;
-    'is-equal': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-equal').default;
-    lt: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/lt').default;
-    lte: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/lte').default;
-    'not-eq': typeof import('@gavant/glint-template-types/types/ember-truth-helpers/not-eq').default;
-    not: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/not').default;
-    or: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/or').default;
-    xor: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/xor').default;
+    and: typeof and;
+    eq: typeof eq;
+    gt: typeof gt;
+    gte: typeof gte;
+    'is-array': typeof isArray;
+    'is-empty': typeof isEmpty;
+    'is-equal': typeof isEqual;
+    lt: typeof lt;
+    lte: typeof lte;
+    'not-eq': typeof notEq;
+    not: typeof not;
+    or: typeof or;
+    xor: typeof xor;
   }
 }
 

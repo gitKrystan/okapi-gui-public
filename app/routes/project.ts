@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
-import Project from 'okapi/models/project';
-import ServerService from 'okapi/services/server';
+import type Project from 'okapi/models/project';
+import type ServerService from 'okapi/services/server';
 
 export type ProjectRouteModel = Project;
 

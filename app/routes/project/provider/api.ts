@@ -1,8 +1,8 @@
 import Route from '@ember/routing/route';
-import RouterService from '@ember/routing/router-service';
+import type RouterService from '@ember/routing/router-service';
 import { service } from '@ember/service';
-import Api from 'okapi/models/api';
-import { ProviderRouteModel } from 'okapi/routes/project/provider';
+import type Api from 'okapi/models/api';
+import type { ProviderRouteModel } from 'okapi/routes/project/provider';
 import { NotFound } from 'okapi/services/server';
 
 export type ApiRouteModel = Api;

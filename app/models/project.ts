@@ -1,5 +1,7 @@
-import Api, { ApiParams } from 'okapi/models/api';
-import Provider, { ProviderParams } from 'okapi/models/provider';
+import type { ApiParams } from 'okapi/models/api';
+import Api from 'okapi/models/api';
+import type { ProviderParams } from 'okapi/models/provider';
+import Provider from 'okapi/models/provider';
 
 export interface ProjectParams {
   name: string;

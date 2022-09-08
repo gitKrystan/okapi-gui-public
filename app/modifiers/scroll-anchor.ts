@@ -3,8 +3,9 @@ import { registerDestructor } from '@ember/destroyable';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Ember from 'ember'; // For Ember.testing
-import Modifier, { ArgsFor, PositionalArgs, NamedArgs } from 'ember-modifier';
-import LocationService from 'okapi/services/location';
+import type { ArgsFor, PositionalArgs, NamedArgs } from 'ember-modifier';
+import Modifier from 'ember-modifier';
+import type LocationService from 'okapi/services/location';
 
 interface ScrollAnchorSignature {
   Element: HTMLAnchorElement;

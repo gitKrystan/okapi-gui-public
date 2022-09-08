@@ -1,4 +1,4 @@
-import { StringMethodParam } from 'okapi/models/method';
+import type { StringMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
 
 export default class StringParam extends AbstractParam<

@@ -1,3 +1,3 @@
-declare const gt: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/gt').default;
+import gt from '@gavant/glint-template-types/types/ember-truth-helpers/gt';
 
 export default gt;

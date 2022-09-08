@@ -3,8 +3,8 @@ import { getPageTitle } from 'ember-page-title/test-support';
 import { module, test } from 'qunit';
 
 import Project from 'okapi/models/project';
-import TestingLocationService from 'okapi/services/location/-testing';
-import TestingServerService from 'okapi/services/server/-testing';
+import type TestingLocationService from 'okapi/services/location/-testing';
+import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 

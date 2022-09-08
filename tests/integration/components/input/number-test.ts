@@ -1,4 +1,5 @@
-import { fillIn, render, tab, TestContext } from '@ember/test-helpers';
+import { fillIn, render, tab } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'okapi/tests/helpers';

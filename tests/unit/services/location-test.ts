@@ -1,7 +1,6 @@
 import { getOwner } from '@ember/application';
-import DefaultLocationService, {
-  Location,
-} from 'okapi/services/location/-default';
+import DefaultLocationService from 'okapi/services/location/-default';
+import type { Location } from 'okapi/services/location/-default';
 import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 

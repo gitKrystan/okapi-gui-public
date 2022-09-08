@@ -2,7 +2,7 @@ import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import Service, { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import PrefersColorSchemeService from 'okapi/services/prefers-color-scheme';
+import type PrefersColorSchemeService from 'okapi/services/prefers-color-scheme';
 
 export const DARK_CLASS = 'Application--theme-dark';
 

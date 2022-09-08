@@ -1,5 +1,6 @@
-import { click, settled, TestContext, visit } from '@ember/test-helpers';
-import TestingPrefersColorSchemeService from 'okapi/services/prefers-color-scheme/-testing';
+import type { TestContext } from '@ember/test-helpers';
+import { click, settled, visit } from '@ember/test-helpers';
+import type TestingPrefersColorSchemeService from 'okapi/services/prefers-color-scheme/-testing';
 import { DARK_CLASS } from 'okapi/services/theme';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';

@@ -1,5 +1,6 @@
 import { action } from '@ember/object';
-import { click, render, TestContext } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import { module, test } from 'qunit';

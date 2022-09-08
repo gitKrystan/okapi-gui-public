@@ -1,4 +1,5 @@
-import Method, { MethodParams } from 'okapi/models/method';
+import type { MethodParams } from 'okapi/models/method';
+import Method from 'okapi/models/method';
 
 export type ApiParams = {
   id: string;

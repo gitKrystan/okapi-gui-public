@@ -1,12 +1,11 @@
 import { assert as emberAssert } from '@ember/debug';
-import { click, focus, render, tab, TestContext } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { click, focus, render, tab } from '@ember/test-helpers';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { setupRenderingTest } from 'ember-qunit';
-import {
-  FocusDirection,
-  MoveFocusSignature,
-} from 'okapi/components/list-nav/types';
 import hbs from 'htmlbars-inline-precompile';
+import type { MoveFocusSignature } from 'okapi/components/list-nav/types';
+import { FocusDirection } from 'okapi/components/list-nav/types';
 import { module, test } from 'qunit';
 
 interface Context extends TestContext {

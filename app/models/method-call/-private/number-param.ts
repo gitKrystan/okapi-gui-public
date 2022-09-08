@@ -1,5 +1,5 @@
 import { assert } from '@ember/debug';
-import { NumberMethodParam } from 'okapi/models/method';
+import type { NumberMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
 
 export { default as Boolean } from 'okapi/models/method-call/-private/boolean-param';

@@ -1,3 +1,3 @@
-declare const eq: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/eq').default;
+import eq from '@gavant/glint-template-types/types/ember-truth-helpers/eq';
 
 export default eq;

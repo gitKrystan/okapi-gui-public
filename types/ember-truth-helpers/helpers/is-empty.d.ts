@@ -1,3 +1,3 @@
-declare const isEmpty: typeof import('@gavant/glint-template-types/types/ember-truth-helpers/is-empty').default;
+import isEmpty from '@gavant/glint-template-types/types/ember-truth-helpers/is-empty';
 
 export default isEmpty;

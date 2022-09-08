@@ -1,16 +1,9 @@
 import { assert as emberAssert } from '@ember/debug';
 import { action } from '@ember/object';
-import {
-  click,
-  focus,
-  render,
-  rerender,
-  tab,
-  TestContext,
-} from '@ember/test-helpers';
-import triggerKeyEvent, {
-  KeyModifiers,
-} from '@ember/test-helpers/dom/trigger-key-event';
+import type { TestContext } from '@ember/test-helpers';
+import { click, focus, render, rerender, tab } from '@ember/test-helpers';
+import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
+import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';

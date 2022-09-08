@@ -1,4 +1,4 @@
-import { Features /* InternalFeature */ } from 'okapi/services/features';
+import type { Features /* InternalFeature */ } from 'okapi/services/features';
 
 /**
  * Function that returns the initial Features object with defaults to be

@@ -1,6 +1,6 @@
 import { click, fillIn, triggerEvent, visit } from '@ember/test-helpers';
 import Project from 'okapi/models/project';
-import TestingServerService from 'okapi/services/server/-testing';
+import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 import { module, test } from 'qunit';

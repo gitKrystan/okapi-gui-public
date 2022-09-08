@@ -1,9 +1,9 @@
 import { assert } from '@ember/debug';
+import type { Target } from '@ember/test-helpers';
 import {
   find,
   focus,
   settled,
-  Target,
   triggerEvent,
   triggerKeyEvent,
 } from '@ember/test-helpers';

@@ -1,7 +1,8 @@
-import { fillIn, render, tab, TestContext } from '@ember/test-helpers';
+import type { TestContext } from '@ember/test-helpers';
+import { fillIn, render, tab } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
-import { NumberMethodParam } from 'okapi/models/method';
+import type { NumberMethodParam } from 'okapi/models/method';
 import { NumberParam } from 'okapi/models/method-call/index';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import inspect from 'okapi/utils/inspect';

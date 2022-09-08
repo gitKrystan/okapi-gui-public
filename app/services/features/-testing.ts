@@ -1,4 +1,5 @@
-import FeaturesService, { Features } from 'okapi/services/features';
+import type { Features } from 'okapi/services/features';
+import FeaturesService from 'okapi/services/features';
 
 /**
  * This implementation of the FeaturesService "persists" the features by storing
