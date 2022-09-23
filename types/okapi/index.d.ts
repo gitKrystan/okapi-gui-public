@@ -15,6 +15,7 @@ import type notEq from '@gavant/glint-template-types/types/ember-truth-helpers/n
 import type not from '@gavant/glint-template-types/types/ember-truth-helpers/not';
 import type or from '@gavant/glint-template-types/types/ember-truth-helpers/or';
 import type xor from '@gavant/glint-template-types/types/ember-truth-helpers/xor';
+import 'ember-cached-decorator-polyfill';
 
 declare global {
   // Prevents ESLint from "fixing" this via its auto-fix to turn it into a type

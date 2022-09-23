@@ -1,3 +1,8 @@
-import eq from '@gavant/glint-template-types/types/ember-truth-helpers/eq';
+import Helper from '@ember/component/helper';
 
-export default eq;
+interface EqualityHelperSignature<T> {
+  Args: { Positional: [T, T] };
+  Return: boolean;
+}
+
+export default class eq<T> extends Helper<EqualityHelperSignature<T>> {}

@@ -4,38 +4,50 @@ import { on } from '@ember/modifier';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { dasherize } from '@ember/string';
+import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { tracked, cached } from '@glimmer/tracking';
+import { WithBoundArgs } from '@glint/template';
+import Ember from 'ember';
 
+import { didCancel, task, timeout } from 'ember-concurrency';
 import { modifier } from 'ember-modifier';
-import eq from 'ember-truth-helpers/helpers/eq';
 
 import Dropdown from 'okapi/components/dropdown/index';
 // Ideally we'd re-export from the dropdown component but that's not working yet
 // with GTS.
 import DropdownApi from 'okapi/components/dropdown/private/api';
-import Icon from 'okapi/components/icon';
+import type Search from 'okapi/utils/filter-search';
+import type { MatchItem } from 'okapi/utils/filter-search';
+import { squish } from 'okapi/utils/string';
 import ComboboxButton from './button';
+import ComboboxItem from './item';
 
-type Autocomplete = 'none' | 'list' | 'inline' | 'both';
+export type Autocomplete = 'none' | 'list' | 'inline' | 'both';
 
-export interface EditableComboboxSignature<T extends { id: string }> {
+export interface EditableComboboxSignature<
+  K extends string,
+  T extends Record<K, string>
+> {
   Element: HTMLDivElement;
   Args: {
-    options: T[];
+    valueField: K;
+    search: Search<T, unknown>;
     autocomplete?: Autocomplete;
-    caseSensitive?: boolean;
     readonly?: boolean;
     labelClass?: string;
-    onSelect?: (selection: T | null) => void;
-    onCommit?: (selection: T | null) => void;
-    onItemMousemove?: (option: T) => void;
-    onItemFocus?: (option: T) => void;
+    onSelect?: (selection: MatchItem<T> | null) => void;
+    onCommit?: (selection: MatchItem<T> | null) => void;
+    onItemMousemove?: (result: MatchItem<T>) => void;
+    onItemFocus?: (result: MatchItem<T>) => void;
   };
   Blocks: {
     label: [];
     button: [];
-    options: [option: T];
+    options: [
+      component: WithBoundArgs<typeof ComboboxItem, 'isSelected'>,
+      result: MatchItem<T>
+    ];
     empty: [];
     extra: [];
   };
@@ -57,9 +69,10 @@ export interface EditableComboboxSignature<T extends { id: string }> {
  * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-list.html }
  * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-both.html }
  */
-export default class EditableCombobox<T extends { id: string }> extends Component<
-  EditableComboboxSignature<T>
-> {
+export default class EditableCombobox<
+  K extends string,
+  T extends Record<K, string>
+> extends Component<EditableComboboxSignature<K, T>> {
   <template>
     <label id="{{this.id}}-label" for="{{this.id}}-input" class={{@labelClass}}>
       {{yield to="label"}}
@@ -106,10 +119,11 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
           aria-labelledby="{{this.id}}-label"
         >
           {{#each
-            (if this.hasListAutocomplete this.filteredOptions @options)
+            (if this.hasListAutocomplete this.filteredList this.unfilteredList)
+            key="refIndex"
             as |option|
           }}
-            {{#let (eq option this.selection) as |isSelected|}}
+            {{#let (this.isSelected option) as |isSelected|}}
               <li
                 id={{this.idFor option}}
                 role="option"
@@ -117,8 +131,13 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
                 {{on "mousemove" (fn this.onItemMousemove option)}}
                 {{on "focus" (fn this.onItemFocus option)}}
                 aria-selected={{if isSelected "true" "false"}}
+                {{this.scrollIntoView isSelected}}
               >
-                {{yield option to="options"}}
+                {{yield
+                  (component ComboboxItem isSelected=isSelected)
+                  option
+                  to="options"
+                }}
               </li>
             {{/let}}
           {{else}}
@@ -126,17 +145,17 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
               {{#if (has-block "empty")}}
                 {{yield to="empty"}}
               {{else}}
-                <div class="Combobox__item">
+                <div class="ComboboxItem">
                   No items{{if
-                    this.filter
-                    (concat ' match the filter "' this.filter '"')
+                    this.query
+                    (concat ' match the filter "' this.query '"')
                   }}.
                 </div>
               {{/if}}
             </li>
           {{/each}}
-          {{yield to="extra"}}
         </ul>
+        {{yield to="extra"}}
       </:content>
     </Dropdown>
   </template>
@@ -145,49 +164,55 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
 
   @tracked private hasFocus = false;
 
-  @tracked private filter = '';
-
-  @tracked private filteredOptions: T[] = this.args.options;
-
-  @tracked private selection: T | null = null;
-
-  private get options(): T[] {
-    return this.hasListAutocomplete ? this.filteredOptions : this.args.options;
+  private get query(): string {
+    return this.args.search.query;
   }
 
-  private get firstOption(): T | null {
-    return this.options[0] ?? null;
+  @cached private get unfilteredList(): ReadonlyArray<MatchItem<T>> {
+    return this.args.search.unfilteredResults;
   }
 
-  private get lastOption(): T | null {
-    let { options } = this;
-    return options[options.length - 1] ?? null;
+  @cached private get filteredList(): ReadonlyArray<MatchItem<T>> {
+    return this.query ? this.args.search.results : this.unfilteredList;
   }
 
-  private get nextOption(): T | null {
-    let { selection } = this;
-    if (selection && selection !== this.lastOption) {
-      let index = this.options.indexOf(selection);
-      return this.options[index + 1] ?? null;
+  @tracked private selection: MatchItem<T> | null = null;
+
+  private get list(): ReadonlyArray<MatchItem<T>> {
+    return this.hasListAutocomplete ? this.filteredList : this.unfilteredList;
+  }
+
+  private get firstOption(): MatchItem<T> {
+    let firstOption = this.list[0];
+    assert('No options in list', firstOption);
+    return firstOption;
+  }
+
+  private get lastOption(): MatchItem<T> {
+    let { list } = this;
+    let lastOption = list[list.length - 1];
+    assert('No options in list', lastOption);
+    return lastOption;
+  }
+
+  private get nextOption(): MatchItem<T> {
+    const { selection } = this;
+    let nextOption: MatchItem<T> | undefined;
+    if (selection) {
+      let currentIndex = this.list.findIndex(r => r.item === selection.item);
+      nextOption = this.list[currentIndex + 1];
     }
-    return this.firstOption;
+    return nextOption ?? this.firstOption;
   }
 
-  private get previousOption(): T | null {
-    let { selection } = this;
-    if (selection && selection !== this.firstOption) {
-      let index = this.options.indexOf(selection);
-      return this.options[index - 1] ?? null;
+  private get previousOption(): MatchItem<T> {
+    const { selection } = this;
+    let previousOption: MatchItem<T> | undefined;
+    if (selection) {
+      let currentIndex = this.list.findIndex(r => r.item === selection.item);
+      previousOption = this.list[currentIndex - 1];
     }
-    return this.lastOption;
-  }
-
-  get inputHasActiveFocus(): boolean {
-    return this.hasFocus && !this.selection;
-  }
-
-  get listboxHasActiveFocus(): boolean {
-    return this.hasFocus && !!this.selection;
+    return previousOption ?? this.lastOption;
   }
 
   private get readonly(): boolean {
@@ -204,10 +229,6 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
 
   private get hasInlineAutocomplete(): boolean {
     return ['inline', 'both'].includes(this.autocomplete);
-  }
-
-  private get caseSensitive(): boolean {
-    return this.args.caseSensitive ?? false;
   }
 
   // Element registration
@@ -240,6 +261,7 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
   }
 
   @action private handleInputClick(d: DropdownApi): void {
+    this.acceptSuggestion(this.inputEl.value);
     d.toggle();
   }
 
@@ -249,17 +271,22 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
   ): void {
     let { key, altKey, ctrlKey, shiftKey, metaKey } = event;
 
-    if (ctrlKey || shiftKey || metaKey) {
+    if (ctrlKey || shiftKey) {
       return;
     }
 
-    let value = this.inputEl.value;
+    let value = squish(this.inputEl.value);
     let shouldConsumeEvent = false;
 
     switch (key) {
       case 'Enter':
+        this.acceptSuggestion(value, null);
         d.toggle({
-          didClose: () => this.commitSelection()
+          didClose: () => {
+            if (this.selection) {
+              this.commitSelection();
+            }
+          }
         });
 
         shouldConsumeEvent = true;
@@ -268,12 +295,13 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
       case 'Down':
       case 'ArrowDown':
         this.setSelection(
-          altKey
-            ? this.selection
-            : this.nextOption ?? this.selection ?? this.firstOption,
+          this.selectionForArrow(altKey, value, {
+            selection: this.selection,
+            incrementedSelection: this.nextOption,
+            initialSelection: this.firstOption
+          }),
           {
-            updateAutocomplete: !altKey,
-            clearFilter: !this.hasListAutocomplete
+            updateAutocomplete: !altKey
           }
         );
         d.open();
@@ -285,10 +313,11 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
         this.setSelection(
           altKey
             ? this.selection
-            : this.previousOption ?? this.selection ?? this.lastOption,
+            : this.selection
+            ? this.previousOption
+            : this.lastOption,
           {
-            updateAutocomplete: !altKey,
-            clearFilter: !this.hasListAutocomplete
+            updateAutocomplete: !altKey
           }
         );
         d.open();
@@ -299,7 +328,10 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
       case 'ArrowLeft':
       case 'Right':
       case 'ArrowRight':
-        this.acceptSuggestion(d, value);
+        this.acceptSuggestion(value, null);
+        if (value) {
+          d.open();
+        }
         // NOTE: Do not set `shouldConsumeEvent = true` here. It will prevent
         // the cursor from moving. Unfortunately, there is no good way to test
         // this behavior.
@@ -315,14 +347,18 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
         break;
 
       case 'Home':
-        this.acceptSuggestion(d, value);
-        this.inputEl.setSelectionRange(0, 0);
+        this.acceptSuggestion(value, [0, 0]);
+        if (value) {
+          d.open();
+        }
         shouldConsumeEvent = true;
         break;
 
       case 'End':
-        this.acceptSuggestion(d, value);
-        this.inputEl.setSelectionRange(value.length, value.length);
+        this.acceptSuggestion(value);
+        if (value) {
+          d.open();
+        }
         shouldConsumeEvent = true;
         break;
     }
@@ -333,29 +369,50 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
     }
   }
 
-  @action private handleInput(d: DropdownApi, event: Event): void {
-    assert(
-      'Input event should be InputEvent. If you are writing a test, use the `fireInputEvent` helper instead of `fillIn`.',
-      event instanceof InputEvent
-    );
+  private selectionForArrow(
+    altKey: boolean,
+    inputValue: string,
+    {
+      selection,
+      incrementedSelection,
+      initialSelection
+    }: {
+      selection: MatchItem<T> | null;
+      incrementedSelection: MatchItem<T>;
+      initialSelection: MatchItem<T>;
+    }
+  ): MatchItem<T> | null {
+    let { hasInlineAutocomplete } = this;
+    if (
+      altKey ||
+      (hasInlineAutocomplete &&
+        selection &&
+        this.valueFor(selection) !== inputValue)
+    ) {
+      return selection;
+    } else if (selection) {
+      return incrementedSelection;
+    } else {
+      return initialSelection;
+    }
+  }
 
-    let value = this.inputEl.value;
+  @action private async handleInput(
+    d: DropdownApi,
+    event: Event
+  ): Promise<void> {
+    let inputValue = squish(this.inputEl.value);
 
-    this.setValue({ filter: value });
-    if (value) {
-      let match = this.filteredOptions[0] ?? null;
-      this.setSelection(match, {
-        updateAutocomplete:
-          !!match &&
-          // If `event.data` is null, the user is deleting text, so don't update
-          // the autocomplete, because this will likely just replace the text
-          // they just deleted. There is no good way to test this behavior,
-          // so be very careful if you delete this line.
-          event.data !== null
-      });
-      d.open();
+    await this.setFilter(inputValue, false);
+    if (inputValue) {
+      let match = this.filteredList[0] ?? null;
+      this.setSelection(match, { updateAutocomplete: false });
     } else {
       this.setSelection(null);
+    }
+
+    if (inputValue) {
+      d.open();
     }
   }
 
@@ -368,94 +425,113 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
 
   // Listbox events
 
-  @action private handleOptionClick(d: DropdownApi, option: T): void {
-    this.setSelection(option);
+  @action private handleOptionClick(
+    d: DropdownApi,
+    option: MatchItem<T>
+  ): void {
+    this.setSelection(option, { updateAutocomplete: false });
     this.commitSelection();
     d.close();
     this.inputEl.focus();
   }
 
-  @action private onItemMousemove(option: T): void {
+  @action private onItemMousemove(option: MatchItem<T>): void {
     this.args.onItemMousemove?.(option);
   }
 
-  @action private onItemFocus(option: T): void {
+  @action private onItemFocus(option: MatchItem<T>): void {
     this.args.onItemFocus?.(option);
   }
 
   // State management
 
-  private acceptSuggestion(d: DropdownApi, filter: string): void {
-    this.setValue({ filter }, { setSelectionRange: false });
-    if (filter) {
-      d.open();
-    } else {
-      this.setSelection(null);
-    }
-  }
-
-  private setValue(
-    {
-      filter = null,
-      suggestion = null
-    }: { filter?: string | null; suggestion?: string | null },
-    { setSelectionRange = true } = {}
+  private async setValue(
+    selection: MatchItem<T> | null,
+    { forceInlineAutocomplete = false, updateFilter = false } = {}
   ) {
-    if (!this.hasInlineAutocomplete) {
-      suggestion = '';
-    }
-    this.filterOptions(filter ?? '');
-    this.inputEl.value = `${filter ?? ''}${suggestion ?? ''}`;
-
-    if (setSelectionRange) {
-      let selectionStart = filter?.length ?? 0;
-      let selectionEnd = selectionStart + (suggestion?.length ?? 0);
-      this.inputEl.setSelectionRange(selectionStart, selectionEnd);
-    }
-  }
-
-  private filterOptions(newFilter?: string): void {
-    if (newFilter === this.filter) {
-      return;
+    let value = this.valueFor(selection);
+    if (forceInlineAutocomplete || this.hasInlineAutocomplete) {
+      this.inputEl.value = value ?? '';
     }
 
-    if (typeof newFilter === 'string') {
-      this.filter = newFilter;
-    }
-
-    let { filterPredicate } = this;
-    this.filteredOptions = this.args.options.filter(filterPredicate);
-  }
-
-  private get filterPredicate(): (option: T) => boolean {
-    let { caseSensitive, filter } = this;
-
-    if (filter.length) {
-      let transform = (text: string): string =>
-        caseSensitive ? text : text.toLowerCase();
-      filter = transform(filter);
-      return (option: T) => transform(option.id).startsWith(filter);
+    if (updateFilter) {
+      await this.setFilter(value, true);
     } else {
-      return () => true;
+      this.inputEl.setSelectionRange(0, value?.length ?? 0);
+    }
+  }
+
+  private async acceptSuggestion(
+    value: string,
+    selectionRange: [start: number, end: number] | null = null
+  ): Promise<void> {
+    if (this.hasInlineAutocomplete) {
+      await this.setFilter(value, true);
+    }
+    if (selectionRange) {
+      this.inputEl.setSelectionRange(...selectionRange);
+    } else {
+      let selectionValue = this.valueFor(this.selection);
+      this.inputEl.setSelectionRange(
+        selectionValue.length,
+        selectionValue.length
+      );
+    }
+  }
+
+  private async setFilter(
+    newFilter: string,
+    skipTimeout: boolean
+  ): Promise<void> {
+    try {
+      await this.debouncedSetFilter.perform(
+        newFilter,
+        isBlank(this.query) || skipTimeout
+      );
+    } catch (error) {
+      if (!didCancel(error)) {
+        throw error;
+      }
+    }
+  }
+
+  private debouncedSetFilter = task(
+    { restartable: true },
+    async (newFilter: string, skipTimeout: boolean): Promise<void> => {
+      if (newFilter === this.query) {
+        return;
+      }
+
+      await timeout(skipTimeout || Ember.testing ? 0 : 250);
+
+      this.args.search.query = newFilter;
+
+      // Remove selection if the newly filtered list doesn't contain it
+      let { selection } = this;
+      if (
+        !this.filteredList.find(r => selection && r.item === selection.item)
+      ) {
+        this.selection = null;
+      }
+    }
+  );
+
+  private valueFor(option: MatchItem<T> | null): string {
+    if (option) {
+      return option.item[this.args.valueField];
+    } else {
+      return '';
     }
   }
 
   private setSelection(
-    selection: T | null,
-    { updateAutocomplete = true, clearFilter = false } = {}
+    selection: MatchItem<T> | null,
+    { updateAutocomplete = true } = {}
   ): void {
     this.selection = selection;
 
     if (updateAutocomplete && this.hasInlineAutocomplete) {
-      if (selection) {
-        let filter = clearFilter ? '' : this.filter;
-        let value = selection?.id ?? '';
-        let filterTest = new RegExp(`^${filter}`, 'i');
-        let suggestion = value.replace(filterTest, '');
-        this.setValue({ filter, suggestion });
-      } else {
-        this.setValue({ filter: null, suggestion: null });
-      }
+      this.setValue(selection);
     }
 
     this.args.onSelect?.(selection);
@@ -463,15 +539,36 @@ export default class EditableCombobox<T extends { id: string }> extends Componen
 
   private commitSelection(): void {
     let { selection } = this;
-    this.setValue({ filter: selection?.id ?? '' });
+    this.setValue(selection, {
+      forceInlineAutocomplete: true,
+      updateFilter: true
+    });
     this.args.onCommit?.(selection);
   }
 
   // Misc
 
-  @action private idFor(option: T | null): string | undefined {
-    return option ? `${this.id}-option-${dasherize(option.id)}` : undefined;
+  @action private idFor(option: MatchItem<T> | null): string | undefined {
+    return option
+      ? `${this.id}-option-${dasherize(this.valueFor(option))}`
+      : undefined;
   }
+
+  @action private isSelected(option: MatchItem<T>): boolean {
+    let { selection } = this;
+    return !!selection && selection.item === option.item;
+  }
+
+  // NOTE: This assumes we'll only have one selection. If we implement
+  // multi-select, we'll have to get more creative
+  private scrollIntoView = modifier(
+    (el: HTMLLIElement, [isSelected]: [isSelected: boolean]) => {
+      if (isSelected) {
+        el.scrollIntoView(false);
+      }
+    },
+    { eager: false }
+  );
 }
 
 declare module '@glint/environment-ember-loose/registry' {
