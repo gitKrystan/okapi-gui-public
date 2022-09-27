@@ -123,7 +123,7 @@
     "qunit-dom": "^2.0.0",
     "sanitize.css": "^13.0.0",
     "stylelint": "^14.12.1",
-    "stylelint-actions-formatters": "^14.8.5",
+    "stylelint-actions-formatters": "^14.12.1",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-property-sort-order-smacss": "^9.0.0",
     "stylelint-config-standard-scss": "^5.0.0",

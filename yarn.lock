@@ -12053,10 +12053,10 @@ styled_string@0.0.1:
   resolved "https://registry.yarnpkg.com/styled_string/-/styled_string-0.0.1.tgz#d22782bd81295459bc4f1df18c4bad8e94dd124a"
   integrity sha512-DU2KZiB6VbPkO2tGSqQ9n96ZstUPjW7X4sGO6V2m1myIQluX0p1Ol8BrA/l6/EesqhMqXOIXs3cJNOy1UuU2BA==
 
-stylelint-actions-formatters@^14.8.5:
-  version "14.8.5"
-  resolved "https://registry.yarnpkg.com/stylelint-actions-formatters/-/stylelint-actions-formatters-14.8.5.tgz#96c4165f2aca5c90df248862a061de8e1f7ff786"
-  integrity sha512-zGfnPKJCPy1G0Y4/qsNxZ/nvYyVRAXv5JCUAhAOqE6GqSHDLVD2Bc9J5nb4plGIvMA71fzYm/JRV6w4k/9bVPQ==
+stylelint-actions-formatters@^14.12.1:
+  version "14.12.1"
+  resolved "https://registry.yarnpkg.com/stylelint-actions-formatters/-/stylelint-actions-formatters-14.12.1.tgz#a61f53b8f7e021465e54ad8f9797b1d7da9925fc"
+  integrity sha512-gKlUJUXaEq10myu0mPvwlUDk1Pezue4wzmAueiUjpxXl+eZT9Uf7aIbJbqDRkR5km0xgpUSFW/K0iK0BlwR80g==
   dependencies:
     is-plain-object "^5.0.0"
     picocolors "^1.0.0"
