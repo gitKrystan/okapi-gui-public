@@ -40,10 +40,10 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
         <List data-test-enum-input-list>
           <:items as |item|>
             <div
-              class="Combobox__item
+              class="ComboboxItem
                 {{if
                   (eq item this.descriptionItem)
-                  'Combobox__item--is-description-item'
+                  'ComboboxItem--is-description-item'
                 }}"
             >
               {{or item.name "undefined"}}
@@ -55,7 +55,7 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
           </:items>
         </List>
         {{! Hide this item from aria because we have a visually hidden description above. }}
-        <div class="Combobox__Dropdown__info" aria-hidden="true">
+        <div class="Combobox__description" aria-hidden="true">
           {{this.descriptionFor this.descriptionItem}}
         </div>
       </:content>

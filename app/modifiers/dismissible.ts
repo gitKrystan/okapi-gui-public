@@ -26,11 +26,11 @@ function NOOP(_e: Event): void {
   /* no-op */
 }
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS = Object.freeze({
   dismissOnFocusChange: true,
   disableWhen: false,
   related: null,
-};
+});
 
 /**
  * Calls the passed-in `dismissed` action whenever the user mouses down outside the

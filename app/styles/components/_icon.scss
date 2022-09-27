@@ -1,9 +1,12 @@
+$outline-variant-width: 1.5rem;
+$solid-variant-width: 1.25rem;
+
 .Icon--outline {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: $outline-variant-width;
+  height: $outline-variant-width;
 }
 
 .Icon--solid {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: $solid-variant-width;
+  height: $solid-variant-width;
 }

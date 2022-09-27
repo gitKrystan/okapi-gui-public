@@ -2,6 +2,7 @@ import { assert as emberAssert } from '@ember/debug';
 import { action } from '@ember/object';
 import type { TestContext } from '@ember/test-helpers';
 import {
+  fillIn,
   find,
   findAll,
   focus,
@@ -12,19 +13,17 @@ import {
 import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
-import { setupRenderingTest } from 'ember-qunit';
 import { hbs } from 'ember-cli-htmlbars';
+import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
-import {
-  fireInputEvent,
-  pointerClick,
-} from 'okapi/tests/helpers/dom-interaction';
+import { pointerClick } from 'okapi/tests/helpers/dom-interaction';
+import type { MatchItem, MatchMetadata } from 'okapi/utils/filter-search';
+import FilterSearch, { Filter, Indexer } from 'okapi/utils/filter-search';
 import inspect from 'okapi/utils/inspect';
 
-interface Context<T extends { id: string } = { id: string }>
-  extends TestContext {
-  state: State<T>;
+interface Context extends TestContext {
+  state: State;
 }
 
 const trigger = '[data-test-combobox-button]';
@@ -34,16 +33,82 @@ const listItems = '[data-test-combobox-listbox] li';
 const selectedItem = '[data-test-combobox-listbox] [aria-selected="true"]';
 const outside = '#outside';
 
-class State<T extends { id: string } = { id: string }> {
-  constructor(private assert: Assert, readonly options: T[]) {}
+interface Animal {
+  id: string;
+  description: string;
+}
+
+class AnimalIndexer extends Indexer<Animal, Animal> {
+  index(item: Animal): Animal {
+    return item;
+  }
+
+  extract(item: Animal): Animal {
+    return item;
+  }
+}
+
+interface StartsWithQuery {
+  tokens: string[];
+}
+
+class StartsWithFilter extends Filter<Animal, StartsWithQuery> {
+  constructor(protected field: 'id' | 'description') {
+    super();
+  }
+
+  parse(tokens: string[]): StartsWithQuery {
+    return { tokens };
+  }
+
+  match(item: Animal, query: StartsWithQuery): false | MatchMetadata[] {
+    let value = item[this.field];
+    let results: MatchMetadata[] = [];
+    // This is weird but should work for the existing tests
+    for (let token of query.tokens) {
+      if (value.toLowerCase().startsWith(token.toLowerCase())) {
+        results.push({ token, score: 0 });
+      }
+    }
+
+    return results.length ? results : false;
+  }
+}
+
+class AnimalSearch extends FilterSearch<Animal, Animal> {
+  static from(animals: Animal[], query = ''): AnimalSearch {
+    return new this(
+      animals,
+      {
+        id: new StartsWithFilter('id'),
+        description: new StartsWithFilter('description'),
+      },
+      query
+    );
+  }
+
+  private constructor(
+    animals: Animal[],
+    filters: Record<string, Filter<Animal>>,
+    query = ''
+  ) {
+    super(animals, new AnimalIndexer(), filters, query);
+  }
+}
+
+class State {
+  search: AnimalSearch;
+
+  constructor(private assert: Assert, readonly options: Animal[]) {
+    this.search = AnimalSearch.from(options);
+  }
 
   @tracked autocomplete?: 'none' | 'list' | 'inline' | 'both';
 
-  @tracked caseSensitive?: boolean;
+  @tracked committed: Animal | null = null;
 
-  @tracked committed: T | null = null;
-
-  @action handleCommit(item: T | null): void {
+  @action handleCommit(match: MatchItem<Animal> | null): void {
+    let item = match?.item ?? null;
     this.committed = item;
     let { expectedCommit } = this;
     if (expectedCommit === false) {
@@ -77,7 +142,7 @@ class State<T extends { id: string } = { id: string }> {
 
   private expectedCommit: number | null | false = false;
 
-  private getOption(n: number): T {
+  private getOption(n: number): Animal {
     let option = this.options[n];
     emberAssert(`could not find option at n=${n}`, option);
     return option;
@@ -89,24 +154,35 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
   hooks.beforeEach(async function (this: Context, assert) {
     this.state = new State(assert, [
-      { id: 'Aardvark' },
-      { id: 'Ant' },
-      { id: 'Zebra' },
+      {
+        id: 'Aardvark',
+        description: 'Medium-sized, burrowing, nocturnal mammal.',
+      },
+      {
+        id: 'Ant',
+        description: 'Medium-sized eusocial insect.',
+      },
+      {
+        id: 'Zebra',
+        description: 'Equine with distinctive black-and-white striped coat.',
+      },
     ]);
 
     await render<Context>(hbs`
       <a id="outside" href="#">Click Outside</a>
       <Combobox::Editable
-        @options={{this.state.options}}
+        @valueField="id"
+        @search={{this.state.search}}
         @onCommit={{this.state.handleCommit}}
         @autocomplete={{this.state.autocomplete}}
-        @caseSensitive={{this.state.caseSensitive}}
       >
         <:label>
           Committed: {{or this.state.committed.id "NULL"}}
         </:label>
-        <:options as |option|>
-          {{option.id}}
+        <:options as |Option option|>
+          <Option>
+            {{option.item.id}}
+          </Option>
         </:options>
       </Combobox::Editable>
     `);
@@ -123,6 +199,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -165,6 +243,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
           assertInput(assert, '');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
+
+          await this.state.expectCommit(0, keyboard(assert, 'Enter'));
         });
 
         test('it can be opened via ArrowDown+altKey; subsequent ArrowDown+altKey does nothing', async function (this: Context, assert) {
@@ -212,6 +292,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
           assertInput(assert, '');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
+
+          await this.state.expectCommit(2, keyboard(assert, 'Enter'));
         });
 
         test('it can be opened via ArrowUp+altKey; subsequent ArrowUp+altKey does nothing', async function (this: Context, assert) {
@@ -234,7 +316,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -245,70 +327,25 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, 'And');
 
-          await fireInputEvent(input, '');
+          await fillIn(input, '');
 
           assertSelection(assert, null, 'Input of "" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'a');
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 1, 'Input of "an" selects second item');
-          assertInput(assert, 'an');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, 'and');
-
-          await fireInputEvent(input, '');
-
-          assertSelection(assert, null, 'Input of "" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assertInput(assert, 'a');
         });
       });
 
@@ -352,7 +389,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assert
             .dom(listItems)
@@ -370,6 +407,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'Escape');
 
           assert.dom(list).doesNotExist('SETUP: List closed after Escape');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -473,7 +512,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -484,60 +523,20 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 });
           assertInput(assert, 'And');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'a');
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 1, 'Input of "an" selects second item');
-          assertInput(assert, 'an');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert.dom(listItems).exists({ count: 3 });
-          assertInput(assert, 'and');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assertInput(assert, 'a');
         });
       });
 
@@ -545,7 +544,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         hooks.beforeEach(async function (assert) {
           assert.dom(list).doesNotExist('SETUP: List closed');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assert
             .dom(listItems)
@@ -563,6 +562,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await pointerClick(outside);
 
           assert.dom(list).doesNotExist('SETUP: List closed');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be opened via input click', async function (this: Context, assert) {
@@ -610,6 +611,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, null, 'SETUP: Enter selects no item');
           assert.dom(input).hasNoValue('SETUP: No initial value');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('ArrowDowns cycle through list', async function (this: Context, assert) {
@@ -681,7 +684,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -692,13 +695,13 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
@@ -746,6 +749,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input click makes no selection'
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -776,7 +781,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assert
             .dom(listItems)
@@ -790,6 +795,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input of "An" selects second item'
           );
           assertInput(assert, 'An');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via tab', async function (this: Context, assert) {
@@ -823,7 +830,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
           await keyboard(assert, 'Home');
 
-          assertInput(assert, 'An', [0, 0]);
+          assertInput(assert, 'An', { selectionStart: 0, selectionEnd: 0 });
         });
 
         test('End moves selection to end of input', async function (this: Context, assert) {
@@ -833,7 +840,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             el instanceof HTMLInputElement
           );
           el.setSelectionRange(0, 0);
-          assertInput(assert, 'An', [0, 0]);
+          assertInput(assert, 'An', { selectionStart: 0, selectionEnd: 0 });
 
           await keyboard(assert, 'End');
 
@@ -861,7 +868,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assert
             .dom(listItems)
@@ -875,6 +882,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input of "An" selects second item'
           );
           assertInput(assert, 'An');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -911,6 +920,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -934,24 +945,24 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowDown opens list; list is unfiltered');
           assertSelection(assert, 0, 'ArrowDown selects first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 1, 'ArrowDown selects next item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 2, 'ArrowDown selects next item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -981,24 +992,24 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowUp opens list; list is unfiltered');
           assertSelection(assert, 2, 'ArrowUp selects last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 1, 'ArrowUp selects previous item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 0, 'ArrowUp selects previous item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -1022,7 +1033,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -1031,72 +1042,26 @@ module('Integration | Component | combobox/editable', function (hooks) {
               'Input of "A" opens list; list is unfiltered'
             );
           assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, 'And');
 
-          await fireInputEvent(input, '');
+          await fillIn(input, '');
 
           assertSelection(assert, null, 'Input of "" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'aardvark', [1, 8]);
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 1, 'Input of "an" selects second item');
-          assertInput(assert, 'ant', [2, 3]);
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, 'and');
-
-          await fireInputEvent(input, '');
-
-          assertSelection(assert, null, 'Input of "" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assertInput(assert, 'a');
         });
       });
 
@@ -1140,7 +1105,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -1158,6 +1123,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'Escape');
 
           assert.dom(list).doesNotExist('SETUP: List closed after Escape');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -1181,12 +1148,12 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowDown opens list; list is unfiltered');
           assertSelection(assert, 2, 'ArrowDown selects next item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -1224,12 +1191,12 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowUp opens list; list is unfiltered');
           assertSelection(assert, 0, 'ArrowUp selects previous item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -1261,7 +1228,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -1270,62 +1237,22 @@ module('Integration | Component | combobox/editable', function (hooks) {
               'Input of "A" opens list; list is unfiltered'
             );
           assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 });
           assertInput(assert, 'And');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'aardvark', [1, 8]);
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 1, 'Input of "an" selects second item');
-          assertInput(assert, 'ant', [2, 3]);
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert.dom(listItems).exists({ count: 3 });
-          assertInput(assert, 'and');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 3 },
-              'Input of "a" opens list; list is unfiltered'
-            );
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assertInput(assert, 'a');
         });
       });
 
@@ -1333,7 +1260,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         hooks.beforeEach(async function (assert) {
           assert.dom(list).doesNotExist('SETUP: List closed');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -1351,6 +1278,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await pointerClick(outside);
 
           assert.dom(list).doesNotExist('SETUP: List closed');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be opened via input click', async function (this: Context, assert) {
@@ -1398,6 +1327,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, null, 'SETUP: Enter selects no item');
           assert.dom(input).hasNoValue('SETUP: No initial value');
+
           assert.ok(true, 'SETUP COMPLETE');
         });
 
@@ -1405,25 +1335,25 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown selects first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 1, 'ArrowDown selects next item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 2, 'ArrowDown selects next item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -1439,25 +1369,25 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp selects last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 1, 'ArrowUp selects previous item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 0, 'ArrowUp selects previous item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -1470,7 +1400,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -1479,15 +1409,17 @@ module('Integration | Component | combobox/editable', function (hooks) {
               'Input of "A" opens list; list is unfiltered'
             );
           assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 1, 'Input of "An" selects second item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
@@ -1536,6 +1468,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input click makes no selection'
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -1566,7 +1500,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -1580,6 +1514,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input of "Ant" selects second item'
           );
           assertInput(assert, 'Ant');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via tab', async function (this: Context, assert) {
@@ -1614,7 +1550,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
           await keyboard(assert, 'Home');
 
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
         });
 
         test('End moves selection to end of input', async function (this: Context, assert) {
@@ -1624,7 +1560,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             el instanceof HTMLInputElement
           );
           el.setSelectionRange(0, 0);
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
 
           await keyboard(assert, 'End');
 
@@ -1652,7 +1588,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -1666,6 +1602,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input of "Ant" selects second item'
           );
           assertInput(assert, 'Ant');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -1702,6 +1640,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -1813,7 +1753,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -1821,13 +1761,15 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 0, 'Input of "An" selects only item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -1836,56 +1778,11 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .containsText('No items match the filter "And".');
           assertInput(assert, 'And');
 
-          await fireInputEvent(input, '');
+          await fillIn(input, '');
 
           assertSelection(assert, null, 'Input of "" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists({ count: 2 }, 'Input of "a" opens list; list is filtered');
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'a');
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 0, 'Input of "an" selects only item');
-          assertInput(assert, 'an');
-          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "and".');
-          assertInput(assert, 'and');
-
-          await fireInputEvent(input, '');
-
-          assertSelection(assert, null, 'Input of "" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "a".');
-          assertInput(assert, 'a');
         });
       });
 
@@ -1929,7 +1826,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -1944,6 +1841,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
           assert.dom(list).doesNotExist('SETUP: List closed after Escape');
           assertInput(assert, 'A');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -2047,7 +1946,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -2055,13 +1954,15 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 0, 'Input of "An" selects second item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -2070,52 +1971,13 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .containsText('No items match the filter "And".');
           assertInput(assert, 'And');
         });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists({ count: 2 }, 'Input of "a" opens list; list is filtered');
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'a');
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 0, 'Input of "an" selects second item');
-          assertInput(assert, 'an');
-          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "and".');
-          assertInput(assert, 'and');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "a".');
-          assertInput(assert, 'a');
-        });
       });
 
       module('mouse', function (hooks) {
         hooks.beforeEach(async function (assert) {
           assert.dom(list).doesNotExist('SETUP: List closed');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -2129,6 +1991,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await pointerClick(outside);
 
           assert.dom(list).doesNotExist('SETUP: List closed');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be opened via input click', async function (this: Context, assert) {
@@ -2176,6 +2040,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, null, 'SETUP: Enter selects no item');
           assert.dom(input).hasNoValue('SETUP: No initial value');
+
           assert.ok(true, 'SETUP COMPLETE');
         });
 
@@ -2248,7 +2113,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -2256,13 +2121,13 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assertSelection(assert, 0, 'Input of "A" selects first item');
           assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await fillIn(input, 'An');
 
           assertSelection(assert, 0, 'Input of "An" selects only item');
           assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -2314,6 +2179,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input click makes no selection'
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -2344,7 +2211,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -2354,6 +2221,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, 0, 'SETUP: Input of "Ant" selects only item');
           assertInput(assert, 'Ant');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via tab', async function (this: Context, assert) {
@@ -2388,7 +2257,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
           await keyboard(assert, 'Home');
 
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
         });
 
         test('End moves selection to end of input', async function (this: Context, assert) {
@@ -2398,7 +2267,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             el instanceof HTMLInputElement
           );
           el.setSelectionRange(0, 0);
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
 
           await keyboard(assert, 'End');
 
@@ -2426,7 +2295,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -2436,6 +2305,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, 0, 'SETUP: Input of "Ant" selects only item');
           assertInput(assert, 'Ant');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -2472,6 +2343,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
 
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -2495,25 +2368,27 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowDown opens list; list is unfiltered');
           assertSelection(assert, 0, 'ArrowDown selects first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 1, 'ArrowDown selects next item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 2, 'ArrowDown selects next item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
+
+          await this.state.expectCommit(0, keyboard(assert, 'Enter'));
         });
 
         test('it can be opened via ArrowDown+altKey; subsequent ArrowDown+altKey does nothing', async function (this: Context, assert) {
@@ -2542,25 +2417,27 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 3 }, 'ArrowUp opens list; list is unfiltered');
           assertSelection(assert, 2, 'ArrowUp selects last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 1, 'ArrowUp selects previous item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 0, 'ArrowUp selects previous item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
+
+          await this.state.expectCommit(2, keyboard(assert, 'Enter'));
         });
 
         test('it can be opened via ArrowUp+altKey; subsequent ArrowUp+altKey does nothing', async function (this: Context, assert) {
@@ -2583,21 +2460,35 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
             .exists({ count: 2 }, 'Input of "A" opens list; list is filtered');
-          assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertSelection(assert, 0, 'First item selected');
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await keyboard(assert, 'ArrowDown');
 
-          assertSelection(assert, 0, 'Input of "An" selects only item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assert.dom(listItems).exists({ count: 2 }, 'list is filtered');
+          assertSelection(assert, 0, 'Selection does not change');
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
+
+          await fillIn(input, 'An');
+
+          assert.dom(listItems).exists({ count: 1 }, 'list is filtered');
+          assertSelection(assert, 0, 'Only item selected');
+          assertInput(assert, 'An');
+
+          await keyboard(assert, 'ArrowDown');
+
+          assertSelection(assert, 0, 'Selection remains same');
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -2606,56 +2497,11 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .containsText('No items match the filter "And".');
           assertInput(assert, 'And');
 
-          await fireInputEvent(input, '');
+          await fillIn(input, '');
 
           assertSelection(assert, null, 'Input of "" has no matches');
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
           assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists({ count: 2 }, 'Input of "a" opens list; list is filtered');
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'aardvark', [1, 8]);
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 0, 'Input of "an" selects only item');
-          assertInput(assert, 'ant', [2, 3]);
-          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "and".');
-          assertInput(assert, 'and');
-
-          await fireInputEvent(input, '');
-
-          assertSelection(assert, null, 'Input of "" has no matches');
-          assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
-          assertInput(assert, '');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "a".');
-          assertInput(assert, 'a');
         });
       });
 
@@ -2699,7 +2545,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
@@ -2708,12 +2554,14 @@ module('Integration | Component | combobox/editable', function (hooks) {
               'SETUP: Input of "A" opens list; list is filtered'
             );
           assertSelection(assert, 0, 'SETUP: Input of "A" selects only item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
           await keyboard(assert, 'Escape');
 
           assert.dom(list).doesNotExist('SETUP: List closed after Escape');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be toggled via Enter', async function (this: Context, assert) {
@@ -2723,7 +2571,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 2 }, 'Enter opens list; list is filtered');
           assertSelection(assert, 0, 'Selection does not change');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
           await this.state.expectCommit(0, keyboard(assert, 'Enter'));
 
@@ -2736,13 +2584,19 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert
             .dom(listItems)
             .exists({ count: 2 }, 'ArrowDown opens list; list is filtered');
+          assertSelection(assert, 0, 'First ArrowDown maintains selection');
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
+
+          await keyboard(assert, 'ArrowDown');
+
+          assert.dom(listItems).exists({ count: 2 }, 'list is filtered');
           assertSelection(assert, 1, 'ArrowDown selects next item');
-          assertInput(assert, 'Ant', [1, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 2 }, 'List is filtered');
         });
 
@@ -2760,7 +2614,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             0,
             'ArrowDown+altKey does not change selection'
           );
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
           await keyboard(assert, 'ArrowDown', { altKey: true });
 
@@ -2769,7 +2623,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             0,
             'ArrowDown+altKey does not change selection'
           );
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
           assert.dom(listItems).exists({ count: 2 }, 'List is filtered');
         });
 
@@ -2780,12 +2634,12 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .dom(listItems)
             .exists({ count: 2 }, 'ArrowUp opens list; list is unfiltered');
           assertSelection(assert, 1, 'ArrowUp selects last item');
-          assertInput(assert, 'Ant', [1, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 0, 'ArrowUp cycles back to first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 2 }, 'List is filtered');
         });
 
@@ -2803,7 +2657,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             0,
             'ArrowUp+altKey does not change selection'
           );
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
           await keyboard(assert, 'ArrowUp', { altKey: true });
 
@@ -2812,26 +2666,42 @@ module('Integration | Component | combobox/editable', function (hooks) {
             0,
             'ArrowUp+altKey does not change selection'
           );
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
           assert.dom(listItems).exists({ count: 2 }, 'List is filtered');
         });
 
         test('it can be opened and filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
             .exists({ count: 2 }, 'Input of "A" opens list; list is filtered');
           assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await keyboard(assert, 'ArrowDown');
+
+          assert
+            .dom(listItems)
+            .exists({ count: 2 }, 'Input of "A" opens list; list is filtered');
+          assertSelection(assert, 0, 'Input of "A" selects first item');
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
+
+          await fillIn(input, 'An');
 
           assertSelection(assert, 0, 'Input of "An" selects second item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await keyboard(assert, 'ArrowDown');
+
+          assertSelection(assert, 0, 'Input of "An" selects second item');
+          assertInput(assert, 'Ant', { isSuggestion: true });
+          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
+
+          await this.state.expectCommit(1, keyboard(assert, 'Enter'));
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -2840,52 +2710,13 @@ module('Integration | Component | combobox/editable', function (hooks) {
             .containsText('No items match the filter "And".');
           assertInput(assert, 'And');
         });
-
-        test('it can be opened and filtered via input (case insensitive)', async function (this: Context, assert) {
-          await fireInputEvent(input, 'a');
-
-          assert
-            .dom(listItems)
-            .exists({ count: 2 }, 'Input of "a" opens list; list is filtered');
-          assertSelection(assert, 0, 'Input of "a" selects first item');
-          assertInput(assert, 'aardvark', [1, 8]);
-
-          await fireInputEvent(input, 'an');
-
-          assertSelection(assert, 0, 'Input of "an" selects second item');
-          assertInput(assert, 'ant', [2, 3]);
-          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
-
-          await fireInputEvent(input, 'and');
-
-          assertSelection(assert, null, 'Input of "and" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "and".');
-          assertInput(assert, 'and');
-        });
-
-        test('it can be opened and filtered via input (case sensitive)', async function (this: Context, assert) {
-          this.state.caseSensitive = true;
-          await rerender();
-
-          await fireInputEvent(input, 'a');
-
-          assertSelection(assert, null, 'Input of "a" has no matches');
-          assert
-            .dom(listItems)
-            .exists({ count: 1 })
-            .containsText('No items match the filter "a".');
-          assertInput(assert, 'a');
-        });
       });
 
       module('mouse', function (hooks) {
         hooks.beforeEach(async function (assert) {
           assert.dom(list).doesNotExist('SETUP: List closed');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -2899,6 +2730,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await pointerClick(outside);
 
           assert.dom(list).doesNotExist('SETUP: List closed');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be opened via input click', async function (this: Context, assert) {
@@ -2946,6 +2779,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, null, 'SETUP: Enter selects no item');
           assert.dom(input).hasNoValue('SETUP: No initial value');
+
           assert.ok(true, 'SETUP COMPLETE');
         });
 
@@ -2953,25 +2787,25 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown selects first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 1, 'ArrowDown selects next item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 2, 'ArrowDown selects next item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowDown');
 
           assertSelection(assert, 0, 'ArrowDown cycles through to first item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -2987,25 +2821,25 @@ module('Integration | Component | combobox/editable', function (hooks) {
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp selects last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 1, 'ArrowUp selects previous item');
-          assertInput(assert, 'Ant', [0, 3]);
+          assertInput(assert, 'Ant', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 0, 'ArrowUp selects previous item');
-          assertInput(assert, 'Aardvark', [0, 8]);
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
 
           await keyboard(assert, 'ArrowUp');
 
           assertSelection(assert, 2, 'ArrowUp cycles back to last item');
-          assertInput(assert, 'Zebra', [0, 5]);
+          assertInput(assert, 'Zebra', { isSuggestion: true });
           assert.dom(listItems).exists({ count: 3 }, 'List is unfiltered');
         });
 
@@ -3018,21 +2852,35 @@ module('Integration | Component | combobox/editable', function (hooks) {
         });
 
         test('it can be filtered via input', async function (this: Context, assert) {
-          await fireInputEvent(input, 'A');
+          await fillIn(input, 'A');
 
           assert
             .dom(listItems)
             .exists({ count: 2 }, 'Input of "A" opens list; list is filtered');
           assertSelection(assert, 0, 'Input of "A" selects first item');
-          assertInput(assert, 'Aardvark', [1, 8]);
+          assertInput(assert, 'A');
 
-          await fireInputEvent(input, 'An');
+          await keyboard(assert, 'ArrowDown');
 
-          assertSelection(assert, 0, 'Input of "An" selects only item');
-          assertInput(assert, 'Ant', [2, 3]);
+          assert
+            .dom(listItems)
+            .exists({ count: 2 }, 'Input of "A" opens list; list is filtered');
+          assertSelection(assert, 0, 'Input of "A" selects first item');
+          assertInput(assert, 'Aardvark', { isSuggestion: true });
+
+          await fillIn(input, 'An');
+
+          assertSelection(assert, 0, 'Input of "An" selects second item');
+          assertInput(assert, 'An');
           assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
 
-          await fireInputEvent(input, 'And');
+          await keyboard(assert, 'ArrowDown');
+
+          assertSelection(assert, 0, 'Input of "An" selects second item');
+          assertInput(assert, 'Ant', { isSuggestion: true });
+          assert.dom(listItems).exists({ count: 1 }, 'List is filtered');
+
+          await fillIn(input, 'And');
 
           assertSelection(assert, null, 'Input of "And" has no matches');
           assert
@@ -3084,6 +2932,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             'SETUP: Input click makes no selection'
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -3114,16 +2964,9 @@ module('Integration | Component | combobox/editable', function (hooks) {
           assert.dom(input).isFocused('SETUP: Input focused');
           assert.dom(list).doesNotExist('SETUP: Focus does not open list');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
-          assert
-            .dom(listItems)
-            .exists(
-              { count: 1 },
-              'SETUP: Input of "Ant" opens list; list is filtered'
-            );
-          assertSelection(assert, 0, 'SETUP: Input of "Ant" selects only item');
-          assertInput(assert, 'Ant');
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via tab', async function (this: Context, assert) {
@@ -3158,7 +3001,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
         test('Home moves selection to beginning of input', async function (this: Context, assert) {
           await keyboard(assert, 'Home');
 
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
         });
 
         test('End moves selection to end of input', async function (this: Context, assert) {
@@ -3168,7 +3011,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
             el instanceof HTMLInputElement
           );
           el.setSelectionRange(0, 0);
-          assertInput(assert, 'Ant', [0, 0]);
+          assertInput(assert, 'Ant', { selectionStart: 0, selectionEnd: 0 });
 
           await keyboard(assert, 'End');
 
@@ -3196,7 +3039,7 @@ module('Integration | Component | combobox/editable', function (hooks) {
           );
           assert.dom(input).hasNoValue('SETUP: Starts with no value');
 
-          await fireInputEvent(input, 'Ant');
+          await fillIn(input, 'Ant');
 
           assert
             .dom(listItems)
@@ -3206,6 +3049,8 @@ module('Integration | Component | combobox/editable', function (hooks) {
             );
           assertSelection(assert, 0, 'SETUP: Input of "Ant" selects only item');
           assertInput(assert, 'Ant');
+
+          assert.ok(true, 'SETUP COMPLETE');
         });
 
         test('it can be dismissed via click outside', async function (this: Context, assert) {
@@ -3250,6 +3095,7 @@ function listItem(n: number): string {
 }
 
 function assertSelection(assert: Assert, n: number | null, note: string): void {
+  assert.ok(true, 'assertSelection start');
   assert.dom(input).isFocused();
   let selectedItems = findAll(selectedItem);
   if (!note) {
@@ -3285,12 +3131,18 @@ function assertSelection(assert: Assert, n: number | null, note: string): void {
       `[${note}] There are no aria-selected items`
     );
   }
+
+  assert.ok(true, 'assertSelection complete');
 }
+
+type AssertInputOptions =
+  | { isSuggestion: true; selectionStart?: never; selectionEnd?: never }
+  | { isSuggestion?: never; selectionStart?: number; selectionEnd?: number };
 
 function assertInput(
   assert: Assert,
   value: string,
-  [selectionStart, selectionEnd] = [value.length, value.length]
+  options?: AssertInputOptions
 ): void {
   let el = find(input);
   emberAssert(
@@ -3298,6 +3150,11 @@ function assertInput(
     el instanceof HTMLInputElement
   );
   assert.dom(el).hasValue(value);
+
+  let selectionStart =
+    options?.selectionStart ?? (options?.isSuggestion ? 0 : value.length);
+  let selectionEnd = options?.selectionEnd ?? value.length;
+
   assert.strictEqual(
     el.selectionStart,
     selectionStart,

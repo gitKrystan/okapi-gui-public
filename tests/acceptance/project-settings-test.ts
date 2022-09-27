@@ -1,4 +1,10 @@
-import { click, currentURL, visit } from '@ember/test-helpers';
+import {
+  click,
+  currentURL,
+  fillIn,
+  triggerKeyEvent,
+  visit,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 
 import Project from 'okapi/models/project';
@@ -33,11 +39,26 @@ module('Acceptance | project settings', function (hooks) {
       .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
       .doesNotExist();
 
-    await click('[data-test-settings-combobox] [data-test-combobox-input]');
+    await fillIn(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'evs'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
 
     assert
       .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
       .exists();
+
+    assert
+      .dom(
+        '[data-test-settings-combobox] [data-test-combobox-listbox] li:first-child'
+      )
+      .hasAria('selected', 'true');
 
     await snapshotDarkMode(assert, {
       owner: this.owner, // so we don't dismiss when clicking toggle

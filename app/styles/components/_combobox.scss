@@ -1,6 +1,8 @@
 @use './dropdown';
+@use './icon';
 
 $-padding-y: 0.5rem;
+$-dropdown-max-height: 10rem;
 
 .Combobox__button {
   display: flex;
@@ -16,23 +18,34 @@ $-padding-y: 0.5rem;
   color: var(--contrast2);
 }
 
-.Combobox__item {
+.Combobox__dropdown {
+  max-height: $-dropdown-max-height;
+  overflow: auto;
+}
+
+.ComboboxItem {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.5rem;
+  justify-content: space-between;
   padding: 0.25rem $-padding-y;
 
   &:focus-visible {
     outline: none;
   }
+
+  [aria-selected='true'] & {
+    color: var(--contrast 7);
+  }
 }
 
-.Combobox__item--is-description-item {
-  background-color: var(--magenta);
-  color: var(--contrast7);
+.ComboboxItem--is-description-item {
+  background-color: var(--contrast2);
+  color: var(--base3);
 }
 
-.Combobox__Dropdown__info {
-  margin: 0.5rem 0 0;
-  padding: 0.5rem $-padding-y 0;
-  border-top: 1px solid dropdown.$border-color;
+.ComboboxItem__icon-wrapper {
+  width: icon.$solid-variant-width;
 }
 
 .Combobox--editable {
@@ -51,4 +64,14 @@ $-padding-y: 0.5rem;
     border-color: var(--contrast6);
     color: var(--contrast6);
   }
+}
+
+.Combobox__description {
+  position: relative;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem $-padding-y 0;
+  border-top: 1px solid dropdown.$border-color;
 }
