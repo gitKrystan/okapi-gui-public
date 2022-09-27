@@ -32,7 +32,7 @@
     "g": "EMBER_TYPESCRIPT_BLUEPRINTS=true ember g"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.1",
+    "@babel/core": "^7.19.3",
     "@bagaar/ember-breadcrumbs": "^3.0.0",
     "@csstools/postcss-sass": "^5.0.1",
     "@ember/optional-features": "^2.0.0",
