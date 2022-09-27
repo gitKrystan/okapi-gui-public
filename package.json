@@ -79,7 +79,7 @@
     "autoprefixer": "^10.4.8",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
-    "browserslist": "^4.21.3",
+    "browserslist": "^4.21.4",
     "ember-auto-import": "^2.4.2",
     "ember-cached-decorator-polyfill": "^0.1.4",
     "ember-cli": "~4.7.0",
