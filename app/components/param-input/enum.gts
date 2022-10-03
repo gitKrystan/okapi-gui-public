@@ -18,13 +18,13 @@ export default class EnumInput extends Component<ParamSig<EnumParam>> {
       @onSelect={{this.handleSelect}}
       @initialSelection={{this.selection}}
       @readonly={{@readonly}}
-      ...attributes
     >
       <:trigger as |Trigger|>
         <Trigger
           id={{@id}}
           aria-labelledby="{{@id}}-label"
           data-test-param-input={{@id}}
+          ...attributes
         >
           {{#if this.selection}}
             {{this.selection.name}}

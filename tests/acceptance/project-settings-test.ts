@@ -109,17 +109,11 @@ module('Acceptance | project settings', function (hooks) {
       .dom('[data-test-project-settings-list]')
       .containsText('Vault Schema Migration');
 
-    await triggerKeyEvent(
-      '[data-test-settings-combobox] [data-test-combobox-input]',
-      'keydown',
-      'ArrowDown'
-    );
-
-    await triggerKeyEvent(
-      '[data-test-settings-combobox] [data-test-combobox-input]',
-      'keydown',
-      'Enter'
-    );
+    assert
+      .dom(
+        '[data-test-project-settings-list] [data-test-project-settings-input="experimental.vault.schema_version"]'
+      )
+      .isFocused();
 
     await triggerKeyEvent(
       '[data-test-settings-combobox] [data-test-combobox-input]',
@@ -133,6 +127,12 @@ module('Acceptance | project settings', function (hooks) {
       'Enter'
     );
 
+    assert
+      .dom(
+        '[data-test-project-settings-list] [data-test-project-settings-input="servers.scaling.autoscale"]'
+      )
+      .isFocused();
+
     await triggerKeyEvent(
       '[data-test-settings-combobox] [data-test-combobox-input]',
       'keydown',
@@ -145,7 +145,35 @@ module('Acceptance | project settings', function (hooks) {
       'Enter'
     );
 
-    assert.dom('[data-test-project-settings-list] li').exists({ count: 4 });
+    assert
+      .dom(
+        '[data-test-project-settings-list] [data-test-project-settings-input="invasions.foreign.russian"]'
+      )
+      .isFocused();
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'Enter'
+    );
+
+    assert
+      .dom(
+        '[data-test-project-settings-list] [data-test-project-settings-input="misc.settings.favorite"]'
+      )
+      .isFocused();
+
+    assert
+      .dom(
+        '[data-test-project-settings-list] [data-test-project-settings-input]'
+      )
+      .exists({ count: 4 });
 
     await triggerKeyEvent(
       '[data-test-settings-combobox] [data-test-combobox-input]',

@@ -84,7 +84,9 @@ export default class Dropdown
   );
 
   @action private onDismiss(e: Event): void {
-    this.delayedClose({ didClose: () => this.args.didDismiss?.(e) });
+    if (this.isExpanded) {
+      this.delayedClose({ didClose: () => this.args.didDismiss?.(e) });
+    }
   }
 }
 

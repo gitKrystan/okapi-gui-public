@@ -31,17 +31,12 @@
   }
 
   &:not(:disabled) {
-    &:focus-visible,
+    &:focus,
     &:hover {
       & + .Checkbox__icon {
-        background-color: var(--contrast2);
+        outline: 2px solid var(--cyan);
+        outline-offset: -1px;
         cursor: pointer;
-      }
-
-      &:checked {
-        + .Checkbox__icon {
-          background-color: var(--contrast2);
-        }
       }
     }
   }

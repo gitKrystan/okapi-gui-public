@@ -1,5 +1,10 @@
 .ProjectSettingsForm {
   display: grid;
-  margin: 1rem 0;
+  margin: 1rem -1rem;
+  padding: 1rem;
   gap: 0.5rem;
+
+  &:focus-within {
+    outline: 1px solid var(--contrast1);
+  }
 }

@@ -69,6 +69,8 @@ textarea {
   &:hover {
     :where(&) {
       border-color: var(--contrast6);
+      outline: 2px solid var(--cyan);
+      outline-offset: -1px;
       color: var(--contrast6);
     }
   }
