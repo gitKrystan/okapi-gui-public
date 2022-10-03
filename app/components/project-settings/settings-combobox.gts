@@ -1,39 +1,20 @@
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
-import Owner from '@ember/owner';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
 
 import Combobox from 'okapi/components/combobox/editable-with-description';
 import RegExpHighlight from 'okapi/components/reg-exp-highlight';
 import ProjectSetting from 'okapi/models/project-setting';
 import { isRegExpExecArray } from 'okapi/types/utils';
 import type { MatchItem } from 'okapi/utils/filter-search';
-import ProjectSettingSearch from 'okapi/utils/project-setting-search';
+import type ProjectSettingSearch from 'okapi/utils/project-setting-search';
 
 interface SettingsComboboxSignature {
   Args: {
+    search: ProjectSettingSearch;
     onCommit: (item: ProjectSetting) => void;
   };
 }
-
-const ALL = Object.freeze([
-  new ProjectSetting(
-    'Vault Schema Migration',
-    '1experimental.vault.schema_version',
-    'It does a thing.'
-  ),
-  new ProjectSetting(
-    'Vault Schema Migration 2',
-    '2experimental.vault.schema_version',
-    'It does another thing.'
-  ),
-  new ProjectSetting(
-    'Vault Schema Migration 3',
-    '3experimental.vault.schema_version',
-    'It does yet another thing.'
-  )
-]);
 
 class ResultHighlight extends Component<{
   Args: { result: MatchItem<ProjectSetting>; field: string };
@@ -48,7 +29,10 @@ class ResultHighlight extends Component<{
 
   private get text(): string {
     let text = this.args.result.item[this.args.field as keyof ProjectSetting];
-    assert(`expected text for item field ${this.args.field}`, text);
+    assert(
+      `expected text for item field ${this.args.field}`,
+      typeof text === 'string'
+    );
     return text;
   }
 
@@ -77,8 +61,9 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
     <Combobox
       data-test-settings-combobox
       @valueField="id"
-      @search={{this.search}}
+      @search={{@search}}
       @onCommit={{this.onCommit}}
+      @resetOnCommit={{true}}
       @autocomplete="both"
       @labelClass="u_visually-hidden"
     >
@@ -101,22 +86,6 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
       </:description>
     </Combobox>
   </template>
-
-  @tracked private _search: ProjectSettingSearch | null = null;
-
-  constructor(owner: Owner, args: SettingsComboboxSignature['Args']) {
-    super(owner, args);
-    this._search = ProjectSettingSearch.from(this.allSettings);
-  }
-
-  private get search(): ProjectSettingSearch {
-    assert('Tried to use search before set', this._search);
-    return this._search;
-  }
-
-  private get allSettings(): readonly ProjectSetting[] {
-    return ALL;
-  }
 
   @action private onCommit(result: MatchItem<ProjectSetting> | null): void {
     if (result) {

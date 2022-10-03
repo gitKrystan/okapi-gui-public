@@ -4,7 +4,7 @@ import Project from './project';
 
 export interface ProjectsComponentSig {
   Args: {
-    projects: ProjectModel[];
+    projects: readonly ProjectModel[];
   }
 }
 

@@ -34,6 +34,7 @@ export interface EditableComboboxSignature<
     valueField: K;
     search: Search<T, unknown>;
     autocomplete?: Autocomplete;
+    resetOnCommit?: boolean;
     readonly?: boolean;
     labelClass?: string;
     onSelect?: (selection: MatchItem<T> | null) => void;
@@ -48,7 +49,6 @@ export interface EditableComboboxSignature<
       component: WithBoundArgs<typeof ComboboxItem, 'isSelected'>,
       result: MatchItem<T>
     ];
-    empty: [];
     extra: [];
   };
 }
@@ -90,8 +90,6 @@ export default class EditableCombobox<
           aria-autocomplete={{this.autocomplete}}
           aria-expanded="{{d.isExpanded}}"
           {{this.registerInput}}
-          {{on "focus" this.handleInputFocus}}
-          {{on "blur" this.handleInputBlur}}
           {{on "click" (fn this.handleInputClick d)}}
           {{on "keydown" (fn this.handleInputKeyDown d)}}
           {{on "input" (fn this.handleInput d)}}
@@ -142,16 +140,12 @@ export default class EditableCombobox<
             {{/let}}
           {{else}}
             <li>
-              {{#if (has-block "empty")}}
-                {{yield to="empty"}}
-              {{else}}
-                <div class="ComboboxItem">
-                  No items{{if
-                    this.query
-                    (concat ' match the filter "' this.query '"')
-                  }}.
-                </div>
-              {{/if}}
+              <div class="ComboboxItem">
+                No items{{if
+                  this.query
+                  (concat ' match the filter "' this.query '"')
+                }}.
+              </div>
             </li>
           {{/each}}
         </ul>
@@ -161,8 +155,6 @@ export default class EditableCombobox<
   </template>
 
   private id = guidFor(this);
-
-  @tracked private hasFocus = false;
 
   private get query(): string {
     return this.args.search.query;
@@ -176,26 +168,37 @@ export default class EditableCombobox<
     return this.query ? this.args.search.results : this.unfilteredList;
   }
 
-  @tracked private selection: MatchItem<T> | null = null;
+  @tracked private _selection: MatchItem<T> | null = null;
+
+  private get selection(): MatchItem<T> | null {
+    if (
+      this._selection === null ||
+      !this.args.search.items.includes(this._selection.item)
+    ) {
+      return null;
+    } else {
+      return this._selection;
+    }
+  }
+
+  private set selection(newSelection: MatchItem<T> | null ){
+    this._selection = newSelection;
+  }
 
   private get list(): ReadonlyArray<MatchItem<T>> {
     return this.hasListAutocomplete ? this.filteredList : this.unfilteredList;
   }
 
-  private get firstOption(): MatchItem<T> {
-    let firstOption = this.list[0];
-    assert('No options in list', firstOption);
-    return firstOption;
+  private get firstOption(): MatchItem<T> | null {
+    return this.list[0] ?? null;
   }
 
-  private get lastOption(): MatchItem<T> {
+  private get lastOption(): MatchItem<T> | null {
     let { list } = this;
-    let lastOption = list[list.length - 1];
-    assert('No options in list', lastOption);
-    return lastOption;
+    return list[list.length - 1] ?? null;
   }
 
-  private get nextOption(): MatchItem<T> {
+  private get nextOption(): MatchItem<T> | null {
     const { selection } = this;
     let nextOption: MatchItem<T> | undefined;
     if (selection) {
@@ -205,7 +208,7 @@ export default class EditableCombobox<
     return nextOption ?? this.firstOption;
   }
 
-  private get previousOption(): MatchItem<T> {
+  private get previousOption(): MatchItem<T> | null {
     const { selection } = this;
     let previousOption: MatchItem<T> | undefined;
     if (selection) {
@@ -231,6 +234,10 @@ export default class EditableCombobox<
     return ['inline', 'both'].includes(this.autocomplete);
   }
 
+  private get resetOnCommit(): boolean {
+    return this.args.resetOnCommit ?? false;
+  }
+
   // Element registration
 
   private registerInput = modifier(
@@ -251,14 +258,6 @@ export default class EditableCombobox<
   }
 
   // Input events
-
-  @action private handleInputFocus(): void {
-    this.hasFocus = true;
-  }
-
-  @action private handleInputBlur(): void {
-    this.hasFocus = false;
-  }
 
   @action private handleInputClick(d: DropdownApi): void {
     this.acceptSuggestion(this.inputEl.value);
@@ -378,8 +377,8 @@ export default class EditableCombobox<
       initialSelection
     }: {
       selection: MatchItem<T> | null;
-      incrementedSelection: MatchItem<T>;
-      initialSelection: MatchItem<T>;
+      incrementedSelection: MatchItem<T> | null;
+      initialSelection: MatchItem<T> | null;
     }
   ): MatchItem<T> | null {
     let { hasInlineAutocomplete } = this;
@@ -502,7 +501,9 @@ export default class EditableCombobox<
         return;
       }
 
-      await timeout(skipTimeout || Ember.testing ? 0 : 250);
+      if (!skipTimeout) {
+        await timeout( Ember.testing ? 0 : 250);
+      }
 
       this.args.search.query = newFilter;
 
@@ -539,11 +540,11 @@ export default class EditableCombobox<
 
   private commitSelection(): void {
     let { selection } = this;
-    this.setValue(selection, {
-      forceInlineAutocomplete: true,
-      updateFilter: true
-    });
     this.args.onCommit?.(selection);
+    this.setValue(
+      this.resetOnCommit ? null : selection,
+      { forceInlineAutocomplete: true, updateFilter: true }
+    );
   }
 
   // Misc

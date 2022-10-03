@@ -18,6 +18,7 @@ interface EditableComboboxWithDescriptionSignature<
     valueField: K;
     search: Search<T, unknown>;
     autocomplete?: Autocomplete;
+    resetOnCommit?: boolean;
     readonly?: boolean;
     labelClass?: string;
     onSelect?: (selection: MatchItem<T> | null) => void;
@@ -30,7 +31,6 @@ interface EditableComboboxWithDescriptionSignature<
     button: [];
     options: [result: MatchItem<T>];
     description: [item: MatchItem<T> | null];
-    empty: [];
     extra: [];
   };
 }
@@ -47,12 +47,13 @@ export default class EditableComboboxWithDescription<
       ...attributes
       @valueField={{@valueField}}
       @search={{@search}}
+      @autocomplete={{@autocomplete}}
+      @resetOnCommit={{@resetOnCommit}}
+      @labelClass={{@labelClass}}
       @onCommit={{fn this.passthrough "onCommit"}}
       @onSelect={{fn this.passthrough "onSelect"}}
       @onItemMousemove={{fn this.passthrough "onItemMousemove"}}
       @onItemFocus={{fn this.passthrough "onItemFocus"}}
-      @autocomplete={{@autocomplete}}
-      @labelClass={{@labelClass}}
     >
       <:label>
         {{yield to="label"}}
@@ -74,9 +75,6 @@ export default class EditableComboboxWithDescription<
           </p>
         </Item>
       </:options>
-      <:empty>
-        {{yield to="empty"}}
-      </:empty>
       <:extra>
         {{! Hide this item from aria because we have a visually hidden description above. }}
         <div class="Combobox__description" aria-hidden="true">
@@ -87,7 +85,22 @@ export default class EditableComboboxWithDescription<
     </Combobox>
   </template>
 
-  @tracked private descriptionItem: MatchItem<T> | null = null;
+  @tracked private _descriptionItem: MatchItem<T> | null = null;
+
+  private get descriptionItem(): MatchItem<T> | null {
+    if (
+      this._descriptionItem === null ||
+      !this.args.search.items.includes(this._descriptionItem.item)
+    ) {
+      return null;
+    } else {
+      return this._descriptionItem;
+    }
+  }
+
+   private set descriptionItem(newSelection: MatchItem<T> | null ){
+    this._descriptionItem = newSelection;
+  }
 
   @action private passthrough(
     method: 'onSelect' | 'onCommit' | 'onItemMousemove' | 'onItemFocus',

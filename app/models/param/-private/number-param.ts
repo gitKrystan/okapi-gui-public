@@ -1,13 +1,26 @@
 import { assert } from '@ember/debug';
-import type { NumberMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
-
-export { default as Boolean } from 'okapi/models/method-call/-private/boolean-param';
-export { default as StringParam } from 'okapi/models/method-call/-private/string-param';
 
 const NumericInputPattern = /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
 
-interface TypeInfo {
+export interface RawNumberParam {
+  type:
+    | 'f32'
+    | 'f64'
+    | 'i8'
+    | 'i16'
+    | 'i32'
+    | 'i64'
+    | 'u8'
+    | 'u16'
+    | 'u32'
+    | 'u64';
+  name: string;
+  description: string;
+  value?: number;
+}
+
+export interface TypeInfo {
   signed: boolean;
   integer: boolean;
   bits: number;
@@ -16,9 +29,9 @@ interface TypeInfo {
 // NOTE: Value maybe be NaN or an otherwise invalid number but `validate` will
 // fail in this case.
 export default class NumberParam extends AbstractParam<
-  NumberMethodParam,
   number,
-  string | null
+  string | null,
+  RawNumberParam
 > {
   protected _validate(
     normalizedInputValue: string | undefined,
@@ -71,7 +84,11 @@ export default class NumberParam extends AbstractParam<
   ): number | undefined {
     if (normalizedInputValue) {
       normalizedInputValue = normalizedInputValue.replace(/[^-0-9.]/g, ''); // remove non-numeric characters
-      return parseFloat(normalizedInputValue);
+      let number = parseFloat(normalizedInputValue);
+      if (Number.isNaN(number)) {
+        return undefined;
+      }
+      return number;
     } else {
       return undefined;
     }
@@ -103,7 +120,7 @@ export default class NumberParam extends AbstractParam<
     let bits = parseInt(bitStr, 10);
     assert(
       `bitStr '${bitStr}' parsed to NaN in string ${fullType}`,
-      !isNaN(bits)
+      !Number.isNaN(bits)
     );
 
     if (typeId === 'f') {

@@ -1,10 +1,18 @@
 import Component from '@glimmer/component';
+
+import Project from 'okapi/models/project';
+import ProjectSetting from 'okapi/models/project-setting';
 import Form from './form';
 
-interface ProjectSettingsSignature {}
+interface ProjectSettingsSignature {
+  Args: {
+    project: Project;
+    settings: readonly ProjectSetting[];
+  }
+}
 
 export default class ProjectSettings extends Component<ProjectSettingsSignature> {
-  <template><Form /></template>
+  <template><Form @project={{@project}} @settings={{@settings}} /></template>
 }
 
 declare module '@glint/environment-ember-loose/registry' {

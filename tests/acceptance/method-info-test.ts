@@ -56,6 +56,7 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -134,6 +135,7 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -213,6 +215,7 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -300,6 +303,7 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -413,6 +417,7 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {

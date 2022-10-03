@@ -1,12 +1,14 @@
+import { action } from '@ember/object';
 import type { TestContext } from '@ember/test-helpers';
 import { fillIn, render, tab } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
-import type { NumberMethodParam } from 'okapi/models/method';
-import { NumberParam } from 'okapi/models/method-call/index';
+import { module, test } from 'qunit';
+
+import type { RawNumberParam } from 'okapi/models/param/index';
+import { NumberParam } from 'okapi/models/param/index';
 import { setupRenderingTest } from 'okapi/tests/helpers';
 import inspect from 'okapi/utils/inspect';
-import { module, test } from 'qunit';
 
 const MAX_8 = 127;
 const MIN_8 = -128;
@@ -38,19 +40,46 @@ class State {
 
   @tracked readonly readonly = false;
 
-  constructor(type: NumberMethodParam['type']) {
+  constructor(private assert: Assert, type: RawNumberParam['type']) {
     this.param = new NumberParam({
       type,
       name: 'A number',
       description: 'It is a number',
     });
   }
+
+  private expectedChange: number | undefined | false = false;
+
+  @action onChange(value: number | undefined): void {
+    let { expectedChange } = this;
+    if (expectedChange === false) {
+      this.assert.ok(
+        false,
+        `Unexpectedly called onChange callback with value${inspect(value)}`
+      );
+    } else {
+      this.assert.strictEqual(
+        value,
+        this.expectedChange,
+        `Called onChange callback with value ${inspect(value)}`
+      );
+    }
+  }
+
+  async expectChange(
+    value: number | undefined,
+    callback: Promise<void>
+  ): Promise<void> {
+    this.expectedChange = value;
+    await callback;
+    this.expectedChange = false;
+  }
 }
 
 const IntegerError = 'Value must be an integer';
 const NegativeError = 'Value cannot be negative';
 
-module('Integration | Component | method-info/input/number', function (hooks) {
+module('Integration | Component | param-input/number', function (hooks) {
   setupRenderingTest(hooks);
 
   itHandlesValueInput('f32', [
@@ -449,7 +478,7 @@ module('Integration | Component | method-info/input/number', function (hooks) {
 });
 
 function itHandlesValueInput(
-  type: NumberMethodParam['type'],
+  type: RawNumberParam['type'],
   cases: TestCase[]
 ): void {
   module(type, function () {
@@ -457,25 +486,27 @@ function itHandlesValueInput(
       test(`it handles an input of ${inspect(
         inputValue
       )}`, async function (this: Context, assert) {
-        this.state = new State(type);
+        this.state = new State(assert, type);
 
         await render<Context>(
           hbs`
-            <MethodInfo::Validator @param={{this.state.param}} as |validator|>
-              <MethodInfo::Inputs::Number
+            <ParamInput::Validator @param={{this.state.param}} as |validator|>
+              <ParamInput::Number
                 @id={{this.state.id}}
                 @param={{this.state.param}}
                 @readonly={{this.state.readonly}}
+                @onChange={{this.state.onChange}}
                 {{validator}}
               />
-            </MethodInfo::Validator>
+            </ParamInput::Validator>
             <a href="#">Click outside</a>
           `
         );
 
         assert.dom('input').hasValue('', 'setup');
 
-        await fillIn('input', inputValue);
+        await this.state.expectChange(value, fillIn('input', inputValue));
+
         await tab();
 
         assert

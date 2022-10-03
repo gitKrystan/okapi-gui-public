@@ -92,11 +92,12 @@ module('Acceptance | navigation', function (hooks) {
           ],
         },
       ],
+      settings: [],
     });
     projects = [
       project,
-      Project.from({ name: 'Wiredolf', providers: [], apis: [] }),
-      Project.from({ name: 'Firewold', providers: [], apis: [] }),
+      Project.from({ name: 'Wiredolf', providers: [], apis: [], settings: [] }),
+      Project.from({ name: 'Firewold', providers: [], apis: [], settings: [] }),
     ];
     server.mockProjects(projects);
   });

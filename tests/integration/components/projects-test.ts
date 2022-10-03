@@ -14,9 +14,9 @@ module('Integration | Component | projects', function (hooks) {
 
   test('it renders a list of projects', async function (this: Context, assert) {
     this.projects = [
-      Project.from({ name: 'Direwolf', apis: [], providers: [] }),
-      Project.from({ name: 'Wiredolf', apis: [], providers: [] }),
-      Project.from({ name: 'Firewold', apis: [], providers: [] }),
+      Project.from({ name: 'Direwolf', apis: [], providers: [], settings: [] }),
+      Project.from({ name: 'Wiredolf', apis: [], providers: [], settings: [] }),
+      Project.from({ name: 'Firewold', apis: [], providers: [], settings: [] }),
     ];
     await render<Context>(hbs`<Projects @projects={{this.projects}} />`);
 

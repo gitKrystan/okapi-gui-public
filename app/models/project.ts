@@ -1,5 +1,10 @@
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+
 import type { ApiParams } from 'okapi/models/api';
 import Api from 'okapi/models/api';
+import type { RawProjectSetting } from 'okapi/models/project-setting';
+import ProjectSetting from 'okapi/models/project-setting';
 import type { ProviderParams } from 'okapi/models/provider';
 import Provider from 'okapi/models/provider';
 
@@ -7,25 +12,36 @@ export interface ProjectParams {
   name: string;
   apis: ApiParams[];
   providers: ProviderParams[];
+  settings: RawProjectSetting[];
 }
 
 export default class Project {
-  static from({ name, apis, providers }: ProjectParams): Project {
+  static from({ name, apis, providers, settings }: ProjectParams): Project {
     return new Project(
       name,
       apis.map((a) => Api.from(a)),
-      providers.map((p) => Provider.from(p))
+      providers.map((p) => Provider.from(p)),
+      prepareSettings(settings.map((s) => new ProjectSetting(s)))
     );
   }
 
   private constructor(
     readonly name: string,
     readonly apis: Api[],
-    readonly providers: Provider[]
-  ) {}
+    readonly providers: Provider[],
+    settings: Set<ProjectSetting>
+  ) {
+    this._settings = settings;
+  }
 
   get id(): string {
     return this.name;
+  }
+
+  @tracked _settings: Set<ProjectSetting>;
+
+  get settings(): ReadonlySet<ProjectSetting> {
+    return this._settings;
   }
 
   findApi(apiId: string): Api | null {
@@ -41,4 +57,13 @@ export default class Project {
     }
     return api;
   }
+
+  @action addSetting(setting: ProjectSetting): void {
+    let settings = [...this._settings.add(setting.copy())];
+    this._settings = prepareSettings(settings);
+  }
+}
+
+function prepareSettings(settings: ProjectSetting[]): Set<ProjectSetting> {
+  return new Set(settings.sort((a, b) => a.id.localeCompare(b.id)));
 }

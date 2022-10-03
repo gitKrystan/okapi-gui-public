@@ -1,10 +1,13 @@
 import { Textarea } from '@ember/component';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
-import { StringParam } from 'okapi/models/method-call';
-import expandingTextarea from 'okapi/modifiers/expanding-textarea';
-import ParamInputSig from './signature';
 
-export default class StringInput extends Component<ParamInputSig<StringParam>> {
+import { StringParam } from 'okapi/models/param/index';
+import expandingTextarea from 'okapi/modifiers/expanding-textarea';
+import { ParamSig } from './index';
+
+export default class StringInput extends Component<ParamSig<StringParam>> {
   <template>
     <Textarea
       ...attributes
@@ -16,6 +19,7 @@ export default class StringInput extends Component<ParamInputSig<StringParam>> {
       readonly={{@readonly}}
       @value={{@param.inputValue}}
       {{expandingTextarea @param.inputValue}}
+      {{on "change" (fn @onChange @param.value)}}
     />
   </template>
 }

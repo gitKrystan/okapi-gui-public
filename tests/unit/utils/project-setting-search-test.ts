@@ -13,8 +13,9 @@ function makeSetting({
   name = 'Vault Schema Migration',
   id = 'experimental.vault.schema_version',
   description = 'It does a thing.',
+  type = 'boolean' as const,
 } = {}): IndexedSetting {
-  let setting = new ProjectSetting(name, id, description);
+  let setting = new ProjectSetting({ name, id, description, type });
   return new IndexedSetting(setting);
 }
 
@@ -152,21 +153,24 @@ module('Unit | Utils | project-setting-search', function (hooks) {
   module('ProjectSettingSearch', function () {
     test('it searches multiple fields', function (assert) {
       let settings = [
-        new ProjectSetting(
-          'Vault Schema Migration',
-          'experimental.vault.schema_version',
-          'It does a thing.'
-        ),
-        new ProjectSetting(
-          'Autoscale',
-          'servers.scaling.autoscale',
-          'Scales things automagically.'
-        ),
-        new ProjectSetting(
-          'Russian Invasion',
-          'invasions.foreign.russian',
-          'It opens a door for large-scale Russian invasion.'
-        ),
+        new ProjectSetting({
+          name: 'Vault Schema Migration',
+          id: 'experimental.vault.schema_version',
+          description: 'It does a thing.',
+          type: 'boolean',
+        }),
+        new ProjectSetting({
+          name: 'Autoscale',
+          id: 'servers.scaling.autoscale',
+          description: 'Scales things automagically.',
+          type: 'boolean',
+        }),
+        new ProjectSetting({
+          name: 'Russian Invasion',
+          id: 'invasions.foreign.russian',
+          description: 'It opens a door for large-scale Russian invasion.',
+          type: 'boolean',
+        }),
       ];
 
       let search = ProjectSettingSearch.from(settings);

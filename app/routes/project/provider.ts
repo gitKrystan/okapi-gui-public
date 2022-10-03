@@ -1,6 +1,4 @@
 import Route from '@ember/routing/route';
-import type RouterService from '@ember/routing/router-service';
-import { service } from '@ember/service';
 import type Api from 'okapi/models/api';
 import type Provider from 'okapi/models/provider';
 import type { ProjectRouteModel } from 'okapi/routes/project';
@@ -19,8 +17,6 @@ export default class ProjectProviderRoute extends Route<
   ProviderRouteModel,
   ProviderRouteParams
 > {
-  @service declare router: RouterService;
-
   // eslint-disable-next-line @typescript-eslint/require-await
   async model({
     provider_id,

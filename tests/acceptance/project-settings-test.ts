@@ -8,6 +8,7 @@ import {
 import { module, test } from 'qunit';
 
 import Project from 'okapi/models/project';
+import ProjectSetting from 'okapi/models/project-setting';
 import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
@@ -25,9 +26,41 @@ module('Acceptance | project settings', function (hooks) {
       name: 'Direwolf',
       providers: [],
       apis: [],
+      settings: [],
     });
     projects = [project];
     server.mockProjects(projects);
+    server.mockSettings([
+      new ProjectSetting({
+        name: 'Vault Schema Migration',
+        id: 'experimental.vault.schema_version',
+        description: 'Desired vault schema version.',
+        type: 'enum',
+        options: [
+          { name: '1.0', description: 'The first version.' },
+          { name: '2.0', description: 'The second version.' },
+        ],
+      }),
+      new ProjectSetting({
+        name: 'Autoscale',
+        id: 'servers.scaling.autoscale',
+        description: 'Scale things automagically.',
+        type: 'boolean',
+      }),
+      new ProjectSetting({
+        name: 'Russian Invasion',
+        id: 'invasions.foreign.russian',
+        description:
+          'How wide to open a door for large-scale Russian invasion.',
+        type: 'u32',
+      }),
+      new ProjectSetting({
+        name: 'Favorite Setting',
+        id: 'misc.settings.favorite',
+        description: 'Name your favorite setting.',
+        type: 'string',
+      }),
+    ]);
   });
 
   test('it allows settings selection', async function (assert) {
@@ -41,7 +74,7 @@ module('Acceptance | project settings', function (hooks) {
 
     await fillIn(
       '[data-test-settings-combobox] [data-test-combobox-input]',
-      'evs'
+      'e'
     );
 
     await triggerKeyEvent(
@@ -53,7 +86,6 @@ module('Acceptance | project settings', function (hooks) {
     assert
       .dom('[data-test-settings-combobox] [data-test-combobox-listbox]')
       .exists();
-
     assert
       .dom(
         '[data-test-settings-combobox] [data-test-combobox-listbox] li:first-child'
@@ -76,6 +108,50 @@ module('Acceptance | project settings', function (hooks) {
     assert
       .dom('[data-test-project-settings-list]')
       .containsText('Vault Schema Migration');
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'Enter'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'Enter'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'Enter'
+    );
+
+    assert.dom('[data-test-project-settings-list] li').exists({ count: 4 });
+
+    await triggerKeyEvent(
+      '[data-test-settings-combobox] [data-test-combobox-input]',
+      'keydown',
+      'ArrowDown'
+    );
 
     await snapshotDarkMode(assert, {
       suffix: '(after selection)',

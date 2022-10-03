@@ -18,8 +18,8 @@ export class IndexedSetting {
     return this.setting.name;
   }
 
-  get description(): string | null {
-    return this.setting.description ?? null;
+  get description(): string {
+    return this.setting.description;
   }
 }
 

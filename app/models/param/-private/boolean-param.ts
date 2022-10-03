@@ -1,10 +1,16 @@
-import type { BooleanMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
 
+export interface RawBooleanParam {
+  type: 'boolean';
+  name: string;
+  description: string;
+  value?: boolean;
+}
+
 export default class BooleanParam extends AbstractParam<
-  BooleanMethodParam,
   boolean,
-  boolean
+  boolean,
+  RawBooleanParam
 > {
   protected normalize(rawInputValue: boolean | undefined): boolean | undefined {
     return rawInputValue ?? undefined;

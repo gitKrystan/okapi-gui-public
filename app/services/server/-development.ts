@@ -1,28 +1,69 @@
 import type Method from 'okapi/models/method';
 import Project from 'okapi/models/project';
+import ProjectSetting from 'okapi/models/project-setting';
 import ServerService from 'okapi/services/server';
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+/** Adjustable delay to mimic loading states. */
+const DELAY = 50;
+
+// localhost   has many  `Project`
+// `Project`   has many  `API`       (installed)
+// `Project`   has many  `Provider`  (installed)
+// `Provider`  has many  `API`       (implemented)
+// `API`       has many  `Method`
+
+// TODO:
+// `Registry`  has many  `API`       (installable)
+// `Registry`  has many  `Provider`  (installable)
+// `API`       has many  `Service`   (possibly?)
+// `Provider`  has many  `Service`   (implemented) (possibly?)
+// `Service`   has many  `Method`
+
 export default class DevelopmentServerService extends ServerService {
-  /** Adjustable delay to mimic loading states. */
-  delay = 50;
+  async getProjectList(): Promise<readonly Project[]> {
+    await wait(DELAY);
+    return this.projectList;
+  }
 
-  // localhost   has many  `Project`
-  // `Project`   has many  `API`       (installed)
-  // `Project`   has many  `Provider`  (installed)
-  // `Provider`  has many  `API`       (implemented)
-  // `API`       has many  `Method`
+  async getSettingsList(): Promise<readonly ProjectSetting[]> {
+    await wait(DELAY);
+    return this.settingsList;
+  }
 
-  // TODO:
-  // `Registry`  has many  `API`       (installable)
-  // `Registry`  has many  `Provider`  (installable)
-  // `API`       has many  `Service`   (possibly?)
-  // `Provider`  has many  `Service`   (implemented) (possibly?)
-  // `Service`   has many  `Method`
+  async call(
+    method: Method,
+    args: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
+    await wait(12 * DELAY);
+    // NOTE: Hardcoded for the Notify response type
+    return {
+      success: true,
+      details: `Called ${method.name} with args ${JSON.stringify(args)}`,
+      emoji: {
+        name: ':grimace:',
+        description: 'Perfect for awkward messages.',
+      },
+    };
+  }
 
-  private projectList = [
+  async updateProjectSetting(
+    _project: Project,
+    setting: ProjectSetting
+  ): Promise<void> {
+    await wait(DELAY);
+    setting.info.value = setting.param.value;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  protected async findProject(id: string): Promise<Project | null> {
+    await wait(DELAY);
+    return this.projectList.find((m) => m.id === id) ?? null;
+  }
+
+  private projectList = Object.freeze([
     Project.from({
       name: 'Direwolf',
       providers: [
@@ -143,34 +184,48 @@ export default class DevelopmentServerService extends ServerService {
           ],
         },
       ],
+      settings: [
+        {
+          name: 'Preset',
+          id: 'presets.pre.set',
+          description: 'Already saved on the backend.',
+          type: 'boolean',
+          value: true,
+        },
+      ],
     }),
-    Project.from({ name: 'Wiredolf', providers: [], apis: [] }),
-    Project.from({ name: 'Firewold', providers: [], apis: [] }),
-  ];
+    Project.from({ name: 'Wiredolf', providers: [], apis: [], settings: [] }),
+    Project.from({ name: 'Firewold', providers: [], apis: [], settings: [] }),
+  ]);
 
-  async getProjectList(): Promise<Project[]> {
-    await wait(this.delay);
-    return this.projectList;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async findProject(id: string): Promise<Project | null> {
-    return this.projectList.find((m) => m.id === id) ?? null;
-  }
-
-  async call(
-    method: Method,
-    args: Record<string, unknown>
-  ): Promise<Record<string, unknown>> {
-    await wait(12 * this.delay);
-    // NOTE: Hardcoded for the Notify response type
-    return {
-      success: true,
-      details: `Called ${method.name} with args ${JSON.stringify(args)}`,
-      emoji: {
-        name: ':grimace:',
-        description: 'Perfect for awkward messages.',
-      },
-    };
-  }
+  private settingsList = Object.freeze([
+    new ProjectSetting({
+      name: 'Vault Schema Migration',
+      id: 'experimental.vault.schema_version',
+      description: 'Desired vault schema version.',
+      type: 'enum',
+      options: [
+        { name: '1.0', description: 'The first version.' },
+        { name: '2.0', description: 'The second version.' },
+      ],
+    }),
+    new ProjectSetting({
+      name: 'Autoscale',
+      id: 'servers.scaling.autoscale',
+      description: 'Scale things automagically.',
+      type: 'boolean',
+    }),
+    new ProjectSetting({
+      name: 'Russian Invasion',
+      id: 'invasions.foreign.russian',
+      description: 'How wide to open a door for large-scale Russian invasion.',
+      type: 'u32',
+    }),
+    new ProjectSetting({
+      name: 'Favorite Setting',
+      id: 'misc.settings.favorite',
+      description: 'Name your favorite setting.',
+      type: 'string',
+    }),
+  ]);
 }

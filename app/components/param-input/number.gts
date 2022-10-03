@@ -1,11 +1,12 @@
 import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 
 import { default as BaseNumberInput } from 'okapi/components/input/number';
-import { NumberParam } from 'okapi/models/method-call';
-import ParamInputSig from './signature';
+import { NumberParam } from 'okapi/models/param/index';
+import { ParamSig } from './index';
 
-export default class NumberInput extends Component<ParamInputSig<NumberParam>> {
+export default class NumberInput extends Component<ParamSig<NumberParam>> {
   <template>
     <BaseNumberInput
       ...attributes
@@ -17,12 +18,13 @@ export default class NumberInput extends Component<ParamInputSig<NumberParam>> {
       readonly={{@readonly}}
       @value={{@param.inputValue}}
       @onValueUpdate={{fn (mut @param.inputValue)}}
+      {{on "change" (fn @onChange @param.value)}}
     />
   </template>
 }
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    'MethodInfo::Inputs::Number': typeof NumberInput;
+    'ParamInput::Number': typeof NumberInput;
   }
 }

@@ -6,11 +6,10 @@ import eq from 'ember-truth-helpers/helpers/eq';
 import or from 'ember-truth-helpers/helpers/or';
 
 import Combobox from 'okapi/components/combobox/select-only';
-import { EnumMethodParamOption } from 'okapi/models/method';
-import { EnumParam } from 'okapi/models/method-call';
-import ParamInputSig from './signature';
+import { EnumParam, EnumParamOption } from 'okapi/models/param/index';
+import { ParamSig } from './index';
 
-export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
+export default class EnumInput extends Component<ParamSig<EnumParam>> {
   <template>
     <Combobox
       @items={{this.items}}
@@ -62,30 +61,31 @@ export default class EnumInput extends Component<ParamInputSig<EnumParam>> {
     </Combobox>
   </template>
 
-  private get items(): [null, ...EnumMethodParamOption[]] {
+  private get items(): [null, ...EnumParamOption[]] {
     return [null, ...this.args.param.info.options];
   }
 
-  private get selection(): EnumMethodParamOption | null | undefined {
+  private get selection(): EnumParamOption | null | undefined {
     return this.args.param.inputValue;
   }
 
-  @action private handleSelect(item: EnumMethodParamOption | null): void {
+  @action private handleSelect(item: EnumParamOption | null): void {
     this.descriptionItem = item;
     this.args.param.inputValue = item;
+    this.args.onChange(this.args.param.value);
   }
 
-  @tracked private descriptionItem?: EnumMethodParamOption | null;
+  @tracked private descriptionItem?: EnumParamOption | null;
 
-  @action private updateDescription(item: EnumMethodParamOption | null): void {
+  @action private updateDescription(item: EnumParamOption | null): void {
     this.descriptionItem = item;
   }
 
   @action private descriptionFor(
-    item: EnumMethodParamOption | null | undefined
+    item: EnumParamOption | null | undefined
   ): string {
     if (item === null) {
-      return 'If selected, this field will not be sent.';
+      return 'If selected, this field will not be set.';
     } else if (item === undefined) {
       return 'No item selected.';
     } else if (item.description) {

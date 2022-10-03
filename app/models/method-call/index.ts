@@ -1,39 +1,8 @@
-import type { ApiMethodParam } from 'okapi/models/method';
 import type Method from 'okapi/models/method';
-import BooleanParam from 'okapi/models/method-call/-private/boolean-param';
-import EnumParam from 'okapi/models/method-call/-private/enum-param';
-import NumberParam from 'okapi/models/method-call/-private/number-param';
-import StringParam from 'okapi/models/method-call/-private/string-param';
+import type { Param } from 'okapi/models/param/index';
+import { makeParam } from 'okapi/models/param/index';
+
 import type ServerService from 'okapi/services/server';
-
-export { default as BooleanParam } from 'okapi/models/method-call/-private/boolean-param';
-export { default as EnumParam } from 'okapi/models/method-call/-private/enum-param';
-export { default as NumberParam } from 'okapi/models/method-call/-private/number-param';
-export { default as StringParam } from 'okapi/models/method-call/-private/string-param';
-
-export type Param = StringParam | BooleanParam | NumberParam | EnumParam;
-
-function makeParam(info: ApiMethodParam): Param {
-  switch (info.type) {
-    case 'string':
-      return new StringParam(info);
-    case 'boolean':
-      return new BooleanParam(info);
-    case 'f32':
-    case 'f64':
-    case 'i8':
-    case 'i16':
-    case 'i32':
-    case 'i64':
-    case 'u8':
-    case 'u16':
-    case 'u32':
-    case 'u64':
-      return new NumberParam(info);
-    case 'enum':
-      return new EnumParam(info);
-  }
-}
 
 export default class MethodCall {
   static from(method: Method): MethodCall {

@@ -1,10 +1,16 @@
-import type { StringMethodParam } from 'okapi/models/method';
 import AbstractParam from './abstract-param';
 
+export interface RawStringParam {
+  type: 'string';
+  name: string;
+  description: string;
+  value?: string;
+}
+
 export default class StringParam extends AbstractParam<
-  StringMethodParam,
   string,
-  string | null
+  string | null,
+  RawStringParam
 > {
   protected normalize(
     rawInputValue: string | null | undefined

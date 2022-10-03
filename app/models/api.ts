@@ -1,11 +1,11 @@
-import type { MethodParams } from 'okapi/models/method';
+import type { RawMethodParams } from 'okapi/models/method';
 import Method from 'okapi/models/method';
 
 export interface ApiParams {
   id: string;
   name: string;
   providerIds: string[];
-  methods: MethodParams[];
+  methods: RawMethodParams[];
 }
 
 export default class Api {

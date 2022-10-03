@@ -4,7 +4,7 @@ import { scheduleOnce } from '@ember/runloop';
 import Component from '@glimmer/component';
 import { modifier } from 'ember-modifier';
 
-import { Param } from 'okapi/models/method-call';
+import { Param } from 'okapi/models/param/index';
 
 export interface ValidatorSig {
   Element: HTMLElement;
@@ -55,6 +55,6 @@ export default class Validator extends Component<ValidatorSig> {
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
-    'MethodInfo::Validator': typeof Validator;
+    'ParamInput::Validator': typeof Validator;
   }
 }

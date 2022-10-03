@@ -4,14 +4,28 @@ import { click, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
-import type ProjectSetting from 'okapi/models/project-setting';
+import ProjectSetting from 'okapi/models/project-setting';
 import { setupRenderingTest } from 'okapi/tests/helpers';
+import ProjectSettingSearch from 'okapi/utils/project-setting-search';
 
 interface Context extends TestContext {
   state: State;
 }
 
 class State {
+  search = ProjectSettingSearch.from([
+    new ProjectSetting({
+      name: 'Vault Schema Migration',
+      id: 'experimental.vault.schema_version',
+      description: 'Desired vault schema version.',
+      type: 'enum',
+      options: [
+        { name: '1.0', description: 'The first version.' },
+        { name: '2.0', description: 'The second version.' },
+      ],
+    }),
+  ]);
+
   settings: ProjectSetting[] = [];
 
   @action onCommit(item: ProjectSetting): void {
@@ -28,7 +42,12 @@ module(
       this.state = new State();
 
       await render<Context>(
-        hbs`<ProjectSettings::SettingsCombobox @onCommit={{this.state.onCommit}} />`
+        hbs`
+          <ProjectSettings::SettingsCombobox
+            @search={{this.state.search}}
+            @onCommit={{this.state.onCommit}}
+          />
+        `
       );
 
       assert.dom().hasText('Choose a setting to configure.');

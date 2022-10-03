@@ -2,16 +2,24 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { TrackedSet } from 'tracked-built-ins';
 
-export default abstract class AbstractParam<T, V, I> {
-  constructor(readonly info: T) {}
+export default abstract class AbstractParam<
+  Value,
+  InputValue,
+  Raw extends { value?: Value }
+> {
+  constructor(readonly info: Raw) {}
 
-  @tracked _inputValue?: I;
+  get isDirty(): boolean {
+    return this.info.value !== this.value;
+  }
 
-  get inputValue(): I | undefined {
+  @tracked _inputValue: InputValue | undefined = this.format(this.info.value);
+
+  get inputValue(): InputValue | undefined {
     return this._inputValue;
   }
 
-  set inputValue(newValue: I | undefined) {
+  set inputValue(newValue: InputValue | undefined) {
     this.errorSet.clear();
     this._inputValue = newValue;
   }
@@ -20,11 +28,11 @@ export default abstract class AbstractParam<T, V, I> {
    * Parsed value. MAY BE INVALID. Call `validate` and check for errors before
    * doing anything dangerous with this value.
    */
-  get value(): V | undefined {
+  get value(): Value | undefined {
     return this.parse(this.inputValue);
   }
 
-  set value(newValue: V | undefined) {
+  set value(newValue: Value | undefined) {
     this.inputValue = this.format(newValue);
   }
 
@@ -42,8 +50,8 @@ export default abstract class AbstractParam<T, V, I> {
   }
 
   protected _validate(
-    _normalizedInputValue: I | undefined,
-    _value: V | undefined
+    _normalizedInputValue: InputValue | undefined,
+    _value: Value | undefined
   ): void {
     // No-op by default. Override to add validations.
   }
@@ -53,17 +61,21 @@ export default abstract class AbstractParam<T, V, I> {
    * invalid characters. The input value will be updated with the normalized
    * value.
    */
-  protected abstract normalize(rawInputValue: I | undefined): I | undefined;
+  protected abstract normalize(
+    rawInputValue: InputValue | undefined
+  ): InputValue | undefined;
 
   /**
    * Parses the normalized input value into a value.
    *
    * NOTE: The value may not be valid.
    */
-  protected abstract parse(normalizedInputValue: I | undefined): V | undefined;
+  protected abstract parse(
+    normalizedInputValue: InputValue | undefined
+  ): Value | undefined;
 
   /**
    * Formats the value into an input value.
    */
-  protected abstract format(value: V | undefined): I | undefined;
+  protected abstract format(value: Value | undefined): InputValue | undefined;
 }

@@ -20,6 +20,7 @@ module('Integration | Component | providers', function (hooks) {
         { id: 'notifier-slack', name: 'notifier-slack', apiIds: [] },
         { id: 'notifier-email', name: 'notifier-email', apiIds: [] },
       ],
+      settings: [],
     });
     await render<Context>(hbs`<Providers @project={{this.project}} />`);
 

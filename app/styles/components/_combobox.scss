@@ -29,6 +29,7 @@ $-dropdown-max-height: 10rem;
   gap: 0.5rem;
   justify-content: space-between;
   padding: 0.25rem $-padding-y;
+  cursor: pointer;
 
   &:focus-visible {
     outline: none;
