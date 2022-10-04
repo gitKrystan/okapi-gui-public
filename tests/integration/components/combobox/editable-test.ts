@@ -14,9 +14,9 @@ import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
 import { hbs } from 'ember-cli-htmlbars';
-import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
+import { setupRenderingTest } from 'okapi/tests/helpers';
 import { pointerClick } from 'okapi/tests/helpers/dom-interaction';
 import type { MatchItem, MatchMetadata } from 'okapi/utils/filter-search';
 import FilterSearch, { Filter, Indexer } from 'okapi/utils/filter-search';

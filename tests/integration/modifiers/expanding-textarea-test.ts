@@ -3,8 +3,9 @@ import { render } from '@ember/test-helpers';
 import fillIn from '@ember/test-helpers/dom/fill-in';
 import type { TemplateFactory } from 'ember-cli-htmlbars';
 import { hbs } from 'ember-cli-htmlbars';
-import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
+
+import { setupRenderingTest } from 'okapi/tests/helpers';
 
 module('Integration | Helper | expanding-textarea', function (hooks) {
   setupRenderingTest(hooks);

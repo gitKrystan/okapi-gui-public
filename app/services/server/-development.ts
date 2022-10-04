@@ -1,7 +1,9 @@
 import type Method from 'okapi/models/method';
-import Project from 'okapi/models/project';
+import type Project from 'okapi/models/project';
+import { ProjectStatus } from 'okapi/models/project';
 import ProjectSetting from 'okapi/models/project-setting';
 import ServerService from 'okapi/services/server';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,6 +59,17 @@ export default class DevelopmentServerService extends ServerService {
     setting.info.value = setting.param.value;
   }
 
+  async restartProject(project: Project): Promise<void> {
+    await wait(10 * DELAY);
+    project.status = ProjectStatus.Stopping;
+    await wait(10 * DELAY);
+    project.status = ProjectStatus.Stopped;
+    await wait(10 * DELAY);
+    project.status = ProjectStatus.Starting;
+    await wait(10 * DELAY);
+    project.status = ProjectStatus.Started;
+  }
+
   // eslint-disable-next-line @typescript-eslint/require-await
   protected async findProject(id: string): Promise<Project | null> {
     await wait(DELAY);
@@ -64,7 +77,7 @@ export default class DevelopmentServerService extends ServerService {
   }
 
   private projectList = Object.freeze([
-    Project.from({
+    mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -194,8 +207,8 @@ export default class DevelopmentServerService extends ServerService {
         },
       ],
     }),
-    Project.from({ name: 'Wiredolf', providers: [], apis: [], settings: [] }),
-    Project.from({ name: 'Firewold', providers: [], apis: [], settings: [] }),
+    mockProject({ name: 'Wiredolf' }),
+    mockProject({ name: 'Firewold' }),
   ]);
 
   private settingsList = Object.freeze([

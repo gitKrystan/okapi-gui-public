@@ -1,6 +1,6 @@
-import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
+import { setupTest } from 'okapi/tests/helpers';
 import type { MatchItem, MatchMetadata } from 'okapi/utils/filter-search';
 import FilterSearch, { Filter, Indexer } from 'okapi/utils/filter-search';
 import { escapeStringForRegex } from 'okapi/utils/string';

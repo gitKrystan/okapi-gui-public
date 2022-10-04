@@ -7,10 +7,11 @@ import {
 } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 
-import Project from 'okapi/models/project';
+import type Project from 'okapi/models/project';
 import ProjectSetting from 'okapi/models/project-setting';
 import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 
 let server: TestingServerService;
@@ -22,12 +23,7 @@ module('Acceptance | project settings', function (hooks) {
 
   hooks.beforeEach(function () {
     server = this.owner.lookup('service:server') as TestingServerService;
-    project = Project.from({
-      name: 'Direwolf',
-      providers: [],
-      apis: [],
-      settings: [],
-    });
+    project = mockProject({ name: 'Direwolf' });
     projects = [project];
     server.mockProjects(projects);
     server.mockSettings([

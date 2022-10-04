@@ -3,21 +3,16 @@ import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
-import Project from 'okapi/models/project';
 import ProjectSetting from 'okapi/models/project-setting';
 import { setupRenderingTest } from 'okapi/tests/helpers';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 
 interface Context extends TestContext {
   state: State;
 }
 
 class State {
-  project = Project.from({
-    name: 'Direwolf',
-    providers: [],
-    apis: [],
-    settings: [],
-  });
+  project = mockProject({ name: 'Direwolf' });
 
   allSettings = Object.freeze([
     new ProjectSetting({

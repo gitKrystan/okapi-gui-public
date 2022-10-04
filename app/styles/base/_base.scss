@@ -27,6 +27,7 @@ h6 {
 
 a {
   :where(&) {
+    display: inline-block;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-color: var(--contrast3);
@@ -65,15 +66,7 @@ textarea {
     }
   }
 
-  &:focus {
-    :where(&) {
-      border-color: var(--contrast6);
-      outline: 2px solid var(--cyan);
-      outline-offset: -1px;
-      color: var(--contrast6);
-    }
-  }
-
+  &:focus,
   &:hover {
     :where(form &) {
       border-color: var(--contrast6);

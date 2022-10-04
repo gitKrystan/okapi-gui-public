@@ -1,11 +1,11 @@
 import { render, rerender } from '@ember/test-helpers';
-import { setupRenderingTest } from 'ember-qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
-import type TestingFeaturesService from 'okapi/services/features/-testing';
 import type { Features } from 'okapi/services/features';
 import { ExternalFeature } from 'okapi/services/features';
+import type TestingFeaturesService from 'okapi/services/features/-testing';
+import { setupRenderingTest } from 'okapi/tests/helpers';
 
 function getTestingFeatures(): Features {
   return {

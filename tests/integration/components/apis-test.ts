@@ -1,9 +1,10 @@
 import type { TestContext } from '@ember/test-helpers';
 import { render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
+import { module, test } from 'qunit';
+
 import Api from 'okapi/models/api';
 import { setupRenderingTest } from 'okapi/tests/helpers';
-import { module, test } from 'qunit';
 
 interface Context extends TestContext {
   apis: Api[];

@@ -1,16 +1,17 @@
 import { click, fillIn, triggerEvent, visit } from '@ember/test-helpers';
-import Project from 'okapi/models/project';
+import { module, test } from 'qunit';
+
 import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
-import { module, test } from 'qunit';
 
 module('Acceptance | method info', function (hooks) {
   setupApplicationTest(hooks);
 
   test('it can call a method', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
-    let project = Project.from({
+    let project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -56,7 +57,6 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -99,7 +99,7 @@ module('Acceptance | method info', function (hooks) {
 
   test('it can can handle really long strings', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
-    let project = Project.from({
+    let project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -135,7 +135,6 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -169,7 +168,7 @@ module('Acceptance | method info', function (hooks) {
 
   test('it can can handle numbers', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
-    let project = Project.from({
+    let project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -215,7 +214,6 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -257,7 +255,7 @@ module('Acceptance | method info', function (hooks) {
 
   test('it can can handle invalid number inputs', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
-    let project = Project.from({
+    let project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -303,7 +301,6 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {
@@ -351,7 +348,7 @@ module('Acceptance | method info', function (hooks) {
 
   test('it can can handle enums', async function (assert) {
     let server = this.owner.lookup('service:server') as TestingServerService;
-    let project = Project.from({
+    let project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -417,7 +414,6 @@ module('Acceptance | method info', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     server.mockProjects([project]);
     server.mockMethodCallResponse((method, args) => {

@@ -43,6 +43,18 @@ export default <template>
     <symbol id="mini__chevron-up" viewBox="0 0 20 20" fill="currentColor">
       <path fill-rule="evenodd" d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z" clip-rule="evenodd" />
     </symbol>
+
+    <symbol id="mini__ellipsis-horizontal-circle" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8 1a1 1 0 100-2 1 1 0 000 2zm-3-1a1 1 0 11-2 0 1 1 0 012 0zm7 1a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+    </symbol>
+
+    <symbol id="mini__play-circle" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm6.39-2.908a.75.75 0 01.766.027l3.5 2.25a.75.75 0 010 1.262l-3.5 2.25A.75.75 0 018 12.25v-4.5a.75.75 0 01.39-.658z" clip-rule="evenodd" />
+    </symbol>
+
+    <symbol id="mini__stop-circle" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm5-2.25A.75.75 0 017.75 7h4.5a.75.75 0 01.75.75v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 01-.75-.75v-4.5z" clip-rule="evenodd" />
+    </symbol>
   </svg>
 </template>
 

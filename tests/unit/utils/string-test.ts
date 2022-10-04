@@ -1,6 +1,6 @@
-import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
+import { setupTest } from 'okapi/tests/helpers';
 import { escapeStringForRegex } from 'okapi/utils/string';
 
 module('Unit | Utils | String', function (hooks) {

@@ -1,7 +1,7 @@
-import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 
 import ProjectSetting from 'okapi/models/project-setting';
+import { setupTest } from 'okapi/tests/helpers';
 import type { MatchItem, MatchMetadata } from 'okapi/utils/filter-search';
 import ProjectSettingSearch, {
   IndexedSetting,

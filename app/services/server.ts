@@ -18,6 +18,8 @@ export default abstract class ServerService extends AbstractService {
     setting: ProjectSetting
   ): Promise<void>;
 
+  abstract restartProject(project: Project): Promise<void>;
+
   async getProject(id: string): Promise<Project> {
     let project = await this.findProject(id);
 

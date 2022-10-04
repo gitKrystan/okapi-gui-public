@@ -1,6 +1,8 @@
-import Component from '@glimmer/component';
-import { default as ProjectModel } from 'okapi/models/project';
 import { LinkTo } from '@ember/routing';
+import Component from '@glimmer/component';
+
+import ProjectStatus from 'okapi/components/project-status';
+import { default as ProjectModel } from 'okapi/models/project';
 
 export interface ProjectComponentSig {
   Args: {
@@ -14,6 +16,7 @@ export default class Project extends Component<ProjectComponentSig> {
       <LinkTo @route="project" @model={{@project.id}}>
         {{@project.name}}
       </LinkTo>
+      <ProjectStatus @project={{@project}} />
     </li>
   </template>
 }

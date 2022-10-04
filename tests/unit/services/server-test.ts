@@ -1,7 +1,9 @@
+import { module, test } from 'qunit';
+
 import Project from 'okapi/models/project';
 import type TestingServerService from 'okapi/services/server/-testing';
 import { setupTest } from 'okapi/tests/helpers';
-import { module, test } from 'qunit';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 
 let service: TestingServerService;
 
@@ -14,9 +16,9 @@ module('Unit | Service | server', function (hooks) {
 
   test('.getProjectList returns an array of projects', async function (assert) {
     let mocks = [
-      Project.from({ name: 'Direwolf', apis: [], providers: [], settings: [] }),
-      Project.from({ name: 'Wiredolf', apis: [], providers: [], settings: [] }),
-      Project.from({ name: 'Firewold', apis: [], providers: [], settings: [] }),
+      mockProject({ name: 'Direwolf' }),
+      mockProject({ name: 'Wiredolf' }),
+      mockProject({ name: 'Firewold' }),
     ];
 
     service.mockProjects(mocks);

@@ -1,14 +1,14 @@
 import { assert as emberAssert } from '@ember/debug';
 import { action } from '@ember/object';
-import { focus, render, triggerKeyEvent } from '@ember/test-helpers';
 import type { TestContext } from '@ember/test-helpers';
+import { focus, render, triggerKeyEvent } from '@ember/test-helpers';
 import { tracked } from '@glimmer/tracking';
-import { setupRenderingTest } from 'ember-qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
 import { modifier } from 'ember-modifier';
 
+import { setupRenderingTest } from 'okapi/tests/helpers';
 import { pointerClick } from 'okapi/tests/helpers/dom-interaction';
 
 interface Context extends TestContext {

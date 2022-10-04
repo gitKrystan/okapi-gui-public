@@ -1,5 +1,6 @@
 import type Method from 'okapi/models/method';
 import type Project from 'okapi/models/project';
+import { ProjectStatus } from 'okapi/models/project';
 import type ProjectSetting from 'okapi/models/project-setting';
 import ServerService from 'okapi/services/server';
 
@@ -32,6 +33,14 @@ export default class TestingServerService extends ServerService {
     setting: ProjectSetting
   ): Promise<void> {
     setting.info.value = setting.param.value;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async restartProject(project: Project): Promise<void> {
+    project.status = ProjectStatus.Stopping;
+    project.status = ProjectStatus.Stopped;
+    project.status = ProjectStatus.Starting;
+    project.status = ProjectStatus.Started;
   }
 
   mockProjects(projects: Project[]): void {

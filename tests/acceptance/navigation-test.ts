@@ -2,10 +2,11 @@ import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
 import { module, test } from 'qunit';
 
-import Project from 'okapi/models/project';
+import type Project from 'okapi/models/project';
 import type TestingLocationService from 'okapi/services/location/-testing';
 import type TestingServerService from 'okapi/services/server/-testing';
 import { setupApplicationTest } from 'okapi/tests/helpers';
+import { mockProject } from 'okapi/tests/helpers/mocks';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 
 let server: TestingServerService;
@@ -17,7 +18,7 @@ module('Acceptance | navigation', function (hooks) {
 
   hooks.beforeEach(function () {
     server = this.owner.lookup('service:server') as TestingServerService;
-    project = Project.from({
+    project = mockProject({
       name: 'Direwolf',
       providers: [
         {
@@ -92,12 +93,11 @@ module('Acceptance | navigation', function (hooks) {
           ],
         },
       ],
-      settings: [],
     });
     projects = [
       project,
-      Project.from({ name: 'Wiredolf', providers: [], apis: [], settings: [] }),
-      Project.from({ name: 'Firewold', providers: [], apis: [], settings: [] }),
+      mockProject({ name: 'Wiredolf' }),
+      mockProject({ name: 'Firewold' }),
     ];
     server.mockProjects(projects);
   });

@@ -5,10 +5,10 @@ import { click, focus, render, rerender, tab } from '@ember/test-helpers';
 import type { KeyModifiers } from '@ember/test-helpers/dom/trigger-key-event';
 import triggerKeyEvent from '@ember/test-helpers/dom/trigger-key-event';
 import { tracked } from '@glimmer/tracking';
-import { setupRenderingTest } from 'ember-qunit';
 import { hbs } from 'ember-cli-htmlbars';
 import { module, test } from 'qunit';
 
+import { setupRenderingTest } from 'okapi/tests/helpers';
 import { keyboardClick } from 'okapi/tests/helpers/dom-interaction';
 
 interface Context<T> extends TestContext {
