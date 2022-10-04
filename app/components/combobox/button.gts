@@ -42,7 +42,7 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
     >
       {{yield}}
       {{#if this.enabled}}
-        <Icon @type="solid" @id={{if @expanded "chevron-up" "chevron-down"}} />
+        <Icon @type="mini" @id={{if @expanded "chevron-up" "chevron-down"}} />
       {{/if}}
     </Button>
   </template>

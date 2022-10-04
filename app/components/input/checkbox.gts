@@ -55,7 +55,7 @@ export default class Checkbox extends Component<CheckboxSignature> {
       />
       <div class="Checkbox__icon">
         {{#if @checked}}
-          <Icon @type="solid" @id="check" />
+          <Icon @type="mini" @id="check" />
         {{/if}}
       </div>
       {{yield to="after"}}

@@ -1,5 +1,4 @@
 @use './dropdown';
-@use './icon';
 
 $-padding-y: 0.5rem;
 $-dropdown-max-height: 10rem;
@@ -43,10 +42,6 @@ $-dropdown-max-height: 10rem;
 .ComboboxItem--is-description-item {
   background-color: var(--contrast2);
   color: var(--base3);
-}
-
-.ComboboxItem__icon-wrapper {
-  width: icon.$solid-variant-width;
 }
 
 .Combobox--editable {

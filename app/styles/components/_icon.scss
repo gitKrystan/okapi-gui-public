@@ -1,12 +1,22 @@
-$outline-variant-width: 1.5rem;
-$solid-variant-width: 1.25rem;
+$-outline-variant-width: 1.5rem;
+$-solid-variant-width: 1.5rem;
+$-mini-variant-width: 1.25rem;
 
 .Icon--outline {
-  width: $outline-variant-width;
-  height: $outline-variant-width;
+  width: $-outline-variant-width;
+  height: $-outline-variant-width;
 }
 
 .Icon--solid {
-  width: $solid-variant-width;
-  height: $solid-variant-width;
+  width: $-solid-variant-width;
+  height: $-solid-variant-width;
+}
+
+.Icon--mini {
+  width: $-mini-variant-width;
+  height: $-mini-variant-width;
+}
+
+.Icon-wrapper--mini {
+  width: $-mini-variant-width;
 }

@@ -18,9 +18,9 @@ export default class ComboboxItem<T> extends Component<ComboboxItemSignature> {
       <div>
         {{yield}}
       </div>
-      <div class="ComboboxItem__icon-wrapper">
+      <div class="Icon-wrapper--mini">
         {{#if @isSelected}}
-          <Icon @type="solid" @id="check" />
+          <Icon @type="mini" @id="check" />
         {{/if}}
       </div>
     </div>

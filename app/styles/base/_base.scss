@@ -65,9 +65,17 @@ textarea {
     }
   }
 
-  &:focus,
-  &:hover {
+  &:focus {
     :where(&) {
+      border-color: var(--contrast6);
+      outline: 2px solid var(--cyan);
+      outline-offset: -1px;
+      color: var(--contrast6);
+    }
+  }
+
+  &:hover {
+    :where(form &) {
       border-color: var(--contrast6);
       outline: 2px solid var(--cyan);
       outline-offset: -1px;

@@ -56,7 +56,7 @@ export default class Method extends Component<MethodSig> {
           <MethodSignature class="Method__header__content" @method={{@method}} />
         </h2>
         <a class="Method__header__code-link" href="#">
-          <Icon @type="outline" @id="code" />
+          <Icon @type="outline" @id="code-bracket" />
         </a>
         <Button
           class="Button--theme-action Method__header__toggle-button"
@@ -68,8 +68,7 @@ export default class Method extends Component<MethodSig> {
         >
           <Icon
             @type={{if this.requestFormExpanded "solid" "outline"}}
-            @class="outline"
-            @id="play"
+            @id="play-circle"
           />
         </Button>
       </header>

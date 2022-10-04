@@ -4,14 +4,13 @@ export interface IconSig {
   Element: SVGElement;
   Args: {
     id: string;
-    type: 'outline' | 'solid';
-    class?: 'outline' | 'solid';
+    type: 'outline' | 'solid' | 'mini';
   }
 }
 
 export default class Icon extends Component<IconSig> {
   get class(): string {
-    return `Icon  Icon--${this.args.class ?? this.args.type}`
+    return `Icon  Icon--${this.args.type}`;
   }
 
   <template>
