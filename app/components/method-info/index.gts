@@ -7,6 +7,7 @@ import { task } from 'ember-concurrency';
 import perform from 'ember-concurrency/helpers/perform';
 
 import Button from 'okapi/components/button';
+import MD from 'okapi/components/m-d';
 import Token from 'okapi/components/syntax/token';
 import Method from 'okapi/models/method';
 import MethodCall from 'okapi/models/method-call';
@@ -29,7 +30,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
         class="MethodInfo__description"
         data-test-method-info-description={{@method.id}}
       >
-        {{@method.description}}
+        <MD @profile="description" @raw={{@method.description}} />
       </p>
       <form {{on "submit" (perform this.submit)}} data-test-method-info-form>
         <ParamList
@@ -39,7 +40,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
           @formEnabled={{@isActive}}
         >
           <a {{ScrollAnchor (concat @method.id "Request")}}>
-            <code class="Syntax">
+            <code class="Syntax Syntax--inline">
               <Token @type="type">{{@method.name}}Request</Token>
             </code>
           </a>
@@ -70,7 +71,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
         @readonly={{true}}
       >
         <a {{ScrollAnchor (concat @method.id "Response")}}>
-          <code class="Syntax">
+          <code class="Syntax Syntax--inline">
             <Token @type="type">{{@method.name}}Response</Token>
           </code>
         </a>

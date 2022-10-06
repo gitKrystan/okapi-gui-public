@@ -35,13 +35,12 @@ $-dropdown-max-height: 10rem;
   }
 
   [aria-selected='true'] & {
-    color: var(--contrast 7);
+    color: var(--contrast7);
   }
 }
 
 .ComboboxItem--is-description-item {
-  background-color: var(--contrast2);
-  color: var(--base3);
+  color: var(--contrast7);
 }
 
 .Combobox--editable {

@@ -11,7 +11,7 @@ export interface MethodSignatureSig {
 
 export default class MethodSignature extends Component<MethodSignatureSig> {
   <template>
-    <code class="Syntax" ...attributes>
+    <code class="Syntax Syntax--inline" ...attributes>
       <Token @type="keyword">rpc </Token>
       <a {{ScrollAnchor @method.id}}>
         <Token @type="function">{{@method.name}}</Token>

@@ -1,8 +1,20 @@
-// 1: Collapse whitespace from html unless encapsulated in a Token
+@use 'sass:map';
+
 .Syntax {
-  display: inline-flex; // 1
   color: var(--contrast7);
   font-weight: normal;
+}
+
+// 1: Collapse whitespace from html unless encapsulated in a Token
+.Syntax--inline {
+  display: inline-flex; // 1
+}
+
+.Syntax--block {
+  display: block;
+  padding: 0.5rem;
+  overflow: auto;
+  border: 1px solid var(--contrast1);
 }
 
 // 1: Keep whitespace encapsulated by a Token
@@ -22,4 +34,72 @@ $-types: (
   .Syntax__Token--#{$type} {
     color: $color;
   }
+}
+
+// Syntax-highlighted by highlight.js
+
+.Syntax--highlighted,
+.Syntax--highlighted__subst {
+  color: var(--contrast5);
+}
+
+.Syntax--highlighted__bullet,
+.Syntax--highlighted__deletion,
+.Syntax--highlighted__operator,
+.Syntax--highlighted__punctuation,
+.Syntax--highlighted__selector-tag,
+.Syntax--highlighted__tag {
+  color: map.get($-types, 'punctuation');
+}
+
+.Syntax--highlighted__comment {
+  color: var(--contrast2);
+}
+
+.Syntax--highlighted__attr,
+.Syntax--highlighted__attribute,
+.Syntax--highlighted__literal,
+.Syntax--highlighted__name,
+.Syntax--highlighted__number,
+.Syntax--highlighted__params,
+.Syntax--highlighted__property,
+.Syntax--highlighted__section,
+.Syntax--language-ruby .Syntax--highlighted__property {
+  color: map.get($-types, 'param');
+}
+
+.Syntax--highlighted__built_in,
+.Syntax--highlighted__title,
+.Syntax--highlighted__type {
+  color: map.get($-types, 'type');
+}
+
+.Syntax--highlighted__title.function_ {
+  color: map.get($-types, 'function');
+}
+
+.Syntax--highlighted__addition,
+.Syntax--highlighted__code,
+.Syntax--highlighted__string,
+.Syntax--highlighted__symbol,
+.Syntax--highlighted__quote {
+  color: var(--green);
+}
+
+.Syntax--highlighted__regexp,
+.Syntax--highlighted__keyword {
+  color: var(--blue);
+}
+
+.Syntax--highlighted__template-variable,
+.Syntax--highlighted__variable {
+  color: var(--blue);
+}
+
+.Syntax--highlighted__strong {
+  font-weight: bold;
+}
+
+.Syntax--highlighted__emphasis {
+  font-style: italic;
 }

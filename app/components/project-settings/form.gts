@@ -10,6 +10,7 @@ import Component from '@glimmer/component';
 import { task } from 'ember-concurrency';
 import perform from 'ember-concurrency/helpers/perform';
 
+import MD from 'okapi/components/m-d';
 import ParamInput from 'okapi/components/param-input/index';
 import Project from 'okapi/models/project';
 import ProjectSetting from 'okapi/models/project-setting';
@@ -33,7 +34,7 @@ class ProjectSettingsForm extends Component<ProjectSettingsFormSignature> {
         <label for={{@id}}>
           <h3>{{@setting.name}}</h3>
           <p>{{@setting.id}}</p>
-          <p>{{@setting.description}}</p>
+          <MD @profile="description" @raw={{@setting.description}} />
         </label>
         <ParamInput
           ...attributes

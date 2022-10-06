@@ -3,6 +3,7 @@ import { action } from '@ember/object';
 import Component from '@glimmer/component';
 
 import Combobox from 'okapi/components/combobox/editable-with-description';
+import MD from 'okapi/components/m-d';
 import RegExpHighlight from 'okapi/components/reg-exp-highlight';
 import ProjectSetting from 'okapi/models/project-setting';
 import { isRegExpExecArray } from 'okapi/types/utils';
@@ -78,11 +79,7 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
         {{/if}}
       </:options>
       <:description as |descriptionItem|>
-        {{#if descriptionItem.item.description}}
-          <ResultHighlight @result={{descriptionItem}} @field="description" />
-        {{else}}
-          {{this.descriptionFor descriptionItem}}
-        {{/if}}
+        <MD @profile="description" @raw={{this.descriptionFor descriptionItem}} />
       </:description>
     </Combobox>
   </template>

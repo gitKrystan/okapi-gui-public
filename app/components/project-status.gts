@@ -1,4 +1,3 @@
-import { concat } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';

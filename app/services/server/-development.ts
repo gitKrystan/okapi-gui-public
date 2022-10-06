@@ -94,7 +94,7 @@ export default class DevelopmentServerService extends ServerService {
           methods: [
             {
               name: 'Notify',
-              description: 'Notifies a target with a message.',
+              description: 'Notifies a `target` with a `message`.',
               request: [
                 {
                   name: 'target',
@@ -215,7 +215,7 @@ export default class DevelopmentServerService extends ServerService {
     new ProjectSetting({
       name: 'Vault Schema Migration',
       id: 'experimental.vault.schema_version',
-      description: 'Desired vault schema version.',
+      description: 'Desired `vault schema` version.',
       type: 'enum',
       options: [
         { name: '1.0', description: 'The first version.' },

@@ -1,6 +1,7 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
 
+import MD from 'okapi/components/m-d';
 import Token from 'okapi/components/syntax/token';
 import ParamInput from 'okapi/components/param-input/index';
 import type { Param } from 'okapi/models/param/index';
@@ -31,12 +32,12 @@ export default class ParamList extends Component<ParamListSig> {
             data-test-method-param-list-item={{param.info.name}}
           >
             <div id="{{this.inputId param}}-label">
-              <code class="Syntax">
+              <code class="Syntax Syntax--inline">
                 <Token @type="param">{{param.info.name}}</Token>
                 <Token @type="type"> {{param.info.type}}</Token>
                 <Token @type="punctuation">;</Token>
               </code>
-              <p>{{param.info.description}}</p>
+              <MD @profile="description" @raw={{param.info.description}} />
             </div>
             {{#if @formEnabled}}
               <div class="MethodInfo__input-container">

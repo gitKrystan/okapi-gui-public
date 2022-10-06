@@ -6,6 +6,63 @@ import { setupApplicationTest } from 'okapi/tests/helpers';
 import { mockProject } from 'okapi/tests/helpers/mocks';
 import { snapshotDarkMode } from 'okapi/tests/helpers/snapshot';
 
+const DETAILED_DESCRIPTION = `
+Notifies a \`target\` with a \`message\`.
+
+\`\`\`ts
+import { htmlSafe } from '@ember/template';
+import Component from '@glimmer/component';
+
+import hljs from 'highlight.js';
+import { marked } from 'marked';
+import { sanitize } from 'dompurify';
+
+interface MdSignature {
+  Element: HTMLDivElement;
+  Args: {
+    raw: string;
+  };
+}
+
+/**
+ * @extends Component
+ */
+export default class Markdown extends Component<MdSignature> {
+  <template>
+    <div class="Markdown" ...attributes>{{this.html}}</div>
+  </template>
+
+  private get html(): ReturnType<typeof htmlSafe> {
+    return htmlSafe(sanitize(this.parser.parse(this.args.raw)));
+  }
+
+  private get parser(): typeof marked {
+    hljs.configure({
+      classPrefix: 'Syntax--highlighted__'
+    });
+
+    marked.setOptions({
+      highlight: function(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+      },
+      langPrefix: 'Syntax Syntax--block Syntax--highlighted Syntax--language-'
+    });
+
+    return marked;
+  }
+}
+
+declare module '@glint/environment-ember-loose/registry' {
+  export default interface Registry {
+    MD: typeof Markdown;
+  }
+}
+\`\`\`
+
+<img src=x onerror=alert(1)//>
+`;
+
 module('Acceptance | method info', function (hooks) {
   setupApplicationTest(hooks);
 
@@ -28,7 +85,7 @@ module('Acceptance | method info', function (hooks) {
           methods: [
             {
               name: 'Notify',
-              description: 'Notifies a target with a message.',
+              description: DETAILED_DESCRIPTION,
               request: [
                 {
                   name: 'target',
