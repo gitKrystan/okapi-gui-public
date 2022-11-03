@@ -12,13 +12,13 @@ import DropdownApi from 'okapi/components/dropdown/private/api';
 import ListNav from 'okapi/components/list-nav/index';
 import {
   FocusDirection,
-  MoveFocusSignature
+  MoveFocusSignature,
 } from 'okapi/components/list-nav/types';
 import ComboboxButton, {
-  ComboboxButtonSignature
+  ComboboxButtonSignature,
 } from 'okapi/components/combobox/button';
 import Selection, {
-  ListboxSelectionSignature
+  ListboxSelectionSignature,
 } from 'okapi/components/listbox/selection';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
 
@@ -87,6 +87,11 @@ export default class SelectOnlyCombobox<T> extends Component<
             to="trigger"
           }}
         </:trigger>
+        {{!
+          We need to ignore prettier here because otherwise the formatting breaks
+          glint-expect-error below.
+        }}
+        {{! prettier-ignore }}
         <:content as |d|>
           {{! @glint-expect-error See Signature type for explanation. }}
           {{yield (component Selection id=this.id items=@items initialSelection=@initialSelection onFocus=@onFocus onSelect=(fn this.onSelect d) onItemMousemove=@onItemMousemove onItemKeydown=(fn this.handleItemKeydown d) list=nav.list) to="content"}}
@@ -106,7 +111,7 @@ export default class SelectOnlyCombobox<T> extends Component<
     moveFocusTo: MoveFocusSignature
   ): void {
     d.toggle({
-      didOpen: () => moveFocusTo(this.currentIndex ?? 0)
+      didOpen: () => moveFocusTo(this.currentIndex ?? 0),
     });
   }
 
@@ -121,7 +126,7 @@ export default class SelectOnlyCombobox<T> extends Component<
       case 'ArrowUp':
         e.preventDefault();
         d.open({
-          didOpen: () => moveFocusTo(FocusDirection.Previous, currentIndex)
+          didOpen: () => moveFocusTo(FocusDirection.Previous, currentIndex),
         });
         break;
       case 'ArrowDown':
@@ -133,7 +138,7 @@ export default class SelectOnlyCombobox<T> extends Component<
             } else {
               moveFocusTo(FocusDirection.Next, currentIndex);
             }
-          }
+          },
         });
         break;
       default:
@@ -141,7 +146,7 @@ export default class SelectOnlyCombobox<T> extends Component<
           e.preventDefault();
           d.open({
             didOpen: () =>
-              moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key)
+              moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key),
           });
         }
     }

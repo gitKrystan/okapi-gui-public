@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 
 export interface ButtonSig {
   Element: HTMLButtonElement;
-  Blocks: { default: [] }
+  Blocks: { default: [] };
 }
 
 export default class Button extends Component<ButtonSig> {

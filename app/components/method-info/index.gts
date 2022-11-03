@@ -84,7 +84,7 @@ export default class MethodInfo extends Component<MethodInfoSig> {
   private methodCall = MethodCall.from(this.args.method);
 
   private get emphasizeCallButton(): boolean {
-    return this.methodCall.request.every(r => r.value !== undefined);
+    return this.methodCall.request.every((r) => r.value !== undefined);
   }
 
   private submit = task(

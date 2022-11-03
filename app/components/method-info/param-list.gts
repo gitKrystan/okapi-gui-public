@@ -13,10 +13,10 @@ export interface ParamListSig {
     params: Param[];
     formEnabled: boolean;
     readonly?: boolean;
-  },
+  };
   Blocks: {
     default: [];
-  }
+  };
 }
 
 export default class ParamList extends Component<ParamListSig> {

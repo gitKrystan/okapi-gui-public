@@ -5,7 +5,7 @@ import Method from './method';
 export interface MethodsSig {
   Args: {
     api: Api;
-  }
+  };
 }
 
 export default class Methods extends Component<MethodsSig> {

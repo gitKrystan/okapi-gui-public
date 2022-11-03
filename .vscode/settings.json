@@ -2,6 +2,10 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
 
+  "[gts]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
   "[handlebars]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

@@ -98,7 +98,7 @@ export default class EditableComboboxWithDescription<
     }
   }
 
-   private set descriptionItem(newSelection: MatchItem<T> | null ){
+  private set descriptionItem(newSelection: MatchItem<T> | null) {
     this._descriptionItem = newSelection;
   }
 

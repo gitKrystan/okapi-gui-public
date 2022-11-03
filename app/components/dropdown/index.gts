@@ -29,7 +29,11 @@ export default class Dropdown
   implements DropdownApi
 {
   <template>
-    <div ...attributes class="Dropdown" {{dismissible dismissed=this.onDismiss}}>
+    <div
+      ...attributes
+      class="Dropdown"
+      {{dismissible dismissed=this.onDismiss}}
+    >
       {{yield this to="trigger"}}
       {{#if this.isExpanded}}
         <div class="Dropdown__content">

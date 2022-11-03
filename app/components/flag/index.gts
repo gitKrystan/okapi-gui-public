@@ -9,12 +9,11 @@ import FeaturesService from 'okapi/services/features';
 interface FlagSig {
   Args: {
     Positional: [flag: string];
-  }
+  };
   Blocks: {
     default: [];
     else: [];
   };
-
 }
 
 /**
@@ -35,7 +34,7 @@ export default class flag extends Component<FlagSig> {
   readonly tagName = '';
 
   static readonly positionalParams = ['flag'];
-  declare private readonly flag: string;
+  private declare readonly flag: string;
 
   <template>
     {{#if this.isEnabled}}
@@ -45,7 +44,7 @@ export default class flag extends Component<FlagSig> {
     {{/if}}
   </template>
 
-  @service declare private features: FeaturesService;
+  @service private declare features: FeaturesService;
 
   private get isEnabled(): boolean {
     return this.features.isEnabled(this.flag);

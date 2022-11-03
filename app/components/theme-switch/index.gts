@@ -8,7 +8,7 @@ export interface ThemeSwitchSig {
 }
 
 export default class ThemeSwitch extends Component<ThemeSwitchSig> {
-  @service declare private theme: ThemeService;
+  @service private declare theme: ThemeService;
 
   <template>
     <Switch

@@ -41,7 +41,7 @@ class ResultHighlight extends Component<{
     let metadata =
       this.args.result.metadata?.[this.args.field as keyof ProjectSetting];
     if (metadata) {
-      return metadata.map(m => {
+      return metadata.map((m) => {
         assert(
           `Expected match array for token ${m.token}`,
           isRegExpExecArray(m['match'])
@@ -79,7 +79,10 @@ export default class SettingsCombobox extends Component<SettingsComboboxSignatur
         {{/if}}
       </:options>
       <:description as |descriptionItem|>
-        <MD @profile="description" @raw={{this.descriptionFor descriptionItem}} />
+        <MD
+          @profile="description"
+          @raw={{this.descriptionFor descriptionItem}}
+        />
       </:description>
     </Combobox>
   </template>

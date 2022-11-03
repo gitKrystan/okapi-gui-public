@@ -5,7 +5,7 @@ import Project from './project';
 export interface ProjectsComponentSig {
   Args: {
     projects: readonly ProjectModel[];
-  }
+  };
 }
 
 export default class Projects extends Component<ProjectsComponentSig> {

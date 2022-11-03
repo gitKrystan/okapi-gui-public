@@ -14,7 +14,7 @@ import MethodSignature from './method-signature';
 export interface MethodSig {
   Args: {
     method: MethodModel;
-  }
+  };
 }
 
 export default class Method extends Component<MethodSig> {
@@ -53,7 +53,10 @@ export default class Method extends Component<MethodSig> {
           />
         </Button>
         <h2>
-          <MethodSignature class="Method__header__content" @method={{@method}} />
+          <MethodSignature
+            class="Method__header__content"
+            @method={{@method}}
+          />
         </h2>
         <a class="Method__header__code-link" href="#">
           <Icon @type="outline" @id="code-bracket" />
@@ -84,6 +87,8 @@ export default class Method extends Component<MethodSig> {
 
   get controlsIds(): string {
     let { method } = this.args;
-    return method.request.map(r => `${method.id}-request-${r.name}`).join(' ');
+    return method.request
+      .map((r) => `${method.id}-request-${r.name}`)
+      .join(' ');
   }
 }

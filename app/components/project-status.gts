@@ -13,7 +13,7 @@ import ServerService from 'okapi/services/server';
 export interface ProjectStatusSig {
   Args: {
     project: Project;
-  }
+  };
 }
 
 export default class ProjectStatusComponent extends Component<ProjectStatusSig> {
@@ -46,10 +46,7 @@ export default class ProjectStatusComponent extends Component<ProjectStatusSig> 
     }
   }
 
-  private restartProject = task(
-    { drop: true },
-    async (): Promise<void> => {
-      await this.server.restartProject(this.args.project);
-    }
-  );
+  private restartProject = task({ drop: true }, async (): Promise<void> => {
+    await this.server.restartProject(this.args.project);
+  });
 }

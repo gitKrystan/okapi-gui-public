@@ -5,7 +5,7 @@ import { LinkTo } from '@ember/routing';
 export interface ApiSig {
   Args: {
     api: ApiModel;
-  }
+  };
 }
 
 export default class Api extends Component<ApiSig> {

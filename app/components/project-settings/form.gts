@@ -24,7 +24,7 @@ interface ProjectSettingsFormSignature {
     id: string;
     project: Project;
     setting: ProjectSetting;
-  }
+  };
 }
 
 class ProjectSettingsForm extends Component<ProjectSettingsFormSignature> {
@@ -48,7 +48,7 @@ class ProjectSettingsForm extends Component<ProjectSettingsFormSignature> {
     </li>
   </template>
 
-  @service declare private server: ServerService;
+  @service private declare server: ServerService;
 
   private updateSetting = task(
     { drop: true },
@@ -67,7 +67,7 @@ interface ProjectSettingsFormsSignature {
   Args: {
     project: Project;
     settings: readonly ProjectSetting[];
-  }
+  };
 }
 
 export default class ProjectSettingsForms extends Component<ProjectSettingsFormsSignature> {

@@ -8,7 +8,7 @@ interface ProjectSettingsSignature {
   Args: {
     project: Project;
     settings: readonly ProjectSetting[];
-  }
+  };
 }
 
 export default class ProjectSettings extends Component<ProjectSettingsSignature> {

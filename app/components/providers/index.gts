@@ -5,7 +5,7 @@ import Provider from './provider';
 export interface ProvidersSig {
   Args: {
     project: Project;
-  }
+  };
 }
 
 export default class Providers extends Component<ProvidersSig> {

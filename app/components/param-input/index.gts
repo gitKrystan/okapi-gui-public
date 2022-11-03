@@ -28,23 +28,22 @@ export interface ParamSig<P extends Param> {
 
 export interface OuterParamSig<P extends Param> {
   Element: HTMLElement;
-  Args: Partial<ParamSig<P>['Args']> & Pick<ParamSig<P>['Args'], 'id' | 'param'>
+  Args: Partial<ParamSig<P>['Args']> &
+    Pick<ParamSig<P>['Args'], 'id' | 'param'>;
 }
 
 /**
  * Creates an input with validator appropriate for the param type.
  */
-export default class ParamInput<P extends Param> extends Component<OuterParamSig<P>> {
+export default class ParamInput<P extends Param> extends Component<
+  OuterParamSig<P>
+> {
   <template>
-    <Validator
-      data-test-param-error={{@id}}
-      @param={{@param}}
-        as |validator|
-    >
+    <Validator data-test-param-error={{@id}} @param={{@param}} as |validator|>
       {{#let (this.componentFor @param) as |Input|}}
         <Input
           ...attributes
-          class={{if @param.hasErrors 'u--invalid'}}
+          class={{if @param.hasErrors "u--invalid"}}
           @param={{@param}}
           @id={{@id}}
           @readonly={{this.readonly}}

@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
 
-import Selection, { ListboxSelectionSignature } from 'okapi/components/listbox/selection';
+import Selection, {
+  ListboxSelectionSignature,
+} from 'okapi/components/listbox/selection';
 import ListNav from 'okapi/components/list-nav';
 
 interface ListboxSignature<T> {

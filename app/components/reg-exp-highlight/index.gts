@@ -21,9 +21,9 @@ interface Token {
  * separately to fuzzify the search.
  */
 function extractTokens(text: string, execArrays: RegExpExecArray[]): Token[] {
-  let chars: Token[] = text.split('').map(char => ({
+  let chars: Token[] = text.split('').map((char) => ({
     text: char,
-    isMatch: false
+    isMatch: false,
   }));
 
   for (let execArray of execArrays) {

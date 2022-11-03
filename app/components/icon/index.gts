@@ -5,7 +5,7 @@ export interface IconSig {
   Args: {
     id: string;
     type: 'outline' | 'solid' | 'mini';
-  }
+  };
 }
 
 export default class Icon extends Component<IconSig> {
@@ -15,7 +15,7 @@ export default class Icon extends Component<IconSig> {
 
   <template>
     <svg class={{this.class}} ...attributes>
-      <use xlink:href="#{{@type}}__{{@id}}" />
+      <use xlink:href="#{{@type}}__{{@id}}"></use>
     </svg>
   </template>
 }

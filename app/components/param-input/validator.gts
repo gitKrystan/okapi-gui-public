@@ -10,10 +10,10 @@ export interface ValidatorSig {
   Element: HTMLElement;
   Args: {
     param: Param;
-  }
+  };
   Blocks: {
     default: [validator: Validator['validator']];
-  }
+  };
 }
 
 export default class Validator extends Component<ValidatorSig> {
@@ -34,7 +34,7 @@ export default class Validator extends Component<ValidatorSig> {
 
       return () => {
         element.removeEventListener('focusout', this.handleFocusout);
-      }
+      };
     },
     { eager: false }
   );

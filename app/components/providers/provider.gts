@@ -5,7 +5,7 @@ import { LinkTo } from '@ember/routing';
 export interface ProviderSig {
   Args: {
     provider: ProviderModel;
-  }
+  };
 }
 
 export default class Provider extends Component<ProviderSig> {

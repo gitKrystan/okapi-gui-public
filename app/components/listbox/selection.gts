@@ -110,7 +110,11 @@ export default class ListboxSelection<T> extends Component<
       </ul>
 
       {{#if (has-block "extras")}}
-        <ul data-test-listbox-extras-list class="Listbox__extras-list" role="group">
+        <ul
+          data-test-listbox-extras-list
+          class="Listbox__extras-list"
+          role="group"
+        >
           {{yield to="extras"}}
         </ul>
       {{/if}}

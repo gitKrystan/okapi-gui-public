@@ -181,7 +181,7 @@ export default class EditableCombobox<
     }
   }
 
-  private set selection(newSelection: MatchItem<T> | null ){
+  private set selection(newSelection: MatchItem<T> | null) {
     this._selection = newSelection;
   }
 
@@ -202,7 +202,7 @@ export default class EditableCombobox<
     const { selection } = this;
     let nextOption: MatchItem<T> | undefined;
     if (selection) {
-      let currentIndex = this.list.findIndex(r => r.item === selection.item);
+      let currentIndex = this.list.findIndex((r) => r.item === selection.item);
       nextOption = this.list[currentIndex + 1];
     }
     return nextOption ?? this.firstOption;
@@ -212,7 +212,7 @@ export default class EditableCombobox<
     const { selection } = this;
     let previousOption: MatchItem<T> | undefined;
     if (selection) {
-      let currentIndex = this.list.findIndex(r => r.item === selection.item);
+      let currentIndex = this.list.findIndex((r) => r.item === selection.item);
       previousOption = this.list[currentIndex - 1];
     }
     return previousOption ?? this.lastOption;
@@ -285,7 +285,7 @@ export default class EditableCombobox<
             if (this.selection) {
               this.commitSelection();
             }
-          }
+          },
         });
 
         shouldConsumeEvent = true;
@@ -297,10 +297,10 @@ export default class EditableCombobox<
           this.selectionForArrow(altKey, value, {
             selection: this.selection,
             incrementedSelection: this.nextOption,
-            initialSelection: this.firstOption
+            initialSelection: this.firstOption,
           }),
           {
-            updateAutocomplete: !altKey
+            updateAutocomplete: !altKey,
           }
         );
         d.open();
@@ -316,7 +316,7 @@ export default class EditableCombobox<
             ? this.previousOption
             : this.lastOption,
           {
-            updateAutocomplete: !altKey
+            updateAutocomplete: !altKey,
           }
         );
         d.open();
@@ -374,7 +374,7 @@ export default class EditableCombobox<
     {
       selection,
       incrementedSelection,
-      initialSelection
+      initialSelection,
     }: {
       selection: MatchItem<T> | null;
       incrementedSelection: MatchItem<T> | null;
@@ -502,7 +502,7 @@ export default class EditableCombobox<
       }
 
       if (!skipTimeout) {
-        await timeout( Ember.testing ? 0 : 250);
+        await timeout(Ember.testing ? 0 : 250);
       }
 
       this.args.search.query = newFilter;
@@ -510,7 +510,7 @@ export default class EditableCombobox<
       // Remove selection if the newly filtered list doesn't contain it
       let { selection } = this;
       if (
-        !this.filteredList.find(r => selection && r.item === selection.item)
+        !this.filteredList.find((r) => selection && r.item === selection.item)
       ) {
         this.selection = null;
       }
@@ -541,10 +541,10 @@ export default class EditableCombobox<
   private commitSelection(): void {
     let { selection } = this;
     this.args.onCommit?.(selection);
-    this.setValue(
-      this.resetOnCommit ? null : selection,
-      { forceInlineAutocomplete: true, updateFilter: true }
-    );
+    this.setValue(this.resetOnCommit ? null : selection, {
+      forceInlineAutocomplete: true,
+      updateFilter: true,
+    });
   }
 
   // Misc

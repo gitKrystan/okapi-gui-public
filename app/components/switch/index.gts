@@ -7,12 +7,12 @@ interface SwitchSig {
   Args: {
     value: boolean;
     onToggle(value: boolean): void;
-  }
+  };
   Blocks: {
     label: [];
     off: [];
     on: [];
-  }
+  };
 }
 
 export default class Switch extends Component<SwitchSig> {
@@ -40,9 +40,8 @@ export default class Switch extends Component<SwitchSig> {
       {{/if}}
       <span class="Switch__icon">
         <span
-          class="Switch__icon__toggle {{if this.checked
-            'Switch__icon__toggle--checked'
-          }}"
+          class="Switch__icon__toggle
+            {{if this.checked 'Switch__icon__toggle--checked'}}"
         ></span>
       </span>
       <span class="Switch__option" data-test-switch-option>
@@ -50,14 +49,14 @@ export default class Switch extends Component<SwitchSig> {
           {{#if (has-block "on")}}
             {{yield to="on"}}
           {{else}}
-            {{!-- role="switch" on the button means "on" will already be read --}}
+            {{! role="switch" on the button means "on" will already be read }}
             <span aria-hidden="true">on</span>
           {{/if}}
         {{else}}
           {{#if (has-block "off")}}
             {{yield to="off"}}
           {{else}}
-            {{!-- role="switch" on the button means "off" will already be read --}}
+            {{! role="switch" on the button means "off" will already be read }}
             <span aria-hidden="true">off</span>
           {{/if}}
         {{/if}}

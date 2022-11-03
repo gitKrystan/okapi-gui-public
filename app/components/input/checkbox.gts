@@ -32,7 +32,7 @@ interface CheckboxSignature {
   Blocks: {
     before: [];
     after: [];
-  }
+  };
 }
 
 /**

@@ -5,7 +5,7 @@ import Api from './api';
 export interface ApisSig {
   Args: {
     apis: ApiModel[];
-  }
+  };
 }
 
 export default class Apis extends Component<ApisSig> {

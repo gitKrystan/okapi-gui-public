@@ -8,7 +8,7 @@ export interface NumberInputSig {
   Args: {
     value: string | null | undefined;
     onValueUpdate(newValue: string | null | undefined): void;
-  }
+  };
 }
 
 /**
@@ -47,7 +47,9 @@ export default class NumberInput extends Component<NumberInputSig> {
       event.target instanceof HTMLInputElement
     );
 
-    let [value, ...parts] = event.target.value.replace(/[^-0-9.]/g, '').split('.');
+    let [value, ...parts] = event.target.value
+      .replace(/[^-0-9.]/g, '')
+      .split('.');
 
     assert('expected value to exist', typeof value === 'string');
 
