@@ -1,6 +1,6 @@
 import { TemplateOnlyComponent } from '@ember/component/template-only';
 
-export default <template>
+<template>
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 
     <!-- source: https://heroicons.com/ -->
