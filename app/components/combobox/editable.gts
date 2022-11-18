@@ -7,7 +7,7 @@ import { dasherize } from '@ember/string';
 import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked, cached } from '@glimmer/tracking';
-import { WithBoundArgs } from '@glint/template';
+import type { WithBoundArgs } from '@glint/template';
 import Ember from 'ember';
 
 import { didCancel, task, timeout } from 'ember-concurrency';
@@ -16,7 +16,7 @@ import { modifier } from 'ember-modifier';
 import Dropdown from 'okapi/components/dropdown/index';
 // Ideally we'd re-export from the dropdown component but that's not working yet
 // with GTS.
-import DropdownApi from 'okapi/components/dropdown/private/api';
+import type DropdownApi from 'okapi/components/dropdown/private/api';
 import type Search from 'okapi/utils/filter-search';
 import type { MatchItem } from 'okapi/utils/filter-search';
 import { squish } from 'okapi/utils/string';
@@ -33,10 +33,10 @@ export interface EditableComboboxSignature<
   Args: {
     valueField: K;
     search: Search<T, unknown>;
-    autocomplete?: Autocomplete;
-    resetOnCommit?: boolean;
-    readonly?: boolean;
-    labelClass?: string;
+    autocomplete?: Autocomplete | undefined;
+    resetOnCommit?: boolean | undefined;
+    readonly?: boolean | undefined;
+    labelClass?: string | undefined;
     onSelect?: (selection: MatchItem<T> | null) => void;
     onCommit?: (selection: MatchItem<T> | null) => void;
     onItemMousemove?: (result: MatchItem<T>) => void;
@@ -59,15 +59,17 @@ export interface EditableComboboxSignature<
  *
  * Supports four potential `autocomplete` behaviors:
  *
- * - `none` (default): No list filtration or inline autofill (except for on commit).
- * - `list`: List will filter based on input. Input will only be autofilled on commit.
+ * - `none` (default): No list filtration or inline autofill (except for on
+ *   commit).
+ * - `list`: List will filter based on input. Input will only be autofilled on
+ *   commit.
  * - `inline`: Input will be autofilled. List will never filter.
  * - `both`: List will filter based on input AND input will be autofilled.
  *
- * @see { @link https://www.w3.org/WAI/ARIA/apg/patterns/combobox/ }
- * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-none.html }
- * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-list.html }
- * @see { @link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-both.html }
+ * @see {@link https://www.w3.org/WAI/ARIA/apg/patterns/combobox/}
+ * @see {@link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-none.html}
+ * @see {@link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-list.html}
+ * @see {@link https://www.w3.org/WAI/ARIA/apg/example-index/combobox/combobox-autocomplete-both.html}
  */
 export default class EditableCombobox<
   K extends string,
@@ -268,7 +270,7 @@ export default class EditableCombobox<
     d: DropdownApi,
     event: KeyboardEvent
   ): void {
-    let { key, altKey, ctrlKey, shiftKey, metaKey } = event;
+    let { key, altKey, ctrlKey, shiftKey } = event;
 
     if (ctrlKey || shiftKey) {
       return;
@@ -278,7 +280,7 @@ export default class EditableCombobox<
     let shouldConsumeEvent = false;
 
     switch (key) {
-      case 'Enter':
+      case 'Enter': {
         this.acceptSuggestion(value, null);
         d.toggle({
           didClose: () => {
@@ -290,9 +292,9 @@ export default class EditableCombobox<
 
         shouldConsumeEvent = true;
         break;
-
+      }
       case 'Down':
-      case 'ArrowDown':
+      case 'ArrowDown': {
         this.setSelection(
           this.selectionForArrow(altKey, value, {
             selection: this.selection,
@@ -306,9 +308,9 @@ export default class EditableCombobox<
         d.open();
         shouldConsumeEvent = true;
         break;
-
+      }
       case 'Up':
-      case 'ArrowUp':
+      case 'ArrowUp': {
         this.setSelection(
           altKey
             ? this.selection
@@ -322,11 +324,11 @@ export default class EditableCombobox<
         d.open();
         shouldConsumeEvent = true;
         break;
-
+      }
       case 'Left':
       case 'ArrowLeft':
       case 'Right':
-      case 'ArrowRight':
+      case 'ArrowRight': {
         this.acceptSuggestion(value, null);
         if (value) {
           d.open();
@@ -335,31 +337,32 @@ export default class EditableCombobox<
         // the cursor from moving. Unfortunately, there is no good way to test
         // this behavior.
         break;
-
+      }
       case 'Esc':
-      case 'Escape':
+      case 'Escape': {
         // NOTE: Dismissible will handle the first time Escape is pressed
         if (!d.isExpanded) {
           this.setSelection(null);
           this.commitSelection();
         }
         break;
-
-      case 'Home':
+      }
+      case 'Home': {
         this.acceptSuggestion(value, [0, 0]);
         if (value) {
           d.open();
         }
         shouldConsumeEvent = true;
         break;
-
-      case 'End':
+      }
+      case 'End': {
         this.acceptSuggestion(value);
         if (value) {
           d.open();
         }
         shouldConsumeEvent = true;
         break;
+      }
     }
 
     if (shouldConsumeEvent) {
@@ -398,7 +401,7 @@ export default class EditableCombobox<
 
   @action private async handleInput(
     d: DropdownApi,
-    event: Event
+    _event: Event
   ): Promise<void> {
     let inputValue = squish(this.inputEl.value);
 
@@ -447,7 +450,7 @@ export default class EditableCombobox<
   private async setValue(
     selection: MatchItem<T> | null,
     { forceInlineAutocomplete = false, updateFilter = false } = {}
-  ) {
+  ): Promise<void> {
     let value = this.valueFor(selection);
     if (forceInlineAutocomplete || this.hasInlineAutocomplete) {
       this.inputEl.value = value ?? '';
@@ -487,7 +490,7 @@ export default class EditableCombobox<
         newFilter,
         isBlank(this.query) || skipTimeout
       );
-    } catch (error) {
+    } catch (error: unknown) {
       if (!didCancel(error)) {
         throw error;
       }
@@ -510,7 +513,7 @@ export default class EditableCombobox<
       // Remove selection if the newly filtered list doesn't contain it
       let { selection } = this;
       if (
-        !this.filteredList.find((r) => selection && r.item === selection.item)
+        !this.filteredList.some((r) => selection && r.item === selection.item)
       ) {
         this.selection = null;
       }
@@ -518,11 +521,7 @@ export default class EditableCombobox<
   );
 
   private valueFor(option: MatchItem<T> | null): string {
-    if (option) {
-      return option.item[this.args.valueField];
-    } else {
-      return '';
-    }
+    return option ? option.item[this.args.valueField] : '';
   }
 
   private setSelection(

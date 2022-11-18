@@ -5,7 +5,7 @@ import Component from '@glimmer/component';
 import Combobox from 'okapi/components/combobox/editable-with-description';
 import MD from 'okapi/components/m-d';
 import RegExpHighlight from 'okapi/components/reg-exp-highlight';
-import ProjectSetting from 'okapi/models/project-setting';
+import type ProjectSetting from 'okapi/models/project-setting';
 import { isRegExpExecArray } from 'okapi/types/utils';
 import type { MatchItem } from 'okapi/utils/filter-search';
 import type ProjectSettingSearch from 'okapi/utils/project-setting-search';

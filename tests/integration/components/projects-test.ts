@@ -28,9 +28,9 @@ module('Integration | Component | projects', function (hooks) {
     `);
 
     assert.dom().containsText('Projects');
-    this.projects.forEach((p) => {
+    for (const p of this.projects) {
       assert.dom('[data-test-projects-list]').containsText(p.name);
       assert.dom(`[data-test-project-status=${p.id}]`).hasText(p.status);
-    });
+    }
   });
 });

@@ -2,7 +2,7 @@ import { LinkTo } from '@ember/routing';
 import Component from '@glimmer/component';
 
 import ProjectStatus from 'okapi/components/project-status';
-import { default as ProjectModel } from 'okapi/models/project';
+import type ProjectModel from 'okapi/models/project';
 
 export interface ProjectComponentSig {
   Args: {

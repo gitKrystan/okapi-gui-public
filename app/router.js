@@ -9,7 +9,6 @@ export default class Router extends EmberRouter {
 // TODO: As of ember-cli 4.4, TypeScript route generators will not work if this
 // file is converted to TS
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 Router.map(function () {
   this.route('project', { path: '/:project_id' }, function () {
     this.route('providers');

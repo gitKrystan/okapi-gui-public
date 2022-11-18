@@ -27,7 +27,7 @@ module.exports = function (defaults) {
     });
   }
 
-  let app = new EmberApp(defaults, {
+  const app = new EmberApp(defaults, {
     postcssOptions: {
       compile: {
         extension: 'scss',

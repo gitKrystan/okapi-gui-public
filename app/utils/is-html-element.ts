@@ -1,6 +1,4 @@
-/**
- * Type predicate for HTMLElement
- */
+/** Type predicate for HTMLElement */
 export default function isHTMLElement(
   element: unknown
 ): element is HTMLElement {

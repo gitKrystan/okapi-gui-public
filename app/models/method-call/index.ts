@@ -34,9 +34,9 @@ export default class MethodCall {
 
     if (isValid) {
       let response = await server.call(this.method, request);
-      this.response.forEach(
-        (r) => (r.value = response[r.info.name] as typeof r.value)
-      );
+      for (const r of this.response) {
+        r.value = response[r.info.name] as typeof r.value;
+      }
     }
     return this;
   }

@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { default as ApiModel } from 'okapi/models/api';
+import type ApiModel from 'okapi/models/api';
 import { LinkTo } from '@ember/routing';
 
 export interface ApiSig {

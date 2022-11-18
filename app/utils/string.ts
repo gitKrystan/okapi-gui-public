@@ -24,5 +24,5 @@ export function squish<T extends string | null | undefined>(str: T): T {
 export function escapeStringForRegex(string: string): string {
   // NOTE: This is taken from
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');
 }

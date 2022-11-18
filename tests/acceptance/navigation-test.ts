@@ -1,3 +1,4 @@
+import { assert as emberAssert } from '@ember/debug';
 import { click, currentURL, visit } from '@ember/test-helpers';
 import { getPageTitle } from 'ember-page-title/test-support';
 import { module, test } from 'qunit';
@@ -107,9 +108,9 @@ module('Acceptance | navigation', function (hooks) {
 
     assert.strictEqual(currentURL(), '/');
     assert.strictEqual(getPageTitle(), 'Projects | Okapi');
-    projects.forEach((p) => {
+    for (const p of projects) {
       assert.dom('[data-test-projects-list]').containsText(p.name);
-    });
+    }
 
     await snapshotDarkMode(assert);
 
@@ -126,9 +127,9 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(currentURL(), '/Direwolf');
     assert.strictEqual(getPageTitle(), 'Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
-    project.providers.forEach((p) => {
+    for (const p of project.providers) {
       assert.dom('[data-test-providers-list]').containsText(p.name);
-    });
+    }
 
     await snapshotDarkMode(assert);
 
@@ -140,18 +141,18 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
   });
 
-  ['/Direwolf/provider', '/Direwolf/providers'].forEach((r) => {
+  for (const r of ['/Direwolf/provider', '/Direwolf/providers']) {
     test(`visiting ${r} redirects to /Direwolf`, async function (assert) {
       await visit(r);
 
       assert.strictEqual(currentURL(), '/Direwolf');
       assert.strictEqual(getPageTitle(), 'Direwolf | Okapi');
       assert.dom('[data-test-project-name]').hasText('Direwolf');
-      project.providers.forEach((p) => {
+      for (const p of project.providers) {
         assert.dom('[data-test-providers-list]').containsText(p.name);
-      });
+      }
     });
-  });
+  }
 
   test('visiting /Direwolf/provider/notifier-slack', async function (assert) {
     await visit('/Direwolf/provider/notifier-slack');
@@ -160,10 +161,12 @@ module('Acceptance | navigation', function (hooks) {
     assert.strictEqual(getPageTitle(), 'notifier-slack | Direwolf | Okapi');
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
-    project.providers[0]?.apiIds.forEach((a) => {
-      let api = project.findApiOrError(a);
+    const apiIds = project.providers[0]?.apiIds;
+    emberAssert('expected apiIds', Array.isArray(apiIds));
+    for (const id of apiIds) {
+      let api = project.findApiOrError(id);
       assert.dom('[data-test-apis-list]').containsText(api.name);
-    });
+    }
 
     await snapshotDarkMode(assert);
 
@@ -182,10 +185,10 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
   });
 
-  [
+  for (const r of [
     '/Direwolf/provider/notifier-slack/api',
     '/Direwolf/provider/notifier-slack/apis',
-  ].forEach((r) => {
+  ]) {
     test(`visiting ${r} redirects to /Direwolf/provider/notifier-slack`, async function (assert) {
       await visit(r);
 
@@ -195,12 +198,14 @@ module('Acceptance | navigation', function (hooks) {
       assert
         .dom('[data-test-provider-name]')
         .hasText('Provider: notifier-slack');
-      project.providers[0]?.apiIds.forEach((a) => {
-        let api = project.findApiOrError(a);
+      const apiIds = project.providers[0]?.apiIds;
+      emberAssert('expected apiIds', Array.isArray(apiIds));
+      for (const id of apiIds) {
+        let api = project.findApiOrError(id);
         assert.dom('[data-test-apis-list]').containsText(api.name);
-      });
+      }
     });
-  });
+  }
 
   test('visiting /Direwolf/provider/notifier-slack/api/Notifier', async function (assert) {
     await visit('/Direwolf/provider/notifier-slack/api/Notifier');
@@ -216,9 +221,11 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    project.apis[0]?.methods.forEach((m) => {
+    const methods = project.apis[0]?.methods;
+    emberAssert('expected methods', Array.isArray(methods));
+    for (const m of methods) {
       assert.dom('[data-test-methods-list]').containsText(m.name);
-    });
+    }
     assert.dom('[data-test-method-info]').exists({ count: 2 });
     assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
     assert
@@ -269,9 +276,11 @@ module('Acceptance | navigation', function (hooks) {
     assert.dom('[data-test-project-name]').hasText('Direwolf');
     assert.dom('[data-test-provider-name]').hasText('Provider: notifier-slack');
     assert.dom('[data-test-api-name]').hasText('API: Notifier');
-    project.apis[0]?.methods.forEach((m) => {
+    const methods = project.apis[0]?.methods;
+    emberAssert('expected methods', Array.isArray(methods));
+    for (const m of methods) {
       assert.dom('[data-test-methods-list]').containsText(m.name);
-    });
+    }
     assert.dom('[data-test-method-info=Notify]').doesNotHaveAttribute('hidden');
     assert
       .dom('[data-test-method-info=Mortify]')

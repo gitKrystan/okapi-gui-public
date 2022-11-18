@@ -3,29 +3,25 @@ import { fn } from '@ember/helper';
 import { guidFor } from '@ember/object/internals';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { ComponentLike, WithBoundArgs } from '@glint/template';
+import type { ComponentLike, WithBoundArgs } from '@glint/template';
 
 import Dropdown from 'okapi/components/dropdown/index';
 // Ideally we'd re-export from the dropdown component but that's not working yet
 // with GTS.
-import DropdownApi from 'okapi/components/dropdown/private/api';
+import type DropdownApi from 'okapi/components/dropdown/private/api';
 import ListNav from 'okapi/components/list-nav/index';
-import {
-  FocusDirection,
-  MoveFocusSignature,
-} from 'okapi/components/list-nav/types';
-import ComboboxButton, {
-  ComboboxButtonSignature,
-} from 'okapi/components/combobox/button';
-import Selection, {
-  ListboxSelectionSignature,
-} from 'okapi/components/listbox/selection';
+import { FocusDirection } from 'okapi/components/list-nav/types';
+import type { MoveFocusSignature } from 'okapi/components/list-nav/types';
+import ComboboxButton from 'okapi/components/combobox/button';
+import type { ComboboxButtonSignature } from 'okapi/components/combobox/button';
+import Selection from 'okapi/components/listbox/selection';
+import type { ListboxSelectionSignature } from 'okapi/components/listbox/selection';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
 
 interface SelectOnlyComboboxSignature<T> {
   Element: HTMLDivElement;
   Args: Omit<ListboxSelectionSignature<T>['Args'], 'list'> & {
-    readonly?: boolean;
+    readonly?: boolean | undefined;
   };
   Blocks: {
     trigger: [
@@ -103,7 +99,9 @@ export default class SelectOnlyCombobox<T> extends Component<
   private id = guidFor(this);
 
   private get items(): T[] {
-    return this.args.items.toArray?.() ?? this.args.items;
+    return 'toArray' in this.args.items
+      ? this.args.items.toArray()
+      : this.args.items;
   }
 
   @action private handleTriggerClick(
@@ -123,13 +121,14 @@ export default class SelectOnlyCombobox<T> extends Component<
     let currentIndex = this.currentIndex ?? -1;
 
     switch (e.key) {
-      case 'ArrowUp':
+      case 'ArrowUp': {
         e.preventDefault();
         d.open({
           didOpen: () => moveFocusTo(FocusDirection.Previous, currentIndex),
         });
         break;
-      case 'ArrowDown':
+      }
+      case 'ArrowDown': {
         e.preventDefault();
         d.open({
           didOpen: () => {
@@ -141,7 +140,8 @@ export default class SelectOnlyCombobox<T> extends Component<
           },
         });
         break;
-      default:
+      }
+      default: {
         if (isPrintableCharacter(e.key)) {
           e.preventDefault();
           d.open({
@@ -149,6 +149,7 @@ export default class SelectOnlyCombobox<T> extends Component<
               moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key),
           });
         }
+      }
     }
   }
 
@@ -192,7 +193,7 @@ export default class SelectOnlyCombobox<T> extends Component<
 
   // Element registration
 
-  @action private registerButton(el: HTMLButtonElement): void {
+  @action private registerButton(el: HTMLElement): void {
     this._buttonEl = el;
   }
 

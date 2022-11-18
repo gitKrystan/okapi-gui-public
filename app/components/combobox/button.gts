@@ -11,10 +11,10 @@ export interface ComboboxButtonSignature {
   Args: {
     listboxId: string;
     expanded: boolean;
-    readonly: boolean;
-    onClick(e: Event): void;
-    onInsert?(target: HTMLElement): void;
-    onKeydown?(e: KeyboardEvent): void;
+    readonly?: boolean | undefined;
+    onClick: (e: Event) => void;
+    onInsert?: ((target: HTMLElement) => void) | undefined;
+    onKeydown?: ((e: KeyboardEvent) => void) | undefined;
   };
   Blocks: {
     default: [];
@@ -30,7 +30,7 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
   <template>
     <Button
       ...attributes
-      class="Combobox__button {{if @readonly 'Combobox__button--readonly'}}"
+      class="Combobox__button {{if this.readonly 'Combobox__button--readonly'}}"
       role="combobox"
       aria-haspopup="listbox"
       aria-controls="{{@listboxId}}"
@@ -46,6 +46,10 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
       {{/if}}
     </Button>
   </template>
+
+  private get readonly(): boolean {
+    return this.args.readonly ?? false;
+  }
 
   private get enabled(): boolean {
     return !this.args.readonly;

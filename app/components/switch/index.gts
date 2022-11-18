@@ -6,7 +6,7 @@ interface SwitchSig {
   Element: HTMLButtonElement;
   Args: {
     value: boolean;
-    onToggle(value: boolean): void;
+    onToggle: (value: boolean) => void;
   };
   Blocks: {
     label: [];

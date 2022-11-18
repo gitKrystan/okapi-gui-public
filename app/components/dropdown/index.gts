@@ -6,7 +6,8 @@ import Ember from 'ember'; // For Ember.testing
 import { task, timeout } from 'ember-concurrency';
 
 import dismissible from 'okapi/modifiers/dismissible';
-import DropdownApi, { OpenOptions, CloseOptions } from './private/api';
+import type DropdownApi from './private/api';
+import type { OpenOptions, CloseOptions } from './private/api';
 
 interface DropdownSignature {
   Element: HTMLDivElement;

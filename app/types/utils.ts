@@ -1,8 +1,6 @@
 import { assert } from '@ember/debug';
 
-/**
- * Checks if the given value is a `Record<string, unknown>`.
- */
+/** Checks if the given value is a `Record<string, unknown>`. */
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
 }
@@ -18,8 +16,8 @@ export function dictionary<T>(): Record<string, T> {
 
 /**
  * A version of `Object.keys` that returns `Array<keyof T>` instead of
- * `Array<string>`. This is UNSAFE due to
- * [this issue](https://github.com/microsoft/TypeScript/pull/12253#issuecomment-263132208)
+ * `Array<string>`. This is UNSAFE due to [this
+ * issue](https://github.com/microsoft/TypeScript/pull/12253#issuecomment-263132208)
  * so use at your own risk.
  */
 export function unsafeKeys<T>(o: T): Array<keyof T> {
@@ -29,6 +27,7 @@ export function unsafeKeys<T>(o: T): Array<keyof T> {
 
 /**
  * Given an object that looks like:
+ *
  * ```ts
  * interface Person {
  *   firstName: string;
@@ -39,19 +38,23 @@ export function unsafeKeys<T>(o: T): Array<keyof T> {
  * ```
  *
  * To filter for all the attributes with a given type,
+ *
  * ```ts
  * type KeysOfPersonThatAreStrings = FilterKeysByType<Person, string>; // => 'firstName' | 'lastName'
  * ```
  *
  * Implementation:
  *
+ * @example
+ *
  * ```ts
  * type KeysOfPerson = keyof Person; // => 'firstName' | 'lastName' | 'age' | 'admin';
  *
- * type ValuesOfPerson = Person[KeysOfPerson]; // == Person['firstName' | 'lastName' | 'age']
- *                                             // == Person['firstName'] | Person['lastName'] | Person['age'] | Person['admin']
- *                                             // == string | string | number | boolean
- *                                             // => string | number | boolean
+ * type ValuesOfPerson = Person[KeysOfPerson];
+ * // => Person['firstName' | 'lastName' | 'age']
+ * // => Person['firstName'] | Person['lastName'] | Person['age'] | Person['admin']
+ * // => string | string | number | boolean
+ * // => string | number | boolean
  *
  * // Note that TS collapses unions to a minimum, removing any redudant types, e.g.
  * type A = string | 'foo'; // => string (because 'foo' is already covered by string)
@@ -80,9 +83,7 @@ export type FilterKeysByType<T, V> = {
   [K in keyof T]: T[K] extends V ? K : never;
 }[keyof T];
 
-/**
- * Type predicate for RegExpExecArray
- */
+/** Type predicate for RegExpExecArray */
 export function isRegExpExecArray(value: unknown): value is RegExpExecArray {
   return Array.isArray(value) && 'index' in value && 'input' in value;
 }

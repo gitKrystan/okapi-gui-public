@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import Project from 'okapi/models/project';
+import type Project from 'okapi/models/project';
 import Provider from './provider';
 
 export interface ProvidersSig {

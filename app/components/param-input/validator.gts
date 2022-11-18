@@ -4,7 +4,7 @@ import { scheduleOnce } from '@ember/runloop';
 import Component from '@glimmer/component';
 import { modifier } from 'ember-modifier';
 
-import { Param } from 'okapi/models/param/index';
+import type { Param } from 'okapi/models/param/index';
 
 export interface ValidatorSig {
   Element: HTMLElement;
@@ -45,7 +45,7 @@ export default class Validator extends Component<ValidatorSig> {
     scheduleOnce('afterRender', this, this.validateOnFocusout, currentTarget);
   }
 
-  private validateOnFocusout(currentTarget: HTMLElement) {
+  private validateOnFocusout(currentTarget: HTMLElement): void {
     assert('expected currentTarget', currentTarget instanceof HTMLElement);
     if (!currentTarget.contains(document.activeElement)) {
       this.args.param.validate();

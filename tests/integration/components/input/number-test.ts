@@ -17,14 +17,14 @@ class State {
 module('Integration | Component | input/number', function (hooks) {
   setupRenderingTest(hooks);
 
-  [
+  for (const { initialValue, finalValue } of [
     { initialValue: undefined, finalValue: '' },
     { initialValue: null, finalValue: '' },
     { initialValue: '1', finalValue: '1' },
     { initialValue: '0', finalValue: '0' },
     { initialValue: '-1', finalValue: '-1' },
     { initialValue: '42.36', finalValue: '42.36' },
-  ].forEach(({ initialValue, finalValue }) => {
+  ]) {
     test(`it renders an input with starting value ${inspect(
       initialValue
     )}`, async function (this: Context, assert) {
@@ -42,9 +42,9 @@ module('Integration | Component | input/number', function (hooks) {
         `state value is ${inspect(initialValue)}`
       );
     });
-  });
+  }
 
-  [
+  for (const { inputValue, immediateValue, finalValue } of [
     { inputValue: '', immediateValue: '', finalValue: '' },
     { inputValue: '  ', immediateValue: '', finalValue: '' },
     { inputValue: '-', immediateValue: '-', finalValue: '' },
@@ -59,7 +59,7 @@ module('Integration | Component | input/number', function (hooks) {
     { inputValue: 'hello1', immediateValue: '1', finalValue: '1' },
     { inputValue: 'hel1lo', immediateValue: '1', finalValue: '1' },
     { inputValue: '1.2.3', immediateValue: '1.23', finalValue: '1.23' },
-  ].forEach(({ inputValue, immediateValue, finalValue }) => {
+  ]) {
     test(`it handles an input of ${inspect(
       inputValue
     )}`, async function (this: Context, assert) {
@@ -97,5 +97,5 @@ module('Integration | Component | input/number', function (hooks) {
         `state value is ${inspect(finalValue)}`
       );
     });
-  });
+  }
 });

@@ -12,7 +12,7 @@ export interface ComboboxItemSignature {
   };
 }
 
-export default class ComboboxItem<T> extends Component<ComboboxItemSignature> {
+export default class ComboboxItem extends Component<ComboboxItemSignature> {
   <template>
     <div class="ComboboxItem" ...attributes>
       <div>

@@ -12,11 +12,12 @@ import {
  * "Enter" key on a clickable element).
  *
  * The following events are triggered (in order):
- * - focus
- * - focusin
- * - keydown
- * - click
- * - keyup
+ *
+ * - Focus
+ * - Focusin
+ * - Keydown
+ * - Click
+ * - Keyup
  */
 export async function keyboardClick(target: Target): Promise<void> {
   await focus(target); // focus and focusin
@@ -34,13 +35,14 @@ export async function keyboardClick(target: Target): Promise<void> {
  * events, which are not included in the built-in @ember/test-helpers click.
  *
  * The following events are triggered (in order):
- * - pointerdown
- * - mousedown
- * - focus
- * - focusin
- * - pointerup
- * - mouseup
- * - click
+ *
+ * - Pointerdown
+ * - Mousedown
+ * - Focus
+ * - Focusin
+ * - Pointerup
+ * - Mouseup
+ * - Click
  */
 export async function pointerClick(target: Target): Promise<void> {
   let el = typeof target === 'string' ? find(target) : target;

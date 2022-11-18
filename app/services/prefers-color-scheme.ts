@@ -17,6 +17,6 @@ export default abstract class PrefersColorSchemeService extends AbstractService 
   protected preferenceChangeListeners = new Set<PreferenceChangeListener>();
 
   @action protected notifyListeners(isDark: boolean): void {
-    this.preferenceChangeListeners.forEach((cb) => cb(isDark));
+    for (const cb of this.preferenceChangeListeners) cb(isDark);
   }
 }

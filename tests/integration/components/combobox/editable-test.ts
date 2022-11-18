@@ -71,7 +71,7 @@ class StartsWithFilter extends Filter<Animal, StartsWithQuery> {
       }
     }
 
-    return results.length ? results : false;
+    return results.length > 0 ? results : false;
   }
 }
 
@@ -103,25 +103,21 @@ class State {
     this.search = AnimalSearch.from(options);
   }
 
-  @tracked autocomplete?: 'none' | 'list' | 'inline' | 'both';
+  @tracked autocomplete?: 'none' | 'list' | 'inline' | 'both' | undefined;
 
   @tracked committed: Animal | null = null;
 
   @action handleCommit(match: MatchItem<Animal> | null): void {
     let item = match?.item ?? null;
     this.committed = item;
-    let { expectedCommit } = this;
+    let { assert, committed, expectedCommit } = this;
     if (expectedCommit === false) {
-      this.assert.ok(false, `Unexpectedly committed item ${inspect(item)}`);
+      assert.ok(false, `Unexpectedly committed item ${inspect(item)}`);
     } else if (expectedCommit === null) {
-      this.assert.strictEqual(
-        this.committed,
-        expectedCommit,
-        'Null was committed'
-      );
+      assert.strictEqual(committed, expectedCommit, 'Null was committed');
     } else {
-      this.assert.strictEqual(
-        this.committed,
+      assert.strictEqual(
+        committed,
         this.getOption(expectedCommit),
         `Item at index ${expectedCommit} was committed`
       );
@@ -3084,7 +3080,7 @@ async function keyboard(
     el instanceof HTMLInputElement &&
     (key === 'Backspace' || key === 'Delete')
   ) {
-    el.value = el.value.slice(0, el.value.length - 1);
+    el.value = el.value.slice(0, -1);
   }
   await triggerKeyEvent(el, 'keyup', key, modifiers);
   assert.ok(true, `Keyboard ${key} with modifiers ${inspect(modifiers)}`);

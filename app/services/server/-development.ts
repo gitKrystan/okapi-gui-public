@@ -70,7 +70,6 @@ export default class DevelopmentServerService extends ServerService {
     project.status = ProjectStatus.Started;
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   protected async findProject(id: string): Promise<Project | null> {
     await wait(DELAY);
     return this.projectList.find((m) => m.id === id) ?? null;

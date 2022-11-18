@@ -10,7 +10,7 @@ import { setupRenderingTest } from 'okapi/tests/helpers';
 module('Integration | Helper | expanding-textarea', function (hooks) {
   setupRenderingTest(hooks);
 
-  [
+  for (const t of [
     {
       name: 'native',
       // TODO: This cast should be unnecessary once types are fixed.
@@ -22,7 +22,7 @@ module('Integration | Helper | expanding-textarea', function (hooks) {
       template:
         hbs`<Textarea {{expanding-textarea}} />` as unknown as TemplateFactory,
     },
-  ].forEach((t) => {
+  ]) {
     test(`${t.name}: it adjusts height based on content`, async function (assert) {
       await render(t.template);
 
@@ -55,5 +55,5 @@ module('Integration | Helper | expanding-textarea', function (hooks) {
         'shrinks back to one line'
       );
     });
-  });
+  }
 });

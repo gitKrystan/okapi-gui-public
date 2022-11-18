@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 
 export interface OpenOptions {
-  didOpen?: () => void;
+  didOpen?: (() => void) | undefined;
 }
 
 export interface CloseOptions {
-  didClose?: () => void;
+  didClose?: (() => void) | undefined;
 }
 
-/**
- * Public API for the Dropdown component, yielded to the caller.
- */
+/** Public API for the Dropdown component, yielded to the caller. */
 export default interface DropdownApi {
   isExpanded: boolean;
 
   /**
-   * Event handler that opens the dropdown's `content`.
-   * Can be passed to the "on" modifier directly, in which case we will receive
-   * the `Event`.
+   * Event handler that opens the dropdown's `content`. Can be passed to the
+   * "on" modifier directly, in which case we will receive the `Event`.
    */
   open(event: Event): void;
   /**
@@ -29,9 +26,8 @@ export default interface DropdownApi {
   open(options?: OpenOptions): void;
 
   /**
-   * Event handler that closes the dropdown's `content`.
-   * Can be passed to the "on" modifier directly, in which case we will receive
-   * the `Event`.
+   * Event handler that closes the dropdown's `content`. Can be passed to the
+   * "on" modifier directly, in which case we will receive the `Event`.
    */
   close(event: Event): void;
   /**
@@ -43,25 +39,23 @@ export default interface DropdownApi {
   close(options?: CloseOptions): void;
 
   /**
-   * Event handler that toggles the dropdown's `content`.
-   * Can be passed to the "on" modifier directly, in which case we will receive
-   * the `Event`.
+   * Event handler that toggles the dropdown's `content`. Can be passed to the
+   * "on" modifier directly, in which case we will receive the `Event`.
    */
   toggle(event: Event): void;
   /**
    * Toggles the dropdown's `content`.
    *
    * Executes the optional `didOpen` callback specified in the `options` POJO
-   * after the dropdown is expanded.
-   * Executes the optional `didClose` callback specified in the `options` POJO
-   * after the dropdown is closed.
+   * after the dropdown is expanded. Executes the optional `didClose` callback
+   * specified in the `options` POJO after the dropdown is closed.
    */
   toggle(options?: CloseOptions & OpenOptions): void;
 
   /**
-   * Event handler that closes the dropdown's `content` after a delay.
-   * Can be passed to the "on" modifier directly, in which case we will receive
-   * the `Event`.
+   * Event handler that closes the dropdown's `content` after a delay. Can be
+   * passed to the "on" modifier directly, in which case we will receive the
+   * `Event`.
    */
   delayedClose(event: Event): void;
   /**
@@ -72,3 +66,5 @@ export default interface DropdownApi {
    */
   delayedClose(options?: CloseOptions): void;
 }
+
+/* eslint-enable @typescript-eslint/method-signature-style */

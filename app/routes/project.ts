@@ -15,7 +15,7 @@ export default class ProjectRoute extends Route<
 > {
   @service declare server: ServerService;
 
-  model(params: ProjectRouteParams): Promise<ProjectRouteModel> {
+  override model(params: ProjectRouteParams): Promise<ProjectRouteModel> {
     return this.server.getProject(params.project_id);
   }
 }

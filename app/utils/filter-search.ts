@@ -8,7 +8,7 @@ import { dictionary } from 'okapi/types/utils';
  *
  * @template Item The raw item.
  * @template IndexedItem The internal format of an item intended to make it
- * easier to find matches for a query.
+ *   easier to find matches for a query.
  */
 export abstract class Indexer<Item, IndexedItem> {
   /**
@@ -34,9 +34,9 @@ export interface MatchMetadata {
 
 /**
  * An abstract class used to create individual filters for a new instance of the
- * `FilterSearch` class.
- * Provides type signatures for parsing a search query into tokens and
- * determining whether an `IndexedItem` matches the parsed query.
+ * `FilterSearch` class. Provides type signatures for parsing a search query
+ * into tokens and determining whether an `IndexedItem` matches the parsed
+ * query.
  */
 export abstract class Filter<IndexedItem, Query = unknown> {
   /**
@@ -47,9 +47,9 @@ export abstract class Filter<IndexedItem, Query = unknown> {
   abstract parse(tokens: string[]): Query;
 
   /**
-   * The implementation for this should check whether an Index entry matches
-   * a parsed Query, and either return a boolean reflecting the match status OR
-   * an object with extra information on the match when the check is truthy and
+   * The implementation for this should check whether an Index entry matches a
+   * parsed Query, and either return a boolean reflecting the match status OR an
+   * object with extra information on the match when the check is truthy and
    * false otherwise.
    *
    * @param item The search index entry
@@ -77,14 +77,12 @@ export default class FilterSearch<Item, IndexedItem = Item> {
     private readonly indexer: Indexer<Item, IndexedItem>,
     private readonly filters: Record<string, Filter<IndexedItem>> = {},
     query = '',
-    private readonly multiTokenStrategy: 'any' | 'every' = 'every'
+    private readonly multiTokenStrategy: 'some' | 'every' = 'every'
   ) {
     this._query = query;
   }
 
-  /**
-   * The user query.
-   */
+  /** The user query. */
   get query(): string {
     return this._query;
   }
@@ -95,9 +93,7 @@ export default class FilterSearch<Item, IndexedItem = Item> {
     }
   }
 
-  /**
-   * A list of filter names.
-   */
+  /** A list of filter names. */
   get filterNames(): string[] {
     return Object.keys(this.filters).map((name) => `${name}:`);
   }
@@ -106,9 +102,7 @@ export default class FilterSearch<Item, IndexedItem = Item> {
    * Given a list of search tokens, separate out any named filters and the
    * default string filter, then use those to filter the indexedItems and return
    * only those items that match all of the filters in the user query.
-   *
    */
-  // eslint-disable-next-line complexity
   get results(): ReadonlyArray<MatchItem<Item>> {
     let tokens = this.searchTokens;
     let filters = Object.entries(this.filters).map(([name, filter]) => ({
@@ -162,22 +156,14 @@ export default class FilterSearch<Item, IndexedItem = Item> {
     return this.query.trim();
   }
 
-  /**
-   * The search tokens.
-   */
+  /** The search tokens. */
   private get searchTokens(): string[] {
     let { trimmedQuery } = this;
 
-    if (trimmedQuery === '') {
-      return [];
-    } else {
-      return trimmedQuery.split(/\s+/);
-    }
+    return trimmedQuery === '' ? [] : trimmedQuery.split(/\s+/);
   }
 
-  /**
-   * The search index.
-   */
+  /** The search index. */
   private get indexedItems(): IndexedItem[] {
     return this.items.map((item) => this.indexer.index(item));
   }

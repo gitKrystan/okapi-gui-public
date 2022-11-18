@@ -1,7 +1,7 @@
 import { assert } from '@ember/debug';
 import AbstractParam from './abstract-param';
 
-const NumericInputPattern = /^-?([0-9]+([.][0-9]*)?|[.][0-9]+)$/;
+const NumericInputPattern = /^-?(\d+(\.\d*)?|\.\d+)$/;
 
 export interface RawNumberParam {
   type:
@@ -17,7 +17,7 @@ export interface RawNumberParam {
     | 'u64';
   name: string;
   description: string;
-  value?: number;
+  value?: number | undefined;
 }
 
 export interface TypeInfo {
@@ -33,7 +33,7 @@ export default class NumberParam extends AbstractParam<
   string | null,
   RawNumberParam
 > {
-  protected _validate(
+  protected override _validate(
     normalizedInputValue: string | undefined,
     value: number | undefined
   ): void {
@@ -83,8 +83,8 @@ export default class NumberParam extends AbstractParam<
     normalizedInputValue: string | undefined
   ): number | undefined {
     if (normalizedInputValue) {
-      normalizedInputValue = normalizedInputValue.replace(/[^-0-9.]/g, ''); // remove non-numeric characters
-      let number = parseFloat(normalizedInputValue);
+      normalizedInputValue = normalizedInputValue.replace(/[^\d.-]/g, ''); // remove non-numeric characters
+      let number = Number.parseFloat(normalizedInputValue);
       if (Number.isNaN(number)) {
         return undefined;
       }
@@ -95,16 +95,12 @@ export default class NumberParam extends AbstractParam<
   }
 
   protected format(value: number | undefined): string | undefined {
-    if (value === undefined) {
-      return undefined;
-    } else {
-      return value.toLocaleString();
-    }
+    return value === undefined ? undefined : value.toLocaleString();
   }
 
   private get typeInfo(): TypeInfo {
     let fullType = this.info.type;
-    let regex = /^([fiu])([\d]+)$/;
+    let regex = /^([fiu])(\d+)$/;
 
     let matches = regex.exec(fullType);
     assert(`${fullType} does not match regex ${regex.source}`, matches);
@@ -117,20 +113,25 @@ export default class NumberParam extends AbstractParam<
       `bitStr '${String(bitStr)} in string ${fullType}' not found`,
       bitStr
     );
-    let bits = parseInt(bitStr, 10);
+    let bits = Number(bitStr);
     assert(
       `bitStr '${bitStr}' parsed to NaN in string ${fullType}`,
       !Number.isNaN(bits)
     );
 
-    if (typeId === 'f') {
-      return { signed: true, integer: false, bits };
-    } else if (typeId === 'i') {
-      return { signed: true, integer: true, bits };
-    } else if (typeId === 'u') {
-      return { signed: false, integer: true, bits };
-    } else {
-      assert(`type not found in string ${fullType}`);
+    switch (typeId) {
+      case 'f': {
+        return { signed: true, integer: false, bits };
+      }
+      case 'i': {
+        return { signed: true, integer: true, bits };
+      }
+      case 'u': {
+        return { signed: false, integer: true, bits };
+      }
+      default: {
+        assert(`type not found in string ${fullType}`);
+      }
     }
   }
 

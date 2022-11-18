@@ -8,8 +8,8 @@ import percySnapshot from '@percy/ember';
 import type ThemeService from 'okapi/services/theme';
 
 export interface SnapshotOptions {
-  prefix?: string;
-  suffix?: string;
+  prefix?: string | undefined;
+  suffix?: string | undefined;
   owner?: TestContext['owner'];
   options?: PercyOptions;
 }
@@ -17,8 +17,8 @@ export interface SnapshotOptions {
 const USED_DESCRIPTIONS = new Set<string>();
 
 /**
- * Generates a snapshot for visual diffing with a generated description based
- * on the passed in test assert object.
+ * Generates a snapshot for visual diffing with a generated description based on
+ * the passed in test assert object.
  *
  * NOTE: If you are taking more than one snapshot in a test, you need to pass a
  * prefix and/or suffix to additional snapshots to ensure snapshot description
@@ -41,8 +41,9 @@ export async function snapshot(
 }
 
 /**
- * Generates snapshots for visual diffing with generated descriptions based
- * on the passed in test assert object. Will take TWO snapshots when called:
+ * Generates snapshots for visual diffing with generated descriptions based on
+ * the passed in test assert object. Will take TWO snapshots when called:
+ *
  * - One in "light" (default) mode
  * - One in "dark" mode
  *

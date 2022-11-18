@@ -9,10 +9,10 @@ import perform from 'ember-concurrency/helpers/perform';
 import Button from 'okapi/components/button';
 import MD from 'okapi/components/m-d';
 import Token from 'okapi/components/syntax/token';
-import Method from 'okapi/models/method';
+import type Method from 'okapi/models/method';
 import MethodCall from 'okapi/models/method-call';
 import ScrollAnchor from 'okapi/modifiers/scroll-anchor';
-import ServerService from 'okapi/services/server';
+import type ServerService from 'okapi/services/server';
 import ParamList from './param-list';
 
 export interface MethodInfoSig {

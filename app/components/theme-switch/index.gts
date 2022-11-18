@@ -1,6 +1,6 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import ThemeService from 'okapi/services/theme';
+import type ThemeService from 'okapi/services/theme';
 import Switch from 'okapi/components/switch';
 
 export interface ThemeSwitchSig {

@@ -12,8 +12,8 @@ import perform from 'ember-concurrency/helpers/perform';
 
 import MD from 'okapi/components/m-d';
 import ParamInput from 'okapi/components/param-input/index';
-import Project from 'okapi/models/project';
-import ProjectSetting from 'okapi/models/project-setting';
+import type Project from 'okapi/models/project';
+import type ProjectSetting from 'okapi/models/project-setting';
 import type ServerService from 'okapi/services/server';
 import ProjectSettingSearch from 'okapi/utils/project-setting-search';
 import SettingsCombobox from './settings-combobox';
@@ -93,9 +93,9 @@ export default class ProjectSettingsForms extends Component<ProjectSettingsForms
     return this.args.project.settings;
   }
 
-  private get availableSettings(): ReadonlyArray<ProjectSetting> {
+  private get availableSettings(): readonly ProjectSetting[] {
     return this.args.settings.filter((setting) => {
-      return ![...this.projectSettings].find(
+      return ![...this.projectSettings].some(
         (projectSetting) => projectSetting.id === setting.id
       );
     });

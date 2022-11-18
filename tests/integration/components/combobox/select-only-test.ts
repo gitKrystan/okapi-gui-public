@@ -18,7 +18,7 @@ interface Context<T> extends TestContext {
 class State<T> {
   constructor(private assert: Assert, readonly items: T[]) {}
 
-  @tracked initialSelection?: T;
+  @tracked initialSelection?: T | undefined;
 
   @tracked selection?: T;
 

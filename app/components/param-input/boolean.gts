@@ -3,8 +3,8 @@ import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 
 import Checkbox from 'okapi/components/input/checkbox';
-import { BooleanParam } from 'okapi/models/param/index';
-import { ParamSig } from './index';
+import type { BooleanParam } from 'okapi/models/param/index';
+import type { ParamSig } from './index';
 
 export default class BooleanInput extends Component<ParamSig<BooleanParam>> {
   <template>

@@ -12,7 +12,20 @@
     },
 
     // Overrides of @tsconfig/ember defaults:
-    "noEmitOnError": false
+    "noEmitOnError": false,
+
+    // type checking
+    "strict": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": ["app/**/*", "tests/**/*", "types/**/*"],
   "glint": {

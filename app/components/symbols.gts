@@ -1,4 +1,4 @@
-import { TemplateOnlyComponent } from '@ember/component/template-only';
+import type { TemplateOnlyComponent } from '@ember/component/template-only';
 
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">

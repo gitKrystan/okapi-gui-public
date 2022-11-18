@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { default as ProjectModel } from 'okapi/models/project';
+import type ProjectModel from 'okapi/models/project';
 import Project from './project';
 
 export interface ProjectsComponentSig {

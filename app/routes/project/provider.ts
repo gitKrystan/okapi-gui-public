@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import type Api from 'okapi/models/api';
 import type Provider from 'okapi/models/provider';
 import type { ProjectRouteModel } from 'okapi/routes/project';
-import { NotFound } from 'okapi/services/server';
+import { NotFoundError } from 'okapi/services/server';
 
 export interface ProviderRouteModel {
   provider: Provider;
@@ -18,7 +18,7 @@ export default class ProjectProviderRoute extends Route<
   ProviderRouteParams
 > {
   // eslint-disable-next-line @typescript-eslint/require-await
-  async model({
+  override async model({
     provider_id,
   }: ProviderRouteParams): Promise<ProviderRouteModel> {
     let project = this.modelFor('project') as ProjectRouteModel;
@@ -32,14 +32,14 @@ export default class ProjectProviderRoute extends Route<
           if (api) {
             return api;
           } else {
-            throw new NotFound(
+            throw new NotFoundError(
               `Could not find api "${apiId} for provider "${provider_id}."`
             );
           }
         }),
       };
     } else {
-      throw new NotFound(`Could not find provider "${provider_id}."`);
+      throw new NotFoundError(`Could not find provider "${provider_id}."`);
     }
   }
 }

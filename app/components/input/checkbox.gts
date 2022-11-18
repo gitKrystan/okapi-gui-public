@@ -3,7 +3,7 @@ import { modifier } from 'ember-modifier';
 import Component from '@glimmer/component';
 import Icon from 'okapi/components/icon';
 
-function enforceReadonly(this: HTMLInputElement) {
+function enforceReadonly(this: HTMLInputElement): void {
   // HACK: Undo the input event.
   this.checked = !this.checked;
 }
@@ -27,7 +27,7 @@ interface CheckboxSignature {
   Element: HTMLInputElement;
   Args: {
     checked: boolean | undefined;
-    readonly?: boolean;
+    readonly?: boolean | undefined;
   };
   Blocks: {
     before: [];

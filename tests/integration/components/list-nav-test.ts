@@ -20,12 +20,14 @@ class State {
 
   handleKeydown(moveFocusTo: MoveFocusSignature, e: KeyboardEvent): void {
     switch (e.key) {
-      case 'ArrowUp':
+      case 'ArrowUp': {
         moveFocusTo(FocusDirection.Last);
         break;
-      case 'ArrowDown':
+      }
+      case 'ArrowDown': {
         moveFocusTo(FocusDirection.First);
         break;
+      }
     }
   }
 }

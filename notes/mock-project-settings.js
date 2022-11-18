@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-empty-file */
 /*
 const ALL = [
   {
@@ -586,3 +587,4 @@ const ALL = [
   .map((o) => new ProjectSetting(o.name, o.id, o.description))
   .sortBy('id');
 */
+/* eslint-enable unicorn/no-empty-file */

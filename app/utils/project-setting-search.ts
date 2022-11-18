@@ -39,9 +39,7 @@ export class SettingIndexer extends Indexer<ProjectSetting, IndexedSetting> {
     return new IndexedSetting(item);
   }
 
-  /**
-   * Extracts the setting from its indexed version.
-   */
+  /** Extracts the setting from its indexed version. */
   extract({ setting }: IndexedSetting): ProjectSetting {
     return setting;
   }
@@ -57,7 +55,7 @@ export interface StringQuery {
 /**
  * A `Filter` that will search within a string.
  *
- * e.g. "Pickle" should match "I love pickles"
+ * E.g. "Pickle" should match "I love pickles"
  */
 export abstract class StringSearchFilter extends Filter<
   IndexedSetting,
@@ -69,9 +67,7 @@ export abstract class StringSearchFilter extends Filter<
     super();
   }
 
-  /**
-   * Parse the tokenized query into the internal format.
-   */
+  /** Parse the tokenized query into the internal format. */
   parse(tokens: string[]): StringQuery[] {
     let tokenPatterns = this.makeTokenPatterns(tokens);
 
@@ -86,8 +82,8 @@ export abstract class StringSearchFilter extends Filter<
   ): Record<string, string>;
 
   /**
-   * Returns a MatchData record when the setting id query matches the
-   * tokenized setting id, and false otherwise.
+   * Returns a MatchData record when the setting id query matches the tokenized
+   * setting id, and false otherwise.
    */
   match(
     entry: IndexedSetting,
@@ -128,7 +124,7 @@ export abstract class StringSearchFilter extends Filter<
         result.push({ ...q, match, score: scoreMatch(value, q, match) });
       }
     }
-    return result.length ? result : false;
+    return result.length > 0 ? result : false;
   }
 }
 
@@ -146,21 +142,20 @@ export class StringSequentialFilter extends StringSearchFilter {
  * A `Filter` that will search within a string using a "wildcard"-delimited
  * search.
  *
- * e.g. "ABC" should match "All Bout Camels" and "Antibiotic Cocoons"
+ * E.g. "ABC" should match "All Bout Camels" and "Antibiotic Cocoons"
  */
 export class StringWildcardFilter extends StringSearchFilter {
   makeTokenPatterns(tokens: string[]): Record<string, string> {
     let tokenPatterns: Record<string, string> = {};
     for (let token of tokens) {
-      tokenPatterns[token] ??= token
-        .split('')
+      tokenPatterns[token] ??= [...token]
         .map((char) => `(${escapeStringForRegex(char)})`)
         .join(LAZY);
     }
     return tokenPatterns;
   }
 
-  protected orQueryMatch(
+  protected override orQueryMatch(
     orQueries: StringQuery[],
     value: string
   ): Array<StringQuery & MatchMetadata> | false {
@@ -171,10 +166,10 @@ export class StringWildcardFilter extends StringSearchFilter {
 
       if (match && match.index >= lastIndex) {
         result.push({ ...q, match, score: scoreMatch(value, q, match) });
-        lastIndex += match.index + (match[0]?.length ?? 0);
+        lastIndex += match.index + match[0].length;
       }
     }
-    return result.length ? result : false;
+    return result.length > 0 ? result : false;
   }
 }
 
@@ -223,7 +218,7 @@ function scoreMatch(
 
   // The "wider" the match is, the worse the score.
   // E.g. "(cat)" should score better than "(c)up (a) (t)ea"
-  let matchLength = match[0]?.length;
+  let matchLength = match[0].length;
   assert('expected matchLength', matchLength);
   let widthScore = (matchLength - query.token.length) / value.length;
   assert('expected lengthScore to be gte zero', widthScore >= 0);

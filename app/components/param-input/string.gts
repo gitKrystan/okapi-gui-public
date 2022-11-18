@@ -3,9 +3,9 @@ import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 
-import { StringParam } from 'okapi/models/param/index';
+import type { StringParam } from 'okapi/models/param/index';
 import expandingTextarea from 'okapi/modifiers/expanding-textarea';
-import { ParamSig } from './index';
+import type { ParamSig } from './index';
 
 export default class StringInput extends Component<ParamSig<StringParam>> {
   <template>

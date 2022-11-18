@@ -47,7 +47,7 @@ module('Unit | Utils | filter-search', function (hooks) {
           results.push({ token: query.tokens.join(' '), score: 0 });
         }
 
-        return results.length ? results : false;
+        return results.length > 0 ? results : false;
       }
     }
 
@@ -62,7 +62,7 @@ module('Unit | Utils | filter-search', function (hooks) {
           default: new StringFilter(),
         },
         query,
-        'any'
+        'some'
       );
     }
 
@@ -216,11 +216,7 @@ module('Unit | Utils | filter-search', function (hooks) {
       toString(): string {
         let { name, response } = this;
 
-        if (response) {
-          return `${name} (${response})`;
-        } else {
-          return name;
-        }
+        return response ? `${name} (${response})` : name;
       }
     }
 
@@ -330,11 +326,9 @@ module('Unit | Utils | filter-search', function (hooks) {
         { response }: IndexedEndpointish,
         responses: string[]
       ): MatchMetadata[] | false {
-        if (response !== undefined && responses.includes(response)) {
-          return [{ token: `response:${response}`, score: 0 }];
-        } else {
-          return false;
-        }
+        return response !== undefined && responses.includes(response)
+          ? [{ token: `response:${response}`, score: 0 }]
+          : false;
       }
     }
 
@@ -342,21 +336,25 @@ module('Unit | Utils | filter-search', function (hooks) {
       static parse(query: string): Range {
         if (query.startsWith('>=')) {
           // ">=5" => lowerBound 5, includeLowerBound: true
-          return new Range(parseInt(query.slice(2), 10), Infinity, true);
+          return new Range(
+            Number(query.slice(2)),
+            Number.POSITIVE_INFINITY,
+            true
+          );
         } else if (query.startsWith('>')) {
           // ">5"  => lowerBound 5, includeLowerBound: false
-          return new Range(parseInt(query.slice(1), 10), Infinity);
+          return new Range(Number(query.slice(1)), Number.POSITIVE_INFINITY);
         } else if (query.startsWith('<=')) {
           // "<=5" => upperBound 5, inclusiveUpperBound: true
           return new Range(
-            -Infinity,
-            parseInt(query.slice(2), 10),
+            Number.NEGATIVE_INFINITY,
+            Number(query.slice(2)),
             false,
             true
           );
         } else {
           // "<5"  => upperBound 5, inclusiveUpperBound: false
-          return new Range(-Infinity, parseInt(query.slice(1), 10));
+          return new Range(Number.NEGATIVE_INFINITY, Number(query.slice(10)));
         }
       }
 
@@ -403,11 +401,9 @@ module('Unit | Utils | filter-search', function (hooks) {
         query: Range[]
       ): MatchMetadata[] | false {
         let responseTime = endpoint[this.field];
-        if (query.every((range) => range.contains(responseTime))) {
-          return [{ token: query.join(' '), score: 0 }];
-        } else {
-          return false;
-        }
+        return query.every((range) => range.contains(responseTime))
+          ? [{ token: query.join(' '), score: 0 }]
+          : false;
       }
     }
 
@@ -424,7 +420,7 @@ module('Unit | Utils | filter-search', function (hooks) {
           response: new ResponseTypeFilter(),
         },
         undefined,
-        'any'
+        'some'
       );
     }
 

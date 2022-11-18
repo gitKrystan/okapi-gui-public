@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { default as ProviderModel } from 'okapi/models/provider';
+import type ProviderModel from 'okapi/models/provider';
 import { LinkTo } from '@ember/routing';
 
 export interface ProviderSig {

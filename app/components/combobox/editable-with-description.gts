@@ -5,7 +5,8 @@ import { tracked } from '@glimmer/tracking';
 
 import eq from 'ember-truth-helpers/helpers/eq';
 
-import Combobox, { Autocomplete } from 'okapi/components/combobox/editable';
+import Combobox from 'okapi/components/combobox/editable';
+import type { Autocomplete } from 'okapi/components/combobox/editable';
 import type { MatchItem } from 'okapi/utils/filter-search';
 import type Search from 'okapi/utils/filter-search';
 
@@ -17,7 +18,7 @@ interface EditableComboboxWithDescriptionSignature<
   Args: {
     valueField: K;
     search: Search<T, unknown>;
-    autocomplete?: Autocomplete;
+    autocomplete?: Autocomplete | undefined;
     resetOnCommit?: boolean;
     readonly?: boolean;
     labelClass?: string;

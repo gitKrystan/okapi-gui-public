@@ -10,15 +10,15 @@ import mergeOptions from 'okapi/utils/merge-options';
 type Dismissed = (e: Event) => void;
 
 interface DismissibleOptions {
-  disableWhen: boolean;
-  dismissOnFocusChange: boolean;
-  related: Element | Element[] | null;
+  disableWhen?: boolean | undefined;
+  dismissOnFocusChange?: boolean | undefined;
+  related?: Element | Element[] | null | undefined;
 }
 
 interface DismissibleSignature {
   Element: HTMLElement;
   Args: {
-    Named: { dismissed: Dismissed } & Partial<DismissibleOptions>;
+    Named: { dismissed: Dismissed } & DismissibleOptions;
   };
 }
 
@@ -33,8 +33,9 @@ const DEFAULT_OPTIONS = Object.freeze({
 });
 
 /**
- * Calls the passed-in `dismissed` action whenever the user mouses down outside the
- * element or hits the "escape" key. For example,
+ * Calls the passed-in `dismissed` action whenever the user mouses down outside
+ * the element or hits the "escape" key. For example,
+ *
  * ```hbs
  * {{#if shouldShowThingy}}
  *   <div class="thingy" {{dismissible dismissed=this.hideThingy}}>
@@ -55,6 +56,7 @@ const DEFAULT_OPTIONS = Object.freeze({
  * ```
  *
  * Optionally, you can pass the `disableWhen` property to disable dismissing:
+ *
  * ```hbs
  * {{#if shouldShowThingy}}
  *   <div class="thingy" {{dismissible dismissed=this.hideThingy disableWhen=this.disableDismiss}}>
@@ -63,14 +65,15 @@ const DEFAULT_OPTIONS = Object.freeze({
  * {{/if}}
  * ```
  *
- * Instead of `click`, we use `mousedown` due to its early DOM-event order.
- * This registers the dismissible event as soon as possible, before other actions
+ * Instead of `click`, we use `mousedown` due to its early DOM-event order. This
+ * registers the dismissible event as soon as possible, before other actions
  * have triggered events such as `focus`.
  *
- * This is particularly helpful on the ListBox component, which demands to be shown
- * on input `focus` and hidden on click-outside events. By using `mousedown`,
- * we're able to capture the dismissible event before we show the ListBox
- * (rather than after, with `click`), thus avoiding unintentional cancellations.
+ * This is particularly helpful on the ListBox component, which demands to be
+ * shown on input `focus` and hidden on click-outside events. By using
+ * `mousedown`, we're able to capture the dismissible event before we show the
+ * ListBox (rather than after, with `click`), thus avoiding unintentional
+ * cancellations.
  */
 export default class DismissibleModifier extends Modifier<DismissibleSignature> {
   constructor(owner: unknown, args: ArgsFor<DismissibleSignature>) {
@@ -78,7 +81,7 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
     registerDestructor(this, this.removeListeners);
   }
 
-  modify(
+  override modify(
     element: DismissibleSignature['Element'],
     _positional: PositionalArgs<DismissibleSignature>,
     { dismissed, ...options }: NamedArgs<DismissibleSignature>
@@ -133,23 +136,18 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
   @action private handlePointerdown(e: PointerEvent): void {
     /**
      * Generally, we want to run the passed in `dismissed` callback when a user
-     * clicks outside `this.element`, approximated by checking that `this.element`
-     * does not contain the click target.
+     * clicks outside `this.element`, approximated by checking that
+     * `this.element` does not contain the click target.
      *
      * However, there is an edge case that causes this check to fail. In the
      * example below, clicking on #inner (`this.target`) will remove #inner from
      * the DOM. By the time the event bubbles up to #outer (`this.element`),
-     * #outer will not contain #inner because it's no longer in the DOM.
-     * The first check would pass, errantly calling the passed in `dismissed`
-     * callback. We added the second check to detect this edge case.
-     *
-     * <div id="outer" {{dismissible dismissed=this.dismissed}}>
-     *   {{#if this.showTarget}}
-     *     <div id="inner" {{on 'click' this.hideTarget}>
-     *       click to hide
-     *     </div>
-     *   {{/if}}
-     * </div>
+     * #outer will not contain #inner because it's no longer in the DOM. The
+     * first check would pass, errantly calling the passed in `dismissed`
+     * callback. We added the second check to detect this edge case.<div
+     * id="outer" {{dismissible dismissed=this.dismissed}}> {{#if
+     * this.showTarget}} <div id="inner" {{on 'click' this.hideTarget}> click to
+     * hide </div> {{/if}}</div>
      */
     if (
       this.didFocusOutside(e) &&
@@ -168,13 +166,13 @@ export default class DismissibleModifier extends Modifier<DismissibleSignature> 
 
   @action private handleFocusIn(e: FocusEvent): void {
     /**
-     * We attach this action to the `focusin` event on the `document`. If the user
-     * changes focus _within_ the dismissible container, we can ignore it safely.
-     * If the user changes focus to something outside of the dismissible element,
-     * we will call the dismissed callback. This handles tabbing out to the next
-     * focusable item on the page, while avoiding some common false positives
-     * such as tabbing within the dismissible container, temporarily losing focus
-     * to the context menu, the window itself losing focus, etc.
+     * We attach this action to the `focusin` event on the `document`. If the
+     * user changes focus _within_ the dismissible container, we can ignore it
+     * safely. If the user changes focus to something outside of the dismissible
+     * element, we will call the dismissed callback. This handles tabbing out to
+     * the next focusable item on the page, while avoiding some common false
+     * positives such as tabbing within the dismissible container, temporarily
+     * losing focus to the context menu, the window itself losing focus, etc.
      */
     if (this.options.dismissOnFocusChange && this.didFocusOutside(e)) {
       this.dismissed(e);

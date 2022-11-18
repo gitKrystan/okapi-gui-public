@@ -25,7 +25,7 @@ module('Unit | Service | server', function (hooks) {
 
     let projects = await service.getProjectList();
 
-    projects.forEach((p) => assert.true(p instanceof Project));
+    for (const p of projects) assert.true(p instanceof Project);
     assert.deepEqual(
       projects.map((p) => p.name),
       mocks.map((p) => p.name)

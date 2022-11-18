@@ -8,7 +8,7 @@ export type IndexRouteModel = readonly Project[];
 export default class IndexRoute extends Route<IndexRouteModel> {
   @service declare server: ServerService;
 
-  model(): Promise<IndexRouteModel> {
+  override async model(): Promise<IndexRouteModel> {
     return this.server.getProjectList();
   }
 }

@@ -1,3 +1,1 @@
-import lte from '@gavant/glint-template-types/types/ember-truth-helpers/lte';
-
-export default lte;
+export { default } from '@gavant/glint-template-types/types/ember-truth-helpers/lte';

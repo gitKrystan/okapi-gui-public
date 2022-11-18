@@ -1,4 +1,4 @@
-import ArrayProxy from '@ember/array/proxy';
+import type ArrayProxy from '@ember/array/proxy';
 import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { action } from '@ember/object';
@@ -7,7 +7,7 @@ import { tracked } from '@glimmer/tracking';
 
 import eq from 'ember-truth-helpers/helpers/eq';
 
-import ListNav from 'okapi/components/list-nav/index';
+import type ListNav from 'okapi/components/list-nav/index';
 
 export interface ListboxSelectionSignature<T> {
   Element: HTMLDivElement;
@@ -27,7 +27,7 @@ export interface ListboxSelectionSignature<T> {
     /**
      * Optionally pass in the initially selected item.
      */
-    initialSelection?: T;
+    initialSelection?: T | undefined;
 
     /**
      * Action to call when an item is "selected" via click/Enter.
@@ -37,17 +37,17 @@ export interface ListboxSelectionSignature<T> {
     /**
      * Optional action to call when the focused item is updated.
      */
-    onFocus?: (item: T) => void;
+    onFocus?: ((item: T) => void) | undefined;
 
     /**
      * Optional action to call when an item has a keydown event.
      */
-    onItemKeydown?: (item: T, e: KeyboardEvent) => void;
+    onItemKeydown?: ((item: T, e: KeyboardEvent) => void) | undefined;
 
     /**
      * Optional action to call when an item has a mouseenter event.
      */
-    onItemMousemove?: (item: T, e: MouseEvent) => void;
+    onItemMousemove?: ((item: T, e: MouseEvent) => void) | undefined;
 
     /**
      * Handles 'keydown' actions for the listbox.

@@ -34,7 +34,7 @@ export default class ScrollAnchor extends Modifier<ScrollAnchorSignature> {
     this.location.id = this.el.id;
   }
 
-  modify(
+  override modify(
     anchor: HTMLAnchorElement,
     [id]: PositionalArgs<ScrollAnchorSignature>,
     { link = true, target = true }: NamedArgs<ScrollAnchorSignature>

@@ -10,7 +10,7 @@ export default class NotFoundRoute extends Route<
   NotFoundRouteModel,
   NotFoundRouteParams
 > {
-  model({ path }: NotFoundRouteParams): NotFoundRouteModel {
+  override model({ path }: NotFoundRouteParams): NotFoundRouteModel {
     return path;
   }
 }

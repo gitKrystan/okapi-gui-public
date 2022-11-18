@@ -1,15 +1,15 @@
 import { assert } from '@ember/debug';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { ComponentLike } from '@glint/template';
+import type { ComponentLike } from '@glint/template';
 
 import {
   BooleanParam,
   EnumParam,
   NumberParam,
-  Param,
   StringParam,
 } from 'okapi/models/param/index';
+import type { Param } from 'okapi/models/param/index';
 import BooleanInput from './boolean';
 import EnumInput from './enum';
 import NumberInput from './number';
@@ -21,7 +21,7 @@ export interface ParamSig<P extends Param> {
   Args: {
     id: string;
     param: P;
-    readonly: boolean;
+    readonly?: boolean | undefined;
     onChange: (value: P['value']) => void;
   };
 }

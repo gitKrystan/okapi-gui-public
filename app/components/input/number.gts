@@ -7,7 +7,7 @@ export interface NumberInputSig {
   Element: HTMLInputElement;
   Args: {
     value: string | null | undefined;
-    onValueUpdate(newValue: string | null | undefined): void;
+    onValueUpdate: (newValue: string | null | undefined) => void;
   };
 }
 
@@ -48,17 +48,17 @@ export default class NumberInput extends Component<NumberInputSig> {
     );
 
     let [value, ...parts] = event.target.value
-      .replace(/[^-0-9.]/g, '')
+      .replace(/[^\d.-]/g, '')
       .split('.');
 
     assert('expected value to exist', typeof value === 'string');
 
-    parts.forEach((part, i) => {
+    for (const [i, part] of parts.entries()) {
       if (i === 0) {
         value += '.';
       }
       value += part;
-    });
+    }
 
     this.value = value;
   }

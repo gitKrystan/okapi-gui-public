@@ -2,9 +2,9 @@ import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
 
-import { default as BaseNumberInput } from 'okapi/components/input/number';
-import { NumberParam } from 'okapi/models/param/index';
-import { ParamSig } from './index';
+import BaseNumberInput from 'okapi/components/input/number';
+import type { NumberParam } from 'okapi/models/param/index';
+import type { ParamSig } from './index';
 
 export default class NumberInput extends Component<ParamSig<NumberParam>> {
   <template>

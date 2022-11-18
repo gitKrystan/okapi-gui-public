@@ -7,8 +7,9 @@ import perform from 'ember-concurrency/helpers/perform';
 
 import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
-import Project, { ProjectStatus } from 'okapi/models/project';
-import ServerService from 'okapi/services/server';
+import { ProjectStatus } from 'okapi/models/project';
+import type Project from 'okapi/models/project';
+import type ServerService from 'okapi/services/server';
 
 export interface ProjectStatusSig {
   Args: {
@@ -37,12 +38,20 @@ export default class ProjectStatusComponent extends Component<ProjectStatusSig> 
   private get iconId(): string {
     switch (this.args.project.status) {
       case ProjectStatus.Starting:
-      case ProjectStatus.Stopping:
+      case ProjectStatus.Stopping: {
         return 'ellipsis-horizontal-circle';
-      case ProjectStatus.Started:
+      }
+      case ProjectStatus.Started: {
         return 'play-circle';
-      case ProjectStatus.Stopped:
+      }
+      case ProjectStatus.Stopped: {
         return 'stop-circle';
+      }
+      default: {
+        throw new Error(
+          `could not find Project Status for ${this.args.project.status}`
+        );
+      }
     }
   }
 

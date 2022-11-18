@@ -26,15 +26,15 @@ export type RawParam =
   | RawNumberParam
   | RawEnumParam;
 
-/**
- * Makes a Param instance of the correct type for the given RawParam.
- */
+/** Makes a Param instance of the correct type for the given RawParam. */
 export function makeParam(info: RawParam): Param {
   switch (info.type) {
-    case 'string':
+    case 'string': {
       return new StringParam(info);
-    case 'boolean':
+    }
+    case 'boolean': {
       return new BooleanParam(info);
+    }
     case 'f32':
     case 'f64':
     case 'i8':
@@ -44,9 +44,11 @@ export function makeParam(info: RawParam): Param {
     case 'u8':
     case 'u16':
     case 'u32':
-    case 'u64':
+    case 'u64': {
       return new NumberParam(info);
-    case 'enum':
+    }
+    case 'enum': {
       return new EnumParam(info);
+    }
   }
 }

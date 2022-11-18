@@ -4,9 +4,19 @@ import type Method from 'okapi/models/method';
 import type Project from 'okapi/models/project';
 import type ProjectSetting from 'okapi/models/project-setting';
 
-export class ServerError extends Error {}
+export class ServerError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ServerError';
+  }
+}
 
-export class NotFound extends ServerError {}
+export class NotFoundError extends ServerError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
 
 export default abstract class ServerService extends AbstractService {
   abstract getProjectList(): Promise<readonly Project[]>;
@@ -26,7 +36,7 @@ export default abstract class ServerService extends AbstractService {
     if (project) {
       return project;
     } else {
-      throw new NotFound(`Could not find project "${id}."`);
+      throw new NotFoundError(`Could not find project "${id}."`);
     }
   }
 

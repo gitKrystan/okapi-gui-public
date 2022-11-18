@@ -1,5 +1,6 @@
 import { assert } from '@ember/debug';
-import { hash } from '@ember/helper'; // This is actually used
+// @ts-expect-error This is actually used
+import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { schedule } from '@ember/runloop';
 import Component from '@glimmer/component';
@@ -10,7 +11,8 @@ import { modifier } from 'ember-modifier';
 
 import isHTMLElement from 'okapi/utils/is-html-element';
 import isPrintableCharacter from 'okapi/utils/is-printable-character';
-import { FocusDirection, MoveFocusSignature } from './types';
+import { FocusDirection } from './types';
+import type { MoveFocusSignature } from './types';
 
 interface ListNavSignature {
   Element: null;
@@ -60,7 +62,7 @@ export default class ListNav extends Component<ListNavSignature> {
 
       el.addEventListener('keydown', this.onKeydown);
 
-      return (): void => {
+      return () => {
         el.removeEventListener('keydown', this.onKeydown);
       };
     },
@@ -76,6 +78,7 @@ export default class ListNav extends Component<ListNavSignature> {
   /**
    * Manages focus for `Next` and `Previous` states, which need to know about
    * the currently focused item.
+   *
    * @param current The currently focused item.
    */
   moveFocusTo(
@@ -104,6 +107,7 @@ export default class ListNav extends Component<ListNavSignature> {
 
       let target: HTMLElement | undefined;
 
+      // eslint-disable-next-line unicorn/prefer-switch
       if (
         focusTarget === FocusDirection.Next ||
         focusTarget === FocusDirection.Previous
@@ -113,29 +117,26 @@ export default class ListNav extends Component<ListNavSignature> {
           typeof currentIndex === 'number'
         );
 
-        let targetIndex: number;
-
-        if (focusTarget === FocusDirection.Next) {
-          targetIndex = currentIndex + 1;
-        } else {
-          targetIndex = currentIndex - 1;
-        }
+        let targetIndex =
+          focusTarget === FocusDirection.Next
+            ? currentIndex + 1
+            : currentIndex - 1;
 
         // The targetIndex will be negative when Focus.Previous is called and the first item is focused, or when the listbox is closed and the user hits the 'ArrowUp' key.
         if (targetIndex < 0) {
-          target = items.lastObject;
+          target = items[items.length - 1];
         } else if (targetIndex >= items.length) {
-          target = items.firstObject;
+          target = items[0];
         } else {
           target = items[targetIndex];
         }
 
         assert("target doesn't exist", isHTMLElement(target));
       } else if (focusTarget === FocusDirection.First) {
-        target = items.firstObject;
+        target = items[0];
         assert("target doesn't exist", isHTMLElement(target));
       } else if (focusTarget === FocusDirection.Last) {
-        target = items.lastObject;
+        target = items[items.length - 1];
         assert("target doesn't exist", isHTMLElement(target));
       } else if (typeof focusTarget === 'number') {
         target = this.items[focusTarget];
@@ -227,8 +228,9 @@ export default class ListNav extends Component<ListNavSignature> {
     for (let i = startIndex; i < endIndex; i++) {
       let item = items[i];
       assert(`expected item at index ${i}`, item);
+      // eslint-disable-next-line unicorn/prefer-dom-node-text-content
       let label = item.innerText;
-      if (label && label.toLowerCase().startsWith(this.keysSoFar)) {
+      if (label?.toLowerCase().startsWith(this.keysSoFar)) {
         return item;
       }
     }
@@ -238,8 +240,6 @@ export default class ListNav extends Component<ListNavSignature> {
   /**
    * Moves focus on ArrowUp/ArrowDown, Home/End and "PrintableCharacters"
    * i.e., letters that potentially match a list item.
-   *
-   * @param e
    */
   @action private onKeydown(e: KeyboardEvent): void {
     if (!e.defaultPrevented) {
@@ -247,26 +247,31 @@ export default class ListNav extends Component<ListNavSignature> {
       let currentIndex = this.items.indexOf(e.target);
 
       switch (e.key) {
-        case 'ArrowUp':
+        case 'ArrowUp': {
           e.preventDefault();
           this.moveFocusTo(FocusDirection.Previous, currentIndex);
           break;
-        case 'ArrowDown':
+        }
+        case 'ArrowDown': {
           e.preventDefault();
           this.moveFocusTo(FocusDirection.Next, currentIndex);
           break;
-        case 'Home':
+        }
+        case 'Home': {
           e.preventDefault();
           this.moveFocusTo(FocusDirection.First);
           break;
-        case 'End':
+        }
+        case 'End': {
           e.preventDefault();
           this.moveFocusTo(FocusDirection.Last);
           break;
-        default:
+        }
+        default: {
           if (isPrintableCharacter(e.key)) {
             this.moveFocusTo(FocusDirection.StartsWith, currentIndex, e.key);
           }
+        }
       }
     }
   }

@@ -68,13 +68,13 @@ module('Integration | Component | method-info', function (hooks) {
       'wrong number of params',
       requestParamItems.length === this.state.method.request.length
     );
-    requestParamItems.forEach((p, i) => {
+    for (const [i, p] of requestParamItems.entries()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let request = this.state.method.request[i]!;
       assert.dom(p).includesText(request.name);
       assert.dom(p).includesText(request.type);
       assert.dom(p).includesText(request.description);
-    });
+    }
 
     let responseParamItems = findAll(
       '[data-test-response-params] [data-test-method-param-list-item]'
@@ -83,13 +83,13 @@ module('Integration | Component | method-info', function (hooks) {
       'wrong number of params',
       responseParamItems.length === this.state.method.response.length
     );
-    responseParamItems.forEach((p, i) => {
+    for (const [i, p] of responseParamItems.entries()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       let response = this.state.method.response[i]!;
       assert.dom(p).includesText(response.name);
       assert.dom(p).includesText(response.type);
       assert.dom(p).includesText(response.description);
-    });
+    }
   });
 
   module('method calls', function () {

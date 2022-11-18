@@ -51,16 +51,16 @@ class State {
   private expectedChange: number | undefined | false = false;
 
   @action onChange(value: number | undefined): void {
-    let { expectedChange } = this;
+    let { assert, expectedChange } = this;
     if (expectedChange === false) {
-      this.assert.ok(
+      assert.ok(
         false,
         `Unexpectedly called onChange callback with value${inspect(value)}`
       );
     } else {
-      this.assert.strictEqual(
+      assert.strictEqual(
         value,
-        this.expectedChange,
+        expectedChange,
         `Called onChange callback with value ${inspect(value)}`
       );
     }
@@ -482,7 +482,7 @@ function itHandlesValueInput(
   cases: TestCase[]
 ): void {
   module(type, function () {
-    cases.forEach(({ inputValue, value, expectedErrors }) => {
+    for (const { inputValue, value, expectedErrors } of cases) {
       test(`it handles an input of ${inspect(
         inputValue
       )}`, async function (this: Context, assert) {
@@ -519,6 +519,6 @@ function itHandlesValueInput(
           `state value is ${inspect(value)}`
         );
       });
-    });
+    }
   });
 }

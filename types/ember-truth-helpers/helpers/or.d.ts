@@ -1,3 +1,1 @@
-import or from '@gavant/glint-template-types/types/ember-truth-helpers/or';
-
-export default or;
+export { default } from '@gavant/glint-template-types/types/ember-truth-helpers/or';

@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 
-import Project from 'okapi/models/project';
-import ProjectSetting from 'okapi/models/project-setting';
+import type Project from 'okapi/models/project';
+import type ProjectSetting from 'okapi/models/project-setting';
 import Form from './form';
 
 interface ProjectSettingsSignature {

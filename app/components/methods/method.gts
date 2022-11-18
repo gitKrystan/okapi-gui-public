@@ -8,7 +8,7 @@ import not from 'ember-truth-helpers/helpers/not';
 import Button from 'okapi/components/button';
 import Icon from 'okapi/components/icon';
 import MethodInfo from 'okapi/components/method-info';
-import { default as MethodModel } from 'okapi/models/method';
+import type MethodModel from 'okapi/models/method';
 import MethodSignature from './method-signature';
 
 export interface MethodSig {

@@ -7,9 +7,9 @@ let expandingTextarea = modifier(
     textarea.style.overflow = 'hidden';
 
     // HACK: In order for the argument to auto-track, we must consume it.
-    tracked.forEach(() => {
+    for (const _tracked of tracked) {
       /* no-op */
-    });
+    }
 
     function updateHeight(this: HTMLTextAreaElement): void {
       this.style.height = 'auto';

@@ -1,7 +1,8 @@
 import { concat } from '@ember/helper';
 import Component from '@glimmer/component';
+
 import Token from 'okapi/components/syntax/token';
-import Method from 'okapi/models/method';
+import type Method from 'okapi/models/method';
 import ScrollAnchor from 'okapi/modifiers/scroll-anchor';
 
 export interface MethodSignatureSig {

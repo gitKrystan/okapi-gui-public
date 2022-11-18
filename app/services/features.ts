@@ -13,7 +13,7 @@ export {
 
 declare global {
   interface Window {
-    __ok__features?: FeaturesService;
+    __ok__features?: FeaturesService | undefined;
   }
 }
 
@@ -24,23 +24,27 @@ declare global {
  * `InternalFeature` (not displayed on the Labs page).
  *
  * @example
- * {
- *   internalFlag: new InternalFeature('An Internal Flag') {
- *     description: 'This flag will not be exposed to users in the UI but will be ' +
- *                  'available via window.__ok__features.toggle("internalFlag").',
- *     isEnabled: true, // defaults to false
- *     cutoffDate: February 14th, 2023
- *   },
- *   externalFlag: new ExternalFeature('An External Flag', {
- *     description: 'This flag will be visible to users in the UI and can ' +
- *                  'also be changed with window.__ok__features.toggle("externalFlag").',
- *     isEnabled: true, // defaults to false
- *     cutoffDate: February 14th, 2023
- *     imagePath: 'images/settings/labs/labs-placeholder.png',
- *     imageAltText: 'Alt text for screen readers or to display if the image ' +
- *                   'does not load',
+ *
+ * ```js
+ *   {
+ *     internalFlag: new InternalFeature('An Internal Flag', {
+ *       description: 'This flag will not be exposed to users in the UI but will be ' +
+ *                    'available via window.__ok__features.toggle("internalFlag").',
+ *       isEnabled: true, // defaults to false
+ *       cutoffDate: 'February 14th, 2023'
+ *     },
+ *     externalFlag: new ExternalFeature('An External Flag', {
+ *       description: 'This flag will be visible to users in the UI and can ' +
+ *                    'also be changed with window.__ok__features.toggle("externalFlag").',
+ *       isEnabled: true, // defaults to false
+ *       cutoffDate: 'February 14th, 2023'
+ *       imagePath: 'images/settings/labs/labs-placeholder.png',
+ *       imageAltText: 'Alt text for screen readers or to display if the image ' +
+ *                     'does not load',
+ *     }
  *   }
- * }
+ *   ```;
+ * ```
  */
 export type Features = Record<string, Feature>;
 
@@ -48,9 +52,7 @@ export type Feature = InternalFeature | ExternalFeature;
 
 export type Overrides = Record<string, true>;
 
-/**
- * A service for fetching, persisting, querying, and updating feature flags.
- */
+/** A service for fetching, persisting, querying, and updating feature flags. */
 export default abstract class FeaturesService extends AbstractService {
   @tracked private _flags = this.defaultFeatures();
 
@@ -77,7 +79,7 @@ export default abstract class FeaturesService extends AbstractService {
   /**
    * Determine if the given flag is enabled.
    *
-   * @param flag flag to check
+   * @param flag Flag to check
    * @returns Whether or not the user has enabled the flag.
    */
   isEnabled(flag: string): boolean {
@@ -87,8 +89,8 @@ export default abstract class FeaturesService extends AbstractService {
   /**
    * Enable a feature.
    *
-   * @param flag flag to enable
-   * @returns the set value
+   * @param flag Flag to enable
+   * @returns The set value
    */
   enable(flag: string): boolean {
     return this.setFeature(flag, true);
@@ -97,8 +99,8 @@ export default abstract class FeaturesService extends AbstractService {
   /**
    * Disable a feature.
    *
-   * @param flag the flag to disable
-   * @returns the set value
+   * @param flag The flag to disable
+   * @returns The set value
    */
   disable(flag: string): boolean {
     return this.setFeature(flag, false);
@@ -107,8 +109,8 @@ export default abstract class FeaturesService extends AbstractService {
   /**
    * Toggle a feature.
    *
-   * @param flag the flag to toggle
-   * @returns the updated value
+   * @param flag The flag to toggle
+   * @returns The updated value
    */
   toggle(flag: string): boolean {
     return this.setFeature(flag, !this.isEnabled(flag));
@@ -117,8 +119,8 @@ export default abstract class FeaturesService extends AbstractService {
   /**
    * Reset all features to their default value.
    *
-   * @param options options
-   * @param [options.save=true] whether to save
+   * @param options Options
+   * @param [options.save=true] Whether to save. Default is `true`
    */
   reset({ save = true }: { save?: boolean } = {}): void {
     this._flags = this.defaultFeatures();
@@ -129,11 +131,11 @@ export default abstract class FeaturesService extends AbstractService {
   }
 
   /**
-   * A function returning all the default features.
-   * This is provided as a function (as opposed to just a POJO) to allow us to
-   * easily get a fresh copy of all the available features (and their default
-   * values) without having to implement deep-cloning. This comes in handy for
-   * operations such as `reset`.
+   * A function returning all the default features. This is provided as a
+   * function (as opposed to just a POJO) to allow us to easily get a fresh copy
+   * of all the available features (and their default values) without having to
+   * implement deep-cloning. This comes in handy for operations such as
+   * `reset`.
    */
   protected defaultFeatures(): Features {
     return getDefaultFeatures();
@@ -172,14 +174,15 @@ export default abstract class FeaturesService extends AbstractService {
   }
 
   /**
-   * Set a feature to on (`true`) or off (`false`). If the feature is being turned
-   * on, `save` will be called, unless otherwise specified in the options.
+   * Set a feature to on (`true`) or off (`false`). If the feature is being
+   * turned on, `save` will be called, unless otherwise specified in the
+   * options.
    *
-   * @param flag flag to set
-   * @param value value to set
-   * @param options options
-   * @param [options.save=true] whether to save the value
-   * @returns the set value
+   * @param flag Flag to set
+   * @param value Value to set
+   * @param options Options
+   * @param [options.save=true] Whether to save the value. Default is `true`
+   * @returns The set value
    */
   private setFeature(
     flag: string,

@@ -5,7 +5,7 @@ import { TrackedSet } from 'tracked-built-ins';
 export default abstract class AbstractParam<
   Value,
   InputValue,
-  Raw extends { value?: Value }
+  Raw extends { value?: Value | undefined }
 > {
   constructor(readonly info: Raw) {}
 
@@ -74,8 +74,6 @@ export default abstract class AbstractParam<
     normalizedInputValue: InputValue | undefined
   ): Value | undefined;
 
-  /**
-   * Formats the value into an input value.
-   */
+  /** Formats the value into an input value. */
   protected abstract format(value: Value | undefined): InputValue | undefined;
 }

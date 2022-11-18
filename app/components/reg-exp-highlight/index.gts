@@ -21,7 +21,7 @@ interface Token {
  * separately to fuzzify the search.
  */
 function extractTokens(text: string, execArrays: RegExpExecArray[]): Token[] {
-  let chars: Token[] = text.split('').map((char) => ({
+  let chars: Token[] = [...text].map((char) => ({
     text: char,
     isMatch: false,
   }));
@@ -30,10 +30,10 @@ function extractTokens(text: string, execArrays: RegExpExecArray[]): Token[] {
     // Exec Arrays are the result of RegExp.exec, meaning the first item
     // contains the entire matched value. We only want the capture groups that
     // follow.
-    let [_, ...captures] = execArray;
+    let [_match, ...captures] = execArray;
     let charIndex = execArray.index;
 
-    captures.forEach((capture, i) => {
+    for (const [i, capture] of captures.entries()) {
       if (i % 2) {
         // odd captures are not matches for this execArray, so skip those chars
         charIndex += capture.length;
@@ -49,12 +49,12 @@ function extractTokens(text: string, execArrays: RegExpExecArray[]): Token[] {
           charIndex += 1;
         }
       }
-    });
+    }
   }
 
   // [{ text: 'matched', isMatch: true }, { text: 'nope', isMatch: false }]
   let merged: Token[] = [];
-  chars.forEach((char, i) => {
+  for (const [i, char] of chars.entries()) {
     let prev = merged[merged.length - 1];
     let next = chars[i + 1];
     if (
@@ -67,14 +67,14 @@ function extractTokens(text: string, execArrays: RegExpExecArray[]): Token[] {
     } else {
       merged.push(char);
     }
-  });
+  }
 
   return merged;
 }
 
 export default class RegExpHighlight extends Component<RegExpHighlightSig> {
   <template>
-    {{#each this.tokens as |token i|}}
+    {{#each this.tokens as |token|}}
       {{#if token.isMatch~}}
         <mark class="RegExpHighlight">{{token.text}}</mark>
       {{~else~}}

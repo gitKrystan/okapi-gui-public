@@ -1,7 +1,4 @@
-/**
- * Type declarations for
- *    import config from 'my-app/config/environment'
- */
+/** Type declarations for import config from 'my-app/config/environment' */
 declare const config: {
   environment: string;
   modulePrefix: string;

@@ -6,8 +6,8 @@ import eq from 'ember-truth-helpers/helpers/eq';
 import or from 'ember-truth-helpers/helpers/or';
 
 import Combobox from 'okapi/components/combobox/select-only';
-import { EnumParam, EnumParamOption } from 'okapi/models/param/index';
-import { ParamSig } from './index';
+import type { EnumParam, EnumParamOption } from 'okapi/models/param/index';
+import type { ParamSig } from './index';
 
 export default class EnumInput extends Component<ParamSig<EnumParam>> {
   <template>

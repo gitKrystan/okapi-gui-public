@@ -31,7 +31,10 @@ module('Integration | Component | switch', function (hooks) {
     this.assertState = (
       value: boolean,
       message: string,
-      { onText, offText } = { onText: 'on', offText: 'off' }
+      {
+        onText = 'on',
+        offText = 'off',
+      }: { onText?: string; offText?: string } = {}
     ): void => {
       assert.strictEqual(
         this.state.current,

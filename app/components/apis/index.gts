@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import ApiModel from 'okapi/models/api';
+import type ApiModel from 'okapi/models/api';
 import Api from './api';
 
 export interface ApisSig {

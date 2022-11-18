@@ -1,7 +1,7 @@
 import { LinkTo } from '@ember/routing';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import ThemeService from 'okapi/services/theme';
+import type ThemeService from 'okapi/services/theme';
 import ThemeSwitch from 'okapi/components/theme-switch';
 
 export interface NavBarSig {

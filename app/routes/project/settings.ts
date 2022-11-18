@@ -19,7 +19,7 @@ export default class ProjectSettingsRoute extends Route<
 > {
   @service declare server: ServerService;
 
-  async model(): Promise<ProjectSettingsRouteModel> {
+  override async model(): Promise<ProjectSettingsRouteModel> {
     let settings = await this.server.getSettingsList();
     let project = this.modelFor('project') as ProjectRouteModel;
     return { project, settings };

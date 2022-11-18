@@ -9,13 +9,14 @@ import FeaturesService from 'okapi/services/features';
  * window.localStorage since it might leak into other tests.
  *
  * TODO: Once we switch to persisting to the actual back-end, we can either:
- * - get rid of this implementation altogether (and just mock/assert with
- *   Mirage), OR
- * - if we find the test-specific logic in this implementation useful, we can
+ *
+ * - Get rid of this implementation altogether (and just mock/assert with Mirage),
+ *   OR
+ * - If we find the test-specific logic in this implementation useful, we can
  *   rewrite this implementation to extend the default implementation that
  *   relies on the mocked Mirage backend in tests but is still layered with the
  *   additional test-specific logic, OR
- * - something else I haven't thought of yet.
+ * - Something else I haven't thought of yet.
  */
 export default class TestingFeaturesService extends FeaturesService {
   constructor(owner: unknown) {
@@ -24,7 +25,7 @@ export default class TestingFeaturesService extends FeaturesService {
     void this.fetchOverrides();
   }
 
-  logger = null;
+  override logger = null;
 
   /**
    * An array of feature keys that would have been persisted to the backend if

@@ -26,7 +26,7 @@ export default class DefaultFeaturesService extends FeaturesService {
     for (let feature of loadedFeaturesFromStorage.split(',')) {
       try {
         features.push(feature);
-      } catch (e: unknown) {
+      } catch {
         this.logger?.log('failed to parse feature:' + feature);
       }
     }

@@ -5,7 +5,7 @@ import { service } from '@ember/service';
 export default class ProjectProvidersRoute extends Route {
   @service declare router: RouterService;
 
-  redirect(): void {
+  override redirect(): void {
     void this.router.replaceWith('project');
   }
 }

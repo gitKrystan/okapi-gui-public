@@ -7,7 +7,7 @@ export default class DefaultPrefersColorSchemeService extends PrefersColorScheme
     this.setup();
   }
 
-  willDestroy(): void {
+  override willDestroy(): void {
     this.teardown();
     super.willDestroy();
   }
