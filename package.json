@@ -130,7 +130,7 @@
     "postcss-clean": "^1.2.2",
     "postcss-scss": "^4.0.5",
     "prettier": "^2.7.1",
-    "prettier-plugin-ember-template-tag": "^0.1.1",
+    "prettier-plugin-ember-template-tag": "^0.2.1",
     "prettier-plugin-jsdoc": "^0.4.2",
     "qunit": "^2.19.3",
     "qunit-dom": "^2.0.0",

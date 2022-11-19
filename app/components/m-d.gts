@@ -17,7 +17,9 @@ interface MdSignature {
  * Renders sanitized markdown for the provided raw text.
  */
 export default class Markdown extends Component<MdSignature> {
-  <template><div data-test-md ...attributes>{{this.html}}</div></template>
+  <template>
+    <div data-test-md ...attributes>{{this.html}}</div>
+  </template>
 
   private parser = makeParser();
 
