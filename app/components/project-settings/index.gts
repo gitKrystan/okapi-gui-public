@@ -1,4 +1,4 @@
-import Component from '@glimmer/component';
+import type { TemplateOnlyComponent } from '@ember/component/template-only';
 
 import type Project from 'okapi/models/project';
 import type ProjectSetting from 'okapi/models/project-setting';
@@ -11,9 +11,10 @@ interface ProjectSettingsSignature {
   };
 }
 
-export default class ProjectSettings extends Component<ProjectSettingsSignature> {
-  <template><Form @project={{@project}} @settings={{@settings}} /></template>
-}
+const ProjectSettings: TemplateOnlyComponent<ProjectSettingsSignature> =
+  <template><Form @project={{@project}} @settings={{@settings}} /></template>;
+
+export default ProjectSettings;
 
 declare module '@glint/environment-ember-loose/registry' {
   export default interface Registry {
