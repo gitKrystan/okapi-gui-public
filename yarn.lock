@@ -6170,7 +6170,7 @@ eslint-config-prettier@^8.5.0:
 
 eslint-plugin-ember@gitKrystan/eslint-plugin-ember#un-muck:
   version "11.2.0"
-  resolved "https://codeload.github.com/gitKrystan/eslint-plugin-ember/tar.gz/e36fc5b18d61aa6f50226cc804f6228163dfa46b"
+  resolved "https://codeload.github.com/gitKrystan/eslint-plugin-ember/tar.gz/b87e39cfba36a564ac5a91fde1617a2c9bb4edc7"
   dependencies:
     "@ember-data/rfc395-data" "^0.0.4"
     "@glimmer/syntax" "^0.84.2"
