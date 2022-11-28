@@ -1324,10 +1324,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@gavant/glint-template-types@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@gavant/glint-template-types/-/glint-template-types-0.2.6.tgz#e5b45a75dad03844026480c85147250e9b529032"
-  integrity sha512-rOM2l+yhUQrgQ4ARbsuN/h9iviW0RVQiEOESnn52uHDbpag3OU2+rmqLS4APqhbaqfTTXBg2v4fLCKc5cUjaFg==
+"@gavant/glint-template-types@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@gavant/glint-template-types/-/glint-template-types-0.3.0.tgz#0c8096ba6934c561665b3a4f867204dc0815cae3"
+  integrity sha512-fL1C1EmQPQw9TZxewN3D/r5XbJVPP8Ba3gR0jLBroBUXWFD9mxnYhsivKJVf3p41XiV5KVsBumxbVmbQ/JbpSQ==
 
 "@glimmer/component@^1.1.0", "@glimmer/component@^1.1.2":
   version "1.1.2"
