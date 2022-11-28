@@ -48,7 +48,7 @@
     json5 "^2.2.1"
     semver "^6.3.0"
 
-"@babel/core@^7.20.2", "@babel/core@^7.20.5":
+"@babel/core@^7.20.5":
   version "7.20.5"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.20.5.tgz#45e2114dc6cd4ab167f81daf7820e8fa1250d113"
   integrity sha512-UdOWmk4pNWTm/4DlPUl/Pt4Gz4rcEMb7CY0Y3eJl5Yz1vI8ZJGmHWaVE55LoxRjdpx0z259GE9U5STA9atUinQ==
@@ -10180,16 +10180,16 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
 
-prettier-plugin-ember-template-tag@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-ember-template-tag/-/prettier-plugin-ember-template-tag-0.2.1.tgz#05fc27849ca5c26cef0acc849bc8f8d98f1eb16a"
-  integrity sha512-I3S1VbEuHt4AwYzcP+Er53Txmrpm/a+gLZY394KzbdOCxGXWjVYNfdJz5qU11KLiHp3cGz1m/5ywOastEFbUrA==
+prettier-plugin-ember-template-tag@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-ember-template-tag/-/prettier-plugin-ember-template-tag-0.3.0.tgz#41665bfab863b1435d128aecf7d13e1d81ccc65e"
+  integrity sha512-0WeYOyutMKAMP39e0E45HI+xX5/tS0iOvZWpKUxIbzKAoLwTzkfFe7Rc7Fxp0aSJbuAavtkrpQB/6WQj3cySPg==
   dependencies:
-    "@babel/core" "^7.20.2"
+    "@babel/core" "^7.20.5"
     "@glimmer/syntax" "^0.84.2"
     ember-cli-htmlbars "^6.1.1"
     ember-template-imports "^3.4.0"
-    prettier "^2.7.1"
+    prettier "^2.8.0"
 
 prettier-plugin-jsdoc@^0.4.2:
   version "0.4.2"
@@ -10204,6 +10204,11 @@ prettier@^2.5.1, prettier@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.1.tgz#e235806850d057f97bb08368a4f7d899f7760c64"
   integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
+
+prettier@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.0.tgz#c7df58393c9ba77d6fba3921ae01faf994fb9dc9"
+  integrity sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==
 
 pretty-ms@^3.1.0:
   version "3.2.0"
