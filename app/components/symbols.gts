@@ -3,7 +3,7 @@ import type { TemplateOnlyComponent } from '@ember/component/template-only';
 <template>
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 
-    <!-- source: https://heroicons.com/ -->
+    {{! source: https://heroicons.com/ }}
 
     {{! OUTLINE: For primary navigation and marketing sections, with an outlined appearance, designed to be rendered at 24x24. }}
 

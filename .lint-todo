@@ -1,0 +1,16 @@
+add|ember-template-lint|no-redundant-role|84|8|84|8|8635c1878ec9b0ff34697cacbd4391a2ae14788e|1669593600000|1672185600000|1674777600000|app/components/combobox/editable.gts
+add|ember-template-lint|require-aria-activedescendant-tabindex|113|8|113|8|64c7bfdb29f08a85cfb4be8da36d634e26911a36|1669593600000|1672185600000|1674777600000|app/components/combobox/editable.gts
+add|ember-template-lint|link-href-attributes|42|10|42|10|d02b8a3a94fe0f59310c75b31357c3364acbfdf0|1669593600000|1672185600000|1674777600000|app/components/method-info/index.gts
+add|ember-template-lint|link-href-attributes|73|8|73|8|7ed13b44874262384425e0db373a178b8568e408|1669593600000|1672185600000|1674777600000|app/components/method-info/index.gts
+add|ember-template-lint|link-href-attributes|17|6|17|6|8538efc91267749e5356bcafa8dd2d6e5440a2c8|1669593600000|1672185600000|1674777600000|app/components/methods/method-signature.gts
+add|ember-template-lint|link-href-attributes|21|6|21|6|41bfd62f49a12adc3c796ad425f6944952bd96c0|1669593600000|1672185600000|1674777600000|app/components/methods/method-signature.gts
+add|ember-template-lint|link-href-attributes|26|6|26|6|0262c708042abe6f55c926afbf6f215bb98d2ae4|1669593600000|1672185600000|1674777600000|app/components/methods/method-signature.gts
+add|ember-template-lint|require-mandatory-role-attributes|92|12|92|12|9d6a53e88239d7e286a5e0463b484c18311b2a2c|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|93|12|93|12|94b7c725be2e498fc99a44367a6c3e95080ea202|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|94|12|94|12|84cf4b14313c1da4ab1b55f26d4ca46233ea43d8|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|116|14|116|14|9d6a53e88239d7e286a5e0463b484c18311b2a2c|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|117|14|117|14|94b7c725be2e498fc99a44367a6c3e95080ea202|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|118|14|118|14|84cf4b14313c1da4ab1b55f26d4ca46233ea43d8|1669593600000|1672185600000|1674777600000|tests/integration/components/list-nav-test.ts
+add|ember-template-lint|no-invalid-role|336|16|336|16|805f0f3bbc1b710bac871941b3173a028ca037a1|1669593600000|1672185600000|1674777600000|tests/integration/components/combobox/select-only-test.ts
+add|ember-template-lint|require-context-role|339|20|339|20|ed44381a11756e7d8eb13ea55c2de1c83023ffcd|1669593600000|1672185600000|1674777600000|tests/integration/components/combobox/select-only-test.ts
+add|ember-template-lint|require-mandatory-role-attributes|337|18|337|18|bd566a3dc647593405544f652fa95e87b1fa99e0|1669593600000|1672185600000|1674777600000|tests/integration/components/combobox/select-only-test.ts

@@ -62,6 +62,7 @@ module('Integration | Component | list-nav', function (hooks) {
         await render<Context>(hbs`
           <ListNav @itemRole="menuitem" as |nav|>
             <button
+              type="button"
               {{on "click" (fn this.state.handleClick nav.moveFocusTo)}}
               {{on "keydown" (fn this.state.handleKeydown nav.moveFocusTo)}}
             >
@@ -105,6 +106,7 @@ module('Integration | Component | list-nav', function (hooks) {
         await render<Context>(hbs`
           <ListNav @itemRole="option" as |nav|>
             <button
+              type="button"
               {{on "click" (fn this.state.handleClick nav.moveFocusTo)}}
               {{on "keydown" (fn this.state.handleKeydown nav.moveFocusTo)}}
             >
