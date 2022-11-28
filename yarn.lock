@@ -11493,16 +11493,16 @@ styled_string@0.0.1:
   resolved "https://registry.yarnpkg.com/styled_string/-/styled_string-0.0.1.tgz#d22782bd81295459bc4f1df18c4bad8e94dd124a"
   integrity sha512-DU2KZiB6VbPkO2tGSqQ9n96ZstUPjW7X4sGO6V2m1myIQluX0p1Ol8BrA/l6/EesqhMqXOIXs3cJNOy1UuU2BA==
 
-stylelint-actions-formatters@^14.14.0:
-  version "14.14.0"
-  resolved "https://registry.yarnpkg.com/stylelint-actions-formatters/-/stylelint-actions-formatters-14.14.0.tgz#2f73c95a038968b9cc33b00518cc0716bb0aeca6"
-  integrity sha512-Vbr8rrNMMhGWcLY+zL9EdlRAKaM52uEvUjxnkHcNTBN4VaBuohYcE0jgUb0hCgmzHoYHCWWG3Y8OsIJQzA5avQ==
+stylelint-actions-formatters@^14.15.0:
+  version "14.15.0"
+  resolved "https://registry.yarnpkg.com/stylelint-actions-formatters/-/stylelint-actions-formatters-14.15.0.tgz#a2a8272916fb8752c7534fd1eb6c223355f4af2f"
+  integrity sha512-LlvB7+um4QpIIKvJMGoh9wr1H7elxVSkY81JVMmAk/c0a5OkCv+OYrTlTTtM3yU9bPnJS4qWrfYbrdu/xwCHQA==
   dependencies:
     is-plain-object "^5.0.0"
     picocolors "^1.0.0"
     string-width "^4.2.3"
     supports-hyperlinks "^2.3.0"
-    table "^6.8.0"
+    table "^6.8.1"
 
 stylelint-config-prettier@^9.0.4:
   version "9.0.4"
@@ -11692,7 +11692,7 @@ sync-disk-cache@^2.0.0:
     rimraf "^3.0.0"
     username-sync "^1.0.2"
 
-table@^6.8.0, table@^6.8.1:
+table@^6.8.1:
   version "6.8.1"
   resolved "https://registry.yarnpkg.com/table/-/table-6.8.1.tgz#ea2b71359fe03b017a5fbc296204471158080bdf"
   integrity sha512-Y4X9zqrCftUhMeH2EptSSERdVKt/nEdijTOacGD/97EKjhQ/Qs8RTlEGABSJNNN8lac9kheH+af7yAkEWlgneA==
