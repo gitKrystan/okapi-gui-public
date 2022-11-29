@@ -15,12 +15,12 @@ module('Integration | Helper | expanding-textarea', function (hooks) {
       name: 'native',
       // TODO: This cast should be unnecessary once types are fixed.
       template:
-        hbs`<textarea {{expanding-textarea}} />` as unknown as TemplateFactory,
+        hbs`<label>Fill Me In<textarea {{expanding-textarea}} /></label>` as unknown as TemplateFactory,
     },
     {
       name: 'component',
       template:
-        hbs`<Textarea {{expanding-textarea}} />` as unknown as TemplateFactory,
+        hbs`<label>Fill Me In<Textarea {{expanding-textarea}} /></label>` as unknown as TemplateFactory,
     },
   ]) {
     test(`${t.name}: it adjusts height based on content`, async function (assert) {
