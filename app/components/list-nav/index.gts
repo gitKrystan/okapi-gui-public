@@ -1,5 +1,4 @@
 import { assert } from '@ember/debug';
-// @ts-expect-error This is actually used
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
 import { schedule } from '@ember/runloop';
