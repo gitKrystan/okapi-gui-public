@@ -2,8 +2,8 @@ import type { HelperLike } from '@glint/template';
 
 import '@bagaar/ember-breadcrumbs/glint';
 import '@gavant/glint-template-types/types/ember-concurrency/perform';
-import '@gavant/glint-template-types/types/ember-truth-helpers/eq';
 import '@gavant/glint-template-types/types/ember-truth-helpers/and';
+import '@gavant/glint-template-types/types/ember-truth-helpers/eq';
 import '@gavant/glint-template-types/types/ember-truth-helpers/gt';
 import '@gavant/glint-template-types/types/ember-truth-helpers/gte';
 import '@gavant/glint-template-types/types/ember-truth-helpers/is-array';
@@ -18,8 +18,8 @@ import '@gavant/glint-template-types/types/ember-truth-helpers/xor';
 import 'ember-cached-decorator-polyfill';
 
 import type perform from 'ember-concurrency/helpers/perform';
-import type and from 'ember-truth-helpers/helpers/and';
 import type eq from 'ember-truth-helpers/helpers/eq';
+import type and from 'ember-truth-helpers/helpers/and';
 import type gt from 'ember-truth-helpers/helpers/gt';
 import type gte from 'ember-truth-helpers/helpers/gte';
 import type isArray from 'ember-truth-helpers/helpers/is-array';
