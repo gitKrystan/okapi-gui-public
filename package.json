@@ -38,7 +38,7 @@
     "@csstools/postcss-sass": "^5.0.1",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.8.1",
-    "@embroider/compat": "^2.0.1",
+    "@embroider/compat": "^2.0.2",
     "@embroider/core": "^2.0.1",
     "@embroider/webpack": "^2.0.1",
     "@gavant/glint-template-types": "^0.3.0",
