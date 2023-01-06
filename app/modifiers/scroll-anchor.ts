@@ -1,10 +1,13 @@
 import { assert } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import { action } from '@ember/object';
+import type Owner from '@ember/owner';
 import { service } from '@ember/service';
 import Ember from 'ember'; // For Ember.testing
+
 import type { ArgsFor, PositionalArgs, NamedArgs } from 'ember-modifier';
 import Modifier from 'ember-modifier';
+
 import type LocationService from 'okapi/services/location';
 
 interface ScrollAnchorSignature {
@@ -24,7 +27,7 @@ export default class ScrollAnchor extends Modifier<ScrollAnchorSignature> {
 
   el: HTMLAnchorElement | null = null;
 
-  constructor(owner: unknown, args: ArgsFor<ScrollAnchorSignature>) {
+  constructor(owner: Owner, args: ArgsFor<ScrollAnchorSignature>) {
     super(owner, args);
     registerDestructor(this, cleanup);
   }

@@ -91,6 +91,7 @@ export default class EditableCombobox<
           aria-controls="{{this.id}}-listbox"
           aria-autocomplete={{this.autocomplete}}
           aria-expanded="{{d.isExpanded}}"
+          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           {{this.registerInput}}
           {{on "click" (fn this.handleInputClick d)}}
           {{on "keydown" (fn this.handleInputKeyDown d)}}
@@ -131,6 +132,7 @@ export default class EditableCombobox<
                 {{on "mousemove" (fn this.onItemMousemove option)}}
                 {{on "focus" (fn this.onItemFocus option)}}
                 aria-selected={{if isSelected "true" "false"}}
+                {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
                 {{this.scrollIntoView isSelected}}
               >
                 {{yield
@@ -242,12 +244,9 @@ export default class EditableCombobox<
 
   // Element registration
 
-  private registerInput = modifier(
-    (el: HTMLInputElement) => {
-      this._inputEl = el;
-    },
-    { eager: false }
-  );
+  private registerInput = modifier((el: HTMLInputElement) => {
+    this._inputEl = el;
+  });
 
   private _inputEl?: HTMLElement;
 
@@ -566,8 +565,7 @@ export default class EditableCombobox<
       if (isSelected) {
         el.scrollIntoView(false);
       }
-    },
-    { eager: false }
+    }
   );
 }
 

@@ -52,21 +52,18 @@ export default class ListNav extends Component<ListNavSignature> {
   /**
    * Handles 'keydown' events for the listbox.
    */
-  list = modifier(
-    (el: HTMLElement) => {
-      let items = [...el.querySelectorAll(`[role="${this.args.itemRole}"]`)];
-      assert('not all items are HTMLElements', items.every(isHTMLElement));
+  list = modifier((el: HTMLElement) => {
+    let items = [...el.querySelectorAll(`[role="${this.args.itemRole}"]`)];
+    assert('not all items are HTMLElements', items.every(isHTMLElement));
 
-      this._items = items;
+    this._items = items;
 
-      el.addEventListener('keydown', this.onKeydown);
+    el.addEventListener('keydown', this.onKeydown);
 
-      return () => {
-        el.removeEventListener('keydown', this.onKeydown);
-      };
-    },
-    { eager: false }
-  );
+    return () => {
+      el.removeEventListener('keydown', this.onKeydown);
+    };
+  });
 
   /**
    * Focuses specified item

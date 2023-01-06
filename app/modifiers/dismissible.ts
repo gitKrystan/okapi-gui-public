@@ -1,6 +1,7 @@
 import { assert } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import { action } from '@ember/object';
+import type Owner from '@ember/owner';
 
 import type { ArgsFor, NamedArgs, PositionalArgs } from 'ember-modifier';
 import Modifier from 'ember-modifier';
@@ -76,7 +77,7 @@ const DEFAULT_OPTIONS = Object.freeze({
  * cancellations.
  */
 export default class DismissibleModifier extends Modifier<DismissibleSignature> {
-  constructor(owner: unknown, args: ArgsFor<DismissibleSignature>) {
+  constructor(owner: Owner, args: ArgsFor<DismissibleSignature>) {
     super(owner, args);
     registerDestructor(this, this.removeListeners);
   }

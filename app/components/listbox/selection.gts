@@ -83,6 +83,7 @@ export default class ListboxSelection<T> extends Component<
     <div
       role="listbox"
       tabindex={{if (eq this.selection undefined) "0" ""}}
+      {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
       {{@list}}
       class="Listbox"
       ...attributes

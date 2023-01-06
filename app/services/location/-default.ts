@@ -1,3 +1,5 @@
+import type Owner from '@ember/owner';
+
 import LocationService from 'okapi/services/location';
 
 export interface Location {
@@ -6,7 +8,7 @@ export interface Location {
 
 export default class DefaultLocationService extends LocationService {
   constructor(
-    owner: unknown,
+    owner: Owner,
     // eslint-disable-next-line no-restricted-properties
     private location: Location = window.location
   ) {

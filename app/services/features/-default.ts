@@ -1,3 +1,5 @@
+import type Owner from '@ember/owner';
+
 import FeaturesService from 'okapi/services/features';
 
 const FEATURE_FLAG_STORAGE_KEY = 'events-app-feature-flags';
@@ -9,7 +11,7 @@ const FEATURE_FLAG_STORAGE_KEY = 'events-app-feature-flags';
  * TODO: Rewrite this in a future PR to use the real backend for persistence.
  */
 export default class DefaultFeaturesService extends FeaturesService {
-  constructor(owner: unknown) {
+  constructor(owner: Owner) {
     super(owner);
 
     void this.fetchOverrides();
