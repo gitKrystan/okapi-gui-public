@@ -1785,13 +1785,6 @@
   dependencies:
     "@types/trusted-types" "*"
 
-"@types/ember-qunit@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/ember-qunit/-/ember-qunit-6.1.1.tgz#8350944aced173024135d9ae2b7e55105c44564e"
-  integrity sha512-1g5A3vPKhvB/CuN/EP9rBLXYaJOjzKyLYWeBtNDEQNkTuG1dAo/Hg0CCixgbBgLlzaDP8mR/n1xpg8HqQ8SUKg==
-  dependencies:
-    ember-qunit "*"
-
 "@types/ember-resolver@*", "@types/ember-resolver@^5.0.13":
   version "5.0.13"
   resolved "https://registry.yarnpkg.com/@types/ember-resolver/-/ember-resolver-5.0.13.tgz#db66678076ca625ed80b629c09619ae85c1c1f7a"
@@ -5678,7 +5671,7 @@ ember-page-title@^7.0.0:
   dependencies:
     ember-cli-babel "^7.26.6"
 
-ember-qunit@*, ember-qunit@^6.1.1:
+ember-qunit@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-6.1.1.tgz#9e2b7835239e7ffd176e08e536975f66e59f75e5"
   integrity sha512-3/jCpoecltFV6vm7GCtSDNRxBzWx96nP+QrbereJAnioSaGeLe+slKL3l80mGzMYDTvn7ESobZ+Ba+OQ1vMMKQ==
