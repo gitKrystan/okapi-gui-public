@@ -28,16 +28,13 @@ export default class Validator extends Component<ValidatorSig> {
     {{/if}}
   </template>
 
-  validator = modifier(
-    (element: HTMLElement) => {
-      element.addEventListener('focusout', this.handleFocusout);
+  validator = modifier((element: HTMLElement) => {
+    element.addEventListener('focusout', this.handleFocusout);
 
-      return () => {
-        element.removeEventListener('focusout', this.handleFocusout);
-      };
-    },
-    { eager: false }
-  );
+    return () => {
+      element.removeEventListener('focusout', this.handleFocusout);
+    };
+  });
 
   @action private handleFocusout(e: FocusEvent): void {
     let { currentTarget } = e;

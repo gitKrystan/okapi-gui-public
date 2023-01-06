@@ -19,8 +19,7 @@ const maybeReadonly = modifier(
     return () => {
       element.removeEventListener('input', enforceReadonly);
     };
-  },
-  { eager: false }
+  }
 );
 
 interface CheckboxSignature {
@@ -50,6 +49,7 @@ export default class Checkbox extends Component<CheckboxSignature> {
         @checked={{@checked}}
         class="Checkbox__input"
         ...attributes
+        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         {{maybeReadonly @readonly}}
         readonly={{@readonly}}
       />

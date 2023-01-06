@@ -496,6 +496,7 @@ function itHandlesValueInput(
                 @param={{this.state.param}}
                 @readonly={{this.state.readonly}}
                 @onChange={{this.state.onChange}}
+                {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
                 {{validator}}
               />
             </ParamInput::Validator>

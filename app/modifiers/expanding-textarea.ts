@@ -20,8 +20,7 @@ let expandingTextarea = modifier(
     return (): void => {
       textarea.removeEventListener('input', updateHeight);
     };
-  },
-  { eager: false }
+  }
 );
 
 /**

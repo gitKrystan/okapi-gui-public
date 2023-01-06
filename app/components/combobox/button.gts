@@ -36,6 +36,7 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
       aria-controls="{{@listboxId}}"
       aria-expanded="{{@expanded}}"
       data-test-combobox-button
+      {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
       {{this.didInsert}}
       {{on "keydown" this.onKeydown}}
       {{on "click" this.onClick}}
@@ -55,12 +56,9 @@ export default class ComboboxButton extends Component<ComboboxButtonSignature> {
     return !this.args.readonly;
   }
 
-  private didInsert = modifier(
-    (element: HTMLButtonElement) => {
-      this.args.onInsert?.(element);
-    },
-    { eager: false }
-  );
+  private didInsert = modifier((element: HTMLButtonElement) => {
+    this.args.onInsert?.(element);
+  });
 
   @action private onKeydown(e: KeyboardEvent): void {
     if (this.enabled) {
