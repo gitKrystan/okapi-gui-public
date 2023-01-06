@@ -20,3 +20,11 @@ export default abstract class PrefersColorSchemeService extends AbstractService 
     for (const cb of this.preferenceChangeListeners) cb(isDark);
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
+declare module '@ember/service' {
+  interface Registry {
+    // @ts-expect-error Property...is not assignable to 'string' index type 'Service'.
+    'prefers-color-scheme': PrefersColorSchemeService;
+  }
+}

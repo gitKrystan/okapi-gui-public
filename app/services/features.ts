@@ -213,6 +213,7 @@ export default abstract class FeaturesService extends AbstractService {
 // DO NOT DELETE: this is how TypeScript knows how to look up your services.
 declare module '@ember/service' {
   interface Registry {
+    // @ts-expect-error Property...is not assignable to 'string' index type 'Service'.
     features: FeaturesService;
   }
 }
