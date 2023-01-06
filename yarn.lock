@@ -1235,10 +1235,10 @@
     walk-sync "^3.0.0"
     yargs "^17.0.1"
 
-"@embroider/core@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@embroider/core/-/core-2.0.1.tgz#7c2e411966f49a5fc4b85c1209469679ce3fd7b6"
-  integrity sha512-Fk4XUutcNId94V24tauUu6n397DvXyMqoQo7lXJHYlqE+YWDJRQQT0uSIhMqU0kvGvTLbn4pVfK1WxtWdIad0w==
+"@embroider/core@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@embroider/core/-/core-2.0.2.tgz#73532d248def5833b7af4e55350e1561a3189667"
+  integrity sha512-noxrIOTiOI8ZW9s7hLCOhSHfsttgkPXN1on/2aovCHza0lQ9DNi4V5Ybpd4QMaTh+OzsrLGnV9qdj7kd9GpWSg==
   dependencies:
     "@babel/core" "^7.14.5"
     "@babel/parser" "^7.14.5"
