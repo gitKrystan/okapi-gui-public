@@ -1,3 +1,5 @@
+import type Owner from '@ember/owner';
+
 import type { Features } from 'okapi/services/features';
 import FeaturesService from 'okapi/services/features';
 
@@ -19,7 +21,7 @@ import FeaturesService from 'okapi/services/features';
  * - Something else I haven't thought of yet.
  */
 export default class TestingFeaturesService extends FeaturesService {
-  constructor(owner: unknown) {
+  constructor(owner: Owner) {
     super(owner);
 
     void this.fetchOverrides();

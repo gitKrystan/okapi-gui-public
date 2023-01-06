@@ -1,4 +1,5 @@
 import { getOwner } from '@ember/application';
+import { assert as emberAssert } from '@ember/debug';
 import { module, test } from 'qunit';
 
 import type { Location } from 'okapi/services/location/-default';
@@ -23,7 +24,9 @@ module('Unit | Service | location', function (hooks) {
 
   test('id delegates to location.href (without #)', function (assert) {
     let mockLocation = new MockLocation();
-    let service = new DefaultLocationService(getOwner(this), mockLocation);
+    let owner = getOwner(this);
+    emberAssert('expected owner', owner);
+    let service = new DefaultLocationService(owner, mockLocation);
     service.id = 'Aino';
 
     assert.deepEqual(mockLocation.hash, '#Aino');

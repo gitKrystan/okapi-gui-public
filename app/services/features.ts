@@ -1,5 +1,8 @@
+import type Owner from '@ember/owner';
 import { tracked } from '@glimmer/tracking';
+
 import { AbstractService } from 'ember-swappable-service';
+
 import getDefaultFeatures from 'okapi/services/features/private/default-features';
 import type {
   ExternalFeature,
@@ -66,7 +69,7 @@ export default abstract class FeaturesService extends AbstractService {
 
   protected logger: Console | null = console;
 
-  constructor(owner: unknown) {
+  constructor(owner: Owner) {
     super(owner);
 
     window.__ok__features = this;
