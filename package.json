@@ -123,7 +123,7 @@
     "eslint-plugin-unicorn": "^45.0.2",
     "highlight.js": "^11.7.0",
     "loader.js": "^4.7.0",
-    "marked": "^4.2.5",
+    "marked": "^4.2.12",
     "postcss": "^8.4.20",
     "postcss-clean": "^1.2.2",
     "postcss-scss": "^4.0.6",
