@@ -28,6 +28,10 @@ module.exports = function (defaults) {
   }
 
   const app = new EmberApp(defaults, {
+    babel: {
+      plugins: [...require('ember-cli-code-coverage').buildBabelPlugin()],
+      sourceMaps: 'inline',
+    },
     postcssOptions: {
       compile: {
         extension: 'scss',
@@ -46,6 +50,10 @@ module.exports = function (defaults) {
         enabled: true,
         plugins: postcssFilters,
       },
+    },
+    sourcemaps: {
+      enabled: true,
+      extensions: ['js'],
     },
   });
 
