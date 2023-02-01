@@ -30,3 +30,6 @@
 
 # broccoli-debug
 /DEBUG/
+
+.yalc
+yalc.lock
