@@ -1628,10 +1628,10 @@
   resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-1.0.0-beta.2.tgz#a8581de280f4c25cae45b07127484192899f8cba"
   integrity sha512-RCZfqazXEcm8MwTcpV9IqvzyzTkMW46ShtRH+JGIYMhqdfb3GblLm13l0cSJ8Uk/jZpAegwNNvJDi7jUb7WJeg==
 
-"@glint/template@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@glint/template/-/template-1.0.0-beta.2.tgz#ed13ca4f0e6c616579d9eb9c6b11eac49899c742"
-  integrity sha512-gaWiWAjvmgOTmHUqXt+fACINMSnOxKcPYEwb6A6DNYpCaKWxhxqIjIrQLdrumULLK9+MbxMrIa3Od05FcIDQFQ==
+"@glint/template@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@glint/template/-/template-1.0.0-beta.3.tgz#5866c0ffc1d8273f2e9b2fd186b65f5d4e6dbc15"
+  integrity sha512-jxn4yGzNZ1A4NGzvjYht0NlVziHyzjj/rm4rGsP1mVUO2Dd/LHhhxR6NUlSw9MFDZ0fCinULVwQtAKQLEpIpPw==
 
 "@handlebars/parser@~2.0.0":
   version "2.0.0"
