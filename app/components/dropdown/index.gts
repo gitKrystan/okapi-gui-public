@@ -33,7 +33,6 @@ export default class Dropdown
     <div
       ...attributes
       class="Dropdown"
-      {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
       {{dismissible dismissed=this.onDismiss}}
     >
       {{yield this to="trigger"}}

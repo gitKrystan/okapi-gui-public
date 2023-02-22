@@ -15,14 +15,12 @@ module('Integration | Helper | expanding-textarea', function (hooks) {
       name: 'native',
       // TODO: This cast should be unnecessary once types are fixed.
       template: hbs`
-          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           <label>Fill Me In<textarea {{expanding-textarea}} /></label>
         ` as unknown as TemplateFactory,
     },
     {
       name: 'component',
       template: hbs`
-          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           <label>Fill Me In<Textarea {{expanding-textarea}} /></label>
         ` as unknown as TemplateFactory,
     },

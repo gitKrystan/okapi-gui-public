@@ -39,7 +39,6 @@ export default class MethodInfo extends Component<MethodInfoSig> {
           @params={{this.methodCall.request}}
           @formEnabled={{@isActive}}
         >
-          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           <a {{ScrollAnchor (concat @method.id "Request")}}>
             <code class="Syntax Syntax--inline">
               <Token @type="type">{{@method.name}}Request</Token>
@@ -71,7 +70,6 @@ export default class MethodInfo extends Component<MethodInfoSig> {
         @formEnabled={{@isActive}}
         @readonly={{true}}
       >
-        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         <a {{ScrollAnchor (concat @method.id "Response")}}>
           <code class="Syntax Syntax--inline">
             <Token @type="type">{{@method.name}}Response</Token>

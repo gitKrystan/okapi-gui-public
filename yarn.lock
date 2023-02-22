@@ -1711,15 +1711,15 @@
     vscode-uri "^3.0.2"
     yargs "^17.5.1"
 
-"@glint/environment-ember-loose@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@glint/environment-ember-loose/-/environment-ember-loose-1.0.0-beta.2.tgz#a189f7454a8404b5a5062c3bef554cf1043bfeff"
-  integrity sha512-WIsccams5kKvv8ECXQgrT1iySYYXWa+k5B4+1HFowr51ojkizFYrG5skAjIKX/7+ChuqpSLCAPquEOAp24Zhhw==
+"@glint/environment-ember-loose@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@glint/environment-ember-loose/-/environment-ember-loose-1.0.0-beta.3.tgz#aade64eca87a3802b1068f1d7dd6be429117fb6e"
+  integrity sha512-Aby8penf3PB2VJrp9Ni33ZAcmFz8OpZ3wA2rz9DirOQhGrdDoTxcvNli6wu0R/NBqjjgKhM2WGzbxJ8NRdfdxA==
 
-"@glint/environment-ember-template-imports@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-1.0.0-beta.2.tgz#a8581de280f4c25cae45b07127484192899f8cba"
-  integrity sha512-RCZfqazXEcm8MwTcpV9IqvzyzTkMW46ShtRH+JGIYMhqdfb3GblLm13l0cSJ8Uk/jZpAegwNNvJDi7jUb7WJeg==
+"@glint/environment-ember-template-imports@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@glint/environment-ember-template-imports/-/environment-ember-template-imports-1.0.0-beta.3.tgz#26416cf6a09b17c35eee80ad1c2a2494c968e942"
+  integrity sha512-k7ryCPOInC3ak1rtQjg79TB1dO9cmJRcseBKWiOMwaVieHk68wZ8St+Izqx6qYmzD9/QtXP48whOB7eqRidg1w==
 
 "@glint/template@^1.0.0-beta.3":
   version "1.0.0-beta.3"

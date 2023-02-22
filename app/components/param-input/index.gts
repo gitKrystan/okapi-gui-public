@@ -48,7 +48,6 @@ export default class ParamInput<P extends Param> extends Component<
           @id={{@id}}
           @readonly={{this.readonly}}
           @onChange={{this.onChange}}
-          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           {{validator}}
         />
       {{/let}}

@@ -82,26 +82,21 @@ module('Integration | Modifier | dismissible', function (hooks) {
       <Button id="related-2">Should not dismiss if added to related</Button>
       <div
         id="dismissible"
-        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         {{dismissible
           dismissed=this.state.dismissed
           disableWhen=this.state.disableWhen
           related=this.state.related
           dismissOnFocusChange=this.state.dismissOnFocusChange
         }}
-        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         {{this.state.trackEvents}}
       >
-        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         <Button id="inside" {{this.state.trackEvents}}>
           Click should NOT dismiss
         </Button>
-        {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
         <Button id="else-inside" {{this.state.trackEvents}}>
           Click should NOT dismiss
         </Button>
       </div>
-      {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
       <Button id="outside" {{this.state.trackEvents}}>
         Click should dismiss
       </Button>

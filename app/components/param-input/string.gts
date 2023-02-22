@@ -18,7 +18,6 @@ export default class StringInput extends Component<ParamSig<StringParam>> {
       placeholder={{if @readonly "..." "Input a string value here."}}
       readonly={{@readonly}}
       @value={{@param.inputValue}}
-      {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
       {{expandingTextarea @param.inputValue}}
       {{on "change" (fn @onChange @param.value)}}
     />
