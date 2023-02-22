@@ -1604,13 +1604,14 @@
     "@glimmer/interfaces" "^0.42.2"
     "@glimmer/util" "^0.42.2"
 
-"@glint/core@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@glint/core/-/core-1.0.0-beta.2.tgz#68682d4663e2ae3eebfd0682b9f9505e4a33bb6f"
-  integrity sha512-LmQ7I0BXGzL5FhtaXXUCNUfGnqK6s+WKbcT0VcL3vxfMYW4btCzcWMOrBOhczI1+yYbPdVe++Rb+l0ovWURPzQ==
+"@glint/core@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@glint/core/-/core-1.0.0-beta.3.tgz#a8dd291e90cd90ed37ebe98a2401c59d5f7d682f"
+  integrity sha512-4xpo6ugp/DmjyaK/kjo7cu1SLG9jaLqGslb80HXPI+9o7YadSRkHRL1Y0JxGhgTD0IJnB+EzBd8Pc9Oat/stqQ==
   dependencies:
     "@glimmer/syntax" "^0.84.2"
     escape-string-regexp "^4.0.0"
+    semver "^7.3.8"
     silent-error "^1.1.1"
     uuid "^8.3.2"
     vscode-languageserver "^8.0.1"
