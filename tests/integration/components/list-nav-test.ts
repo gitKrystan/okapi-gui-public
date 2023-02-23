@@ -44,7 +44,6 @@ module('Integration | Component | list-nav', function (hooks) {
       hooks.beforeEach(async function () {
         await render<Context>(hbs`
           <ListNav @itemRole="menuitem" as |nav|>
-            {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
             <ul {{nav.list}} tabindex="0" role="menu">
               <li role="menuitem" tabindex="-1">Aardvark</li>
               <li role="menuitem" tabindex="-1">Ant</li>
@@ -69,7 +68,6 @@ module('Integration | Component | list-nav', function (hooks) {
             >
               Click Me
             </button>
-            {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
             <ul {{nav.list}} role="menu">
               <li role="menuitem" tabindex="-1">Aardvark</li>
               <li role="menuitem" tabindex="-1">Ant</li>
@@ -90,7 +88,6 @@ module('Integration | Component | list-nav', function (hooks) {
       hooks.beforeEach(async function () {
         await render<Context>(hbs`
         <ListNav @itemRole="option" as |nav|>
-          {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
           <ul {{nav.list}} tabindex="0" role="listbox">
             <li role="option" tabindex="-1">Aardvark</li>
             <li role="option" tabindex="-1">Ant</li>
@@ -115,7 +112,6 @@ module('Integration | Component | list-nav', function (hooks) {
             >
               Click Me
             </button>
-            {{! @glint-expect-error: The given value does not appear to be usable as a component, modifier or helper. }}
             <ul {{nav.list}} role="listbox">
               <li role="option" tabindex="-1">Aardvark</li>
               <li role="option" tabindex="-1">Ant</li>

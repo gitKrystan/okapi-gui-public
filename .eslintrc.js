@@ -1,6 +1,6 @@
 'use strict';
 
-const tsRules = {
+const baseTSRules = {
   'prefer-const': 0,
   semi: 0,
   'no-dupe-class-members': 0,
@@ -57,16 +57,35 @@ const tsRules = {
   'no-use-before-define': 0,
 };
 
-const tsTypeCheckRules = {
-  '@typescript-eslint/no-base-to-string': 2,
-  '@typescript-eslint/no-unnecessary-boolean-literal-compare': 2,
-  '@typescript-eslint/no-unnecessary-qualifier': 2,
-  '@typescript-eslint/no-unnecessary-type-arguments': 2,
-  '@typescript-eslint/prefer-includes': 2,
-  '@typescript-eslint/prefer-string-starts-ends-with': 2,
-  '@typescript-eslint/require-array-sort-compare': 2,
-  '@typescript-eslint/switch-exhaustiveness-check': 2,
-};
+const tsTypeCheckRules = [
+  '@typescript-eslint/dot-notation',
+  '@typescript-eslint/no-base-to-string',
+  '@typescript-eslint/no-meaningless-void-operator',
+  '@typescript-eslint/no-mixed-enums',
+  '@typescript-eslint/no-throw-literal',
+  '@typescript-eslint/no-unnecessary-boolean-literal-compare',
+  '@typescript-eslint/no-unnecessary-condition',
+  '@typescript-eslint/no-unnecessary-qualifier',
+  '@typescript-eslint/no-unnecessary-type-arguments',
+  '@typescript-eslint/non-nullable-type-assertion-style',
+  '@typescript-eslint/prefer-includes',
+  '@typescript-eslint/prefer-nullish-coalescing',
+  '@typescript-eslint/prefer-reduce-type-parameter',
+  '@typescript-eslint/prefer-return-this-type',
+  '@typescript-eslint/prefer-string-starts-ends-with',
+  '@typescript-eslint/require-array-sort-compare',
+  '@typescript-eslint/switch-exhaustiveness-check',
+];
+
+/**
+ * @param {0 | 1 | 2} to 0 = off, 1 = warn, 2 = error
+ * @returns {Record<string, 0 | 1 | 2>} Rules config object
+ */
+function setTSTypeCheckRules(to) {
+  const rules = {};
+  for (const rule of tsTypeCheckRules) rules[rule] = to;
+  return rules;
+}
 
 module.exports = {
   root: true,
@@ -102,6 +121,7 @@ module.exports = {
       },
     ],
     'eslint-comments/no-unused-disable': 'error',
+    'jsdoc/no-undefined-types': 'off',
     'unicorn/consistent-destructuring': 'off',
     'unicorn/consistent-function-scoping': [
       'error',
@@ -167,8 +187,8 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        ...tsRules,
-        ...tsTypeCheckRules,
+        ...baseTSRules,
+        ...setTSTypeCheckRules(2),
       },
     },
     // gts files
@@ -190,21 +210,10 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        ...tsRules,
+        ...baseTSRules,
+
         // Rules that require type checking don't work for gts files yet
-        '@typescript-eslint/dot-notation': 0,
-        '@typescript-eslint/no-base-to-string': 0,
-        '@typescript-eslint/no-meaningless-void-operator': 0,
-        '@typescript-eslint/no-throw-literal': 0,
-        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 0,
-        '@typescript-eslint/no-unnecessary-condition': 0,
-        '@typescript-eslint/no-unnecessary-type-arguments': 0,
-        '@typescript-eslint/non-nullable-type-assertion-style': 0,
-        '@typescript-eslint/prefer-includes': 0,
-        '@typescript-eslint/prefer-nullish-coalescing': 0,
-        '@typescript-eslint/prefer-reduce-type-parameter': 0,
-        '@typescript-eslint/prefer-return-this-type': 0,
-        '@typescript-eslint/prefer-string-starts-ends-with': 0,
+        ...setTSTypeCheckRules(0),
 
         // Rules that are otherwise broken for gts
         '@typescript-eslint/class-literal-property-style': 0,
@@ -229,8 +238,8 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        ...tsRules,
-        ...tsTypeCheckRules,
+        ...baseTSRules,
+        ...setTSTypeCheckRules(2),
         'qunit/require-expect': 0,
         'qunit/no-conditional-assertions': 0,
       },

@@ -45,3 +45,7 @@ add|ember-template-lint|require-mandatory-role-attributes|121|14|121|14|94b7c725
 add|ember-template-lint|require-mandatory-role-attributes|122|14|122|14|84cf4b14313c1da4ab1b55f26d4ca46233ea43d8|1675036800000|1677628800000|1680217200000|tests/integration/components/list-nav-test.ts
 add|ember-template-lint|no-invalid-role|336|16|336|16|805f0f3bbc1b710bac871941b3173a028ca037a1|1675036800000|1677628800000|1680217200000|tests/integration/components/combobox/select-only-test.ts
 add|ember-template-lint|require-context-role|339|20|339|20|ed44381a11756e7d8eb13ea55c2de1c83023ffcd|1675036800000|1677628800000|1680217200000|tests/integration/components/combobox/select-only-test.ts
+remove|ember-template-lint|require-aria-activedescendant-tabindex|114|8|114|8|8de72d97453bc2bfcbd38867935219ee8a001415|1672963200000|1675555200000|1678147200000|app/components/combobox/editable.gts
+remove|ember-template-lint|no-redundant-role|84|8|84|8|c11b4d9ca30c8198ad16522c32ca7e5bb24a7e2e|1672963200000|1675555200000|1678147200000|app/components/combobox/editable.gts
+add|ember-template-lint|no-redundant-role|84|8|84|8|8635c1878ec9b0ff34697cacbd4391a2ae14788e|1677024000000|1679612400000|1682204400000|app/components/combobox/editable.gts
+add|ember-template-lint|require-aria-activedescendant-tabindex|113|8|113|8|64c7bfdb29f08a85cfb4be8da36d634e26911a36|1677024000000|1679612400000|1682204400000|app/components/combobox/editable.gts
